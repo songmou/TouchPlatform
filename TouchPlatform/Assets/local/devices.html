@@ -1,0 +1,406 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>设备管理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width" />
+
+    <!-- Bootstrap core CSS -->
+    <link href="../library/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="../library/css/font-awesome.min.css" rel="stylesheet">
+    <!-- ionicons -->
+    <link href="../library/css/ionicons.min.css" rel="stylesheet">
+    <!-- Simplify -->
+    <link href="../library/css/simplify.css" rel="stylesheet">
+
+    <link href="../css/style.css" rel="stylesheet">
+
+</head>
+<body class="overflow-hidden">
+    <div class="preload no-footer">
+
+        <div class="header-block" style="min-height:52px;"></div>
+        <div class="menu-block"></div>
+
+        <div class="main-container sidebar-mini">
+            <div class="inbox-wrapper">
+                <div class="inbox-body padding-md">
+                    <div class="pagination-row clearfix m-bottom-md">
+                        <div class="col-md-2 pull-left vertical-middle">
+                            <select class="form-control select-luas"></select>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-left-sm">
+                                <div class="btn-group">
+                                    <select class="form-control select-groups"></select>
+                                </div>
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    操作
+                                    <span class="btn-command-icon"><span class="caret"></span></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <a href="javascript:" onclick="GroupRunlua()" id="groupRunlua"
+                                           data-toggle="tooltip" data-placement="right" title=""
+                                           data-original-title="优先执行当前组">执行命令</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:" onclick="GroupStoplua()" id="groupStoplua"
+                                           data-toggle="tooltip" data-placement="right" title=""
+                                           data-original-title="优先执行当前组">停止命令</a>
+                                    </li>
+                                    <li class="divider"></li>
+
+
+                                    <li class="btn-sys-panel">
+                                        <a href="javascript:;" class="">系统操作</a>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="javascript:" onclick="reboot('1')">重启设备</a></li>
+                                            <li><a href="javascript:" onclick="reboot('0')">注销设备</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li><a href="javascript:" onclick="OpenSetLuaPathPanel()">发送脚本文件</a></li>
+
+                                    <li class="divider"></li>
+                                    <li><a href="javascript:" onclick="$('.addgroupPanel').show()">添加分组</a></li>
+                                    <li><a href="javascript:" onclick="DelDevice()">删除设备</a></li>
+                                </ul>
+
+                                
+                            </div>
+                            <div class="col-md-6 text-left-sm">
+
+                                <div class="input-group inline-block col-md-1">
+                                    <a href="javascript:" onclick="Runlua()" title="执行命令(勾选的设备)">
+                                        <i class="fa fa-play" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                                <div class="input-group inline-block col-md-1" title="停止命令(勾选的设备)">
+                                    <a href="javascript:" onclick="Stoplua()">
+                                        <i class="fa fa-stop" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                                <div class="input-group inline-block col-md-1" title="查看设备(勾选的设备)">
+                                    <a href="javascript:" onclick="ViewerDevice()">
+                                        <i class="fa fa-eye" aria-hidden="true" style="font-size:15px;"></i>
+                                    </a>
+                                </div>
+
+                                <div class="input-group inline-block col-md-5 text-right">
+                                    <div class="input-group-btn inline-block">
+                                        <a class="btn-scan btn btn-success no-shadow" href="scans.html"
+                                           title="更新设备信息或者添加设备">
+                                            <i class="fa fa-refresh" aria-hidden="true"></i> 扫描更新
+                                        </a>
+                                        <a class="btn-scan btn btn-success no-shadow" href="files.html"
+                                           title="上传或删除脚本">
+                                            脚本管理
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-3 pull-right pull-left-sm text-right">
+                            <div class="col-md-10 inline-block vertical-middle">当前分组：<span class="groupname"></span> , <span class="devicecount">0</span> 台 </div>
+
+                            <div class="col-md-2 inline-block input-group">
+                                <a class="btn-freshen btn btn-success no-shadow" href="javascript:;">
+                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div><!-- ./pagination-row -->
+                    <div class="message-table table-responsive">
+                        <table class="table table-bordereds">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">
+                                        <div class="custom-checkbox">
+                                            <input type="checkbox" id="chkAll" class="inbox-check">
+                                            <label for="chkAll"></label>
+                                        </div>
+                                    </th>
+                                    <th></th>
+                                    <th>设备名</th>
+                                    <th>设备系统</th>
+                                    <th>分组名称</th>
+                                    <th>设备IP</th>
+                                    <th>自定义名称</th>
+                                    <th>端口号</th>
+                                    <th>版本号</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tr-panel"></tbody>
+                        </table>
+                    </div><!-- ./message-table -->
+
+                </div><!-- ./inbox-body -->
+            </div><!-- ./inbox-wrapper -->
+        </div>
+
+        <!--添加分组面板-->
+        <div class="overlap addgroupPanel">
+            <div class="header-mini"></div>
+            <div class="smart-widget col-xs-10 col-xs-offset-1">
+                <div class="smart-widget-header">
+                    添加分组
+                    <span class="smart-widget-option">
+                        <a href="javascript:" onclick="$('.addgroupPanel').hide()" class="widget-remove-option">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </span>
+                </div>
+                <div class="smart-widget-inner">
+                    <div class="smart-widget-body">
+                        <form id="g-form" class="form-horizontal no-margin form-border">
+                            <div class="hide">
+                                <input type="hidden" class="g-ID" name="ID" value="">
+                            </div><!-- /form-group -->
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">分组名称</label>
+                                <div class="col-lg-8">
+                                    <input class="form-control g-groupname" name="groupname" type="text" placeholder="请输入分组名称...">
+                                </div><!-- /.col -->
+                            </div><!-- /form-group -->
+
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">排序号</label>
+                                <div class="col-lg-4">
+                                    <input class="form-control g-sortcode" name="sortcode" type="number" maxlength="3" placeholder="请输入排序号...">
+                                </div><!-- /.col -->
+                            </div><!-- /form-group -->
+
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label"></label>
+                                <div class="col-lg-4">
+                                    <a href="javascript:void()" onclick="SaveDevice();" class="btn-addGroup btn btn-danger" data-toggle="modal">保存</a>
+                                </div><!-- /.col -->
+                            </div><!-- /form-group -->
+                        </form>
+                    </div>
+                </div><!-- ./smart-widget-inner -->
+            </div>
+        </div>
+
+
+        <!--修改设备分组面板-->
+        <div class="overlap mod-de2group-panel">
+            <div class="header-mini"></div>
+            <div class="smart-widget col-xs-10 col-xs-offset-1">
+                <div class="smart-widget-header">
+                    修改设备信息
+                    <span class="smart-widget-option">
+                        <a href="javascript:" onclick="$('.mod-de2group-panel').hide()" class="widget-remove-option">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </span>
+                </div>
+                <div class="smart-widget-inner" id="de2group-panel">
+                    <div class="smart-widget-body">
+                        <form id="d-form" class="form-horizontal no-margin form-border">
+                            <div class="hide">
+                                <input type="hidden" class="d-deviceid" name="deviceid" value="">
+                            </div><!-- /form-group -->
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">所属分组</label>
+                                <div class="col-lg-8">
+                                    <select class="form-control d-groups" name="groupname"></select>
+                                </div><!-- /.col -->
+                            </div><!-- /form-group -->
+
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">自定义名称</label>
+                                <div class="col-lg-4">
+                                    <input class="form-control d-username" name="username" type="text" placeholder="请输入自定义名称...">
+                                </div><!-- /.col -->
+                            </div><!-- /form-group -->
+
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label"></label>
+                                <div class="col-lg-4">
+                                    <a href="javascript:void()" onclick="SaveGroupDevice()" class="btn-de2group btn btn-danger" data-toggle="modal">保存</a>
+                                </div><!-- /.col -->
+                            </div><!-- /form-group -->
+                        </form>
+                    </div>
+                </div><!-- ./smart-widget-inner -->
+            </div>
+        </div>
+
+
+        <!--发送脚本文件面板-->
+        <div class="overlap luaPath-Panel">
+            <div class="header-mini"></div>
+            <div class="smart-widget col-xs-10 col-xs-offset-1">
+                <div class="smart-widget-header">
+                    发送脚本文件 　　
+                    <span class=""> <i class="fa fa-warning"></i> 必须保证该文件夹下存在 main.lua 入口文件</span>
+                    <span class="smart-widget-option">
+                        <a href="javascript:" onclick="$('.luaPath-Panel').hide()" class="widget-remove-option">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </span>
+                </div>
+                <div class="smart-widget-inner">
+                    <div class="smart-widget-body luapath-body col-md-10 col-md-offset-1">
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label"></label>
+                        <div class="col-lg-4">
+                            <a href="javascript:void()" onclick="SetLuaPath()" class="btn-SetPath btn btn-warning" data-toggle="modal">发送</a>
+                            <a href="javascript:void()" onclick="SetLuaPath(1)" class="btn-SetPathRun btn btn-danger" data-toggle="modal">发送并执行</a>
+                        </div>
+                    </div>
+                </div><!-- ./smart-widget-inner -->
+            </div>
+            <script id="luatree-template" type="text/html">
+                <ul class="luatree-line">
+                    {{each dics as d i}}
+                    <li>
+                        <div class="custom-radio m-right-xs" style="display:inline-block">
+                            <input type="radio" id="r{{d}}" value="{{d}}" name="dirname">
+                            <label for="r{{d}}"></label>
+                        </div>
+                        <label class="inline-block vertical-top" for="r{{d}}">{{d}}</label>
+                    </li>
+                    {{/each}}
+                </ul>
+            </script>
+        </div>
+
+
+    </div>
+
+    <a href="#" class="scroll-to-top hidden-print"><i class="fa fa-chevron-up fa-lg"></i></a>
+
+
+    <script id="tr-template" type="text/html">
+        {{each data as d i}}
+        <tr class="tr{{d.ID}}">
+            <td class="text-center">
+                <div class="custom-checkbox">
+                    <input type="checkbox" id="chk{{d.ID}}" value="{{d.ID}}" deviceid="{{d.deviceid}}" class="inbox-check">
+                    <label for="chk{{d.ID}}"></label>
+                </div>
+            </td>
+            <td><a href="#{{d.deviceid}}"><i class="fa fa-star fa-lg text-warning"></i></a></td>
+            <td>
+                <a href="javascript:" onclick="de2group('{{d.deviceid}}')">{{d.deviceid}}</a>
+            </td>
+            <td>
+                <strong class="block font-md">{{d.osType}}：{{d.username}}</strong>
+                <span class="text-muted">{{d.deviceid}}</span>
+            </td>
+            <td>
+                {{d.groupname}}
+            </td>
+            <td>
+                {{d.ip}}
+            </td>
+            <td>
+                {{d.username}}
+            </td>
+            <td>{{d.port}}</td>
+            <td>V{{d.tsversion}}</td>
+            <td class="action-status"></td>
+        </tr>
+        {{/each}}
+    </script>
+
+
+    <!-- Jquery -->
+    <script src="../library/js/jquery-1.11.1.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="../library/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="../library/js/jquery.slimscroll.min.js"></script>
+
+    <!-- Popup Overlay -->
+    <script src="../library/js/jquery.popupoverlay.min.js"></script>
+    <!-- Modernizr -->
+    <script src="../library/js/modernizr.min.js"></script>
+
+
+    <!-- Easy Pie Chart -->
+    <script src='../library/js/jquery.easypiechart.min.js'></script>
+
+    <!-- Owl Carousel -->
+    <script src='../library/js/owl.carousel.min.js'></script>
+
+    <!-- Datepicker -->
+    <script src='../library/js/uncompressed/datepicker.js'></script>
+
+    <script src="../js/lib/artTemplate/template.js"></script>
+
+    <script src="../js/base.js"></script>
+    <script src="../js/authAction.js"></script>
+
+    <!-- Simplify -->
+    <script src="../library/js/simplify/simplify.js"></script>
+
+    <script type="text/javascript">
+
+        //绑定分组，设备等信息
+        var BindInfo = function () {
+            BindLuaDir();
+
+            BindGroup();
+            BindDevice();
+        }
+
+        $(function () {
+
+            $('.inbox-check').click(function () {
+                var activeRow = $(this).parent().parent().parent();
+
+                activeRow.toggleClass('active');
+            });
+
+            $('#inboxCollapse').click(function () {
+                $('.inbox-menu-inner').slideToggle();
+            });
+
+            $('#chkAll').click(function () {
+                if ($(this).prop('checked')) {
+                    $('.inbox-check').prop('checked', true);
+                    $('.inbox-check').parent().parent().parent().addClass('active');
+                }
+                else {
+                    $('.inbox-check').prop('checked', false);
+                    $('.inbox-check').parent().parent().parent().removeClass('active');
+                }
+            });
+
+            $(window).resize(function () {
+                if (Modernizr.mq('(min-width: 980px)')) {
+                    $('.inbox-menu ul').show();
+                }
+            });
+
+            $(".select-groups").on("change", function () {
+                BindDevice();
+            });
+
+            $('.btn-freshen').click(function () {
+                BindDevice();
+            });
+
+            BindInfo();
+
+            LooperDevices();
+        });
+
+
+    </script>
+
+</body>
+</html>

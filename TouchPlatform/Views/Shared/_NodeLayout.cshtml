@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="~/Assets/library/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="~/Assets/library/css/font-awesome.min.css" rel="stylesheet">
+    <!-- ionicons -->
+    <link href="~/Assets/library/css/ionicons.min.css" rel="stylesheet">
+    <!-- Simplify -->
+    <link href="~/Assets/library/css/simplify.css" rel="stylesheet">
+
+    <link href="~/Assets/css/style.css" rel="stylesheet">
+
+    @RenderSection("css", required: false)
+
+</head>
+<body class="overflow-hidden">
+    <div class="wrapper preload no-footer">
+        @RenderPage("~/Views/Shared/_NodeTop.cshtml")
+
+        @RenderPage("~/Views/Shared/_NodeMenu.cshtml")
+
+
+        <div class="main-container sidebar-mini">
+            @RenderBody()
+        </div>
+    </div>
+
+    <a href="#" class="scroll-to-top hidden-print"><i class="fa fa-chevron-up fa-lg"></i></a>
+
+
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- Jquery -->
+    <script src="~/Assets/library/js/jquery-1.11.1.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="~/Assets/library/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/Assets/library/js/jquery.slimscroll.min.js"></script>
+
+    <!-- Popup Overlay -->
+    <script src="~/Assets/library/js/jquery.popupoverlay.min.js"></script>
+    <!-- Modernizr -->
+    <script src="~/Assets/library/js/modernizr.min.js"></script>
+
+    <!-- Simplify -->
+    <script src="~/Assets/library/js/simplify/simplify.js"></script>
+
+    <script src="~/Assets/js/base.js"></script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

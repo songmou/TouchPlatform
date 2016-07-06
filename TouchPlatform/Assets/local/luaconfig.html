@@ -1,0 +1,300 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>设备执行脚本配置</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width" />
+
+    <!-- Bootstrap core CSS -->
+    <link href="../library/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="../library/css/font-awesome.min.css" rel="stylesheet">
+    <!-- ionicons -->
+    <link href="../library/css/ionicons.min.css" rel="stylesheet">
+    <!-- Simplify -->
+    <link href="../library/css/simplify.css" rel="stylesheet">
+
+    <link href="../css/style.css" rel="stylesheet">
+
+</head>
+<body class="overflow-hidden">
+    <div class="preload no-footer">
+
+        <div class="header-block" style="min-height:52px;"></div>
+        <div class="menu-block"></div>
+
+        <div class="main-container sidebar-mini">
+
+            <div class="inbox-wrapper">
+                <div class="inbox-body padding-md">
+                    <div class="pagination-row clearfix m-bottom-md">
+                        <div class="col-xs-2 pull-left vertical-middle">
+                            设备执行脚本配置
+                        </div>
+                        <div class="col-xs-3 text-left-sm">
+                            <div class="input-group">
+                            </div>
+                        </div>
+                        <div class="col-xs-2 pull-right pull-left-sm text-right">
+                            <div class="inline-block vertical-middle"></div>
+                        </div>
+                    </div>
+
+
+                    <div class="smart-widget widget-dark-blue">
+                        <div class="smart-widget-header">
+                            微信搜索手机添加好友
+                            <span class="smart-widget-option">
+                                <span class="refresh-icon-animated">
+                                    <i class="fa fa-circle-o-notch fa-spin"></i>
+                                </span>
+                                <a href="#" class="widget-toggle-hidden-option">
+                                    <i class="fa fa-cog"></i>
+                                </a>
+                                <a href="#" class="widget-collapse-option" data-toggle="collapse">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a href="#" class="widget-refresh-option">
+                                    <i class="fa fa-refresh"></i>
+                                </a>
+                                <a href="#" class="widget-remove-option">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </span>
+                        </div>
+                        <div class="smart-widget-inner">
+                            <div class="smart-widget-hidden-section">
+                                <ul class="widget-color-list clearfix">
+                                    <li style="background-color:#20232b;" data-color="widget-dark"></li>
+                                    <li style="background-color:#4c5f70;" data-color="widget-dark-blue"></li>
+                                    <li style="background-color:#23b7e5;" data-color="widget-blue"></li>
+                                    <li style="background-color:#2baab1;" data-color="widget-green"></li>
+                                    <li style="background-color:#edbc6c;" data-color="widget-yellow"></li>
+                                    <li style="background-color:#fbc852;" data-color="widget-orange"></li>
+                                    <li style="background-color:#e36159;" data-color="widget-red"></li>
+                                    <li style="background-color:#7266ba;" data-color="widget-purple"></li>
+                                    <li style="background-color:#f5f5f5;" data-color="widget-light-grey"></li>
+                                    <li style="background-color:#fff;" data-color="reset"></li>
+                                </ul>
+                            </div>
+                            <div class="smart-widget-body">
+                                <form id="formWxSerach" class="form-horizontal no-margin form-border">
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">脚本名称</label>
+                                        <div class="col-md-8">
+                                            <input class="form-control" type="text" placeholder="" disabled="" value="搜索加人">
+                                            <input type="hidden" name="luaType" value="搜索加人" />
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">网络环境</label>
+                                        <div class="col-md-10">
+                                            <div class="radio inline-block col-md-1">
+                                                <div class="custom-radio m-right-xs">
+                                                    <input type="radio" id="radio1" value="WIFI" name="netWay">
+                                                    <label for="radio1"></label>
+                                                </div>
+                                                <div class="inline-block vertical-top">
+                                                    WIFI
+                                                </div>
+                                            </div>
+                                            <div class="radio inline-block">
+                                                <div class="custom-radio m-right-xs">
+                                                    <input type="radio" id="radio2" value="MobileNet" name="netWay">
+                                                    <label for="radio2"></label>
+                                                </div>
+                                                <div class="inline-block vertical-top">
+                                                    手机流量
+                                                </div>
+                                            </div>
+                                        </div><!-- /.col -->
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">一次加人的数量</label>
+                                        <div class="col-md-2">
+                                            <input class="form-control" name="Count" type="number" placeholder="" value="5">
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">单个延迟（s）</label>
+                                        <div class="col-md-5">
+                                            <input class="form-control" name="Interval" type="number" placeholder="" value="20">
+                                            <span class="help-block">成功发送申请后延迟N秒进行下一个</span>
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">完成延迟（s）</label>
+                                        <div class="col-md-5">
+                                            <input class="form-control" name="RestTime" type="number" placeholder="" value="60">
+                                            <span class="help-block">脚本执行完毕，延迟N秒后退出</span>
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">验证消息</label>
+                                        <div class="col-md-8">
+                                            <input class="form-control" name="WelcomeMsg" type="text" placeholder="请输入验证消息" value="">
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">新增的手机号码库</label>
+                                        <div class="col-md-6">
+                                            <textarea class="form-control" name="PhoneNums" placeholder="一行一个，已经上传的将会被忽略" rows="8"></textarea>
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label"></label>
+                                        <div class="col-md-10">
+                                            <a href="javascript:;" onclick="LuaConfig('WxSerach')" class="btn btn-danger">修改</a>
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+                                </form>
+                            </div>
+                        </div><!-- ./smart-widget-inner -->
+                    </div>
+
+
+
+                    <div class="smart-widget widget-green">
+                        <div class="smart-widget-header">
+                            微信发送朋友圈
+                            <span class="smart-widget-option">
+                                <span class="refresh-icon-animated">
+                                    <i class="fa fa-circle-o-notch fa-spin"></i>
+                                </span>
+                                <a href="#" class="widget-toggle-hidden-option">
+                                    <i class="fa fa-cog"></i>
+                                </a>
+                                <a href="#" class="widget-collapse-option" data-toggle="collapse">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a href="#" class="widget-refresh-option">
+                                    <i class="fa fa-refresh"></i>
+                                </a>
+                                <a href="#" class="widget-remove-option">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </span>
+                        </div>
+                        <div class="smart-widget-inner">
+                            <div class="smart-widget-hidden-section">
+                                <ul class="widget-color-list clearfix">
+                                    <li style="background-color:#20232b;" data-color="widget-dark"></li>
+                                    <li style="background-color:#4c5f70;" data-color="widget-dark-blue"></li>
+                                    <li style="background-color:#23b7e5;" data-color="widget-blue"></li>
+                                    <li style="background-color:#2baab1;" data-color="widget-green"></li>
+                                    <li style="background-color:#edbc6c;" data-color="widget-yellow"></li>
+                                    <li style="background-color:#fbc852;" data-color="widget-orange"></li>
+                                    <li style="background-color:#e36159;" data-color="widget-red"></li>
+                                    <li style="background-color:#7266ba;" data-color="widget-purple"></li>
+                                    <li style="background-color:#f5f5f5;" data-color="widget-light-grey"></li>
+                                    <li style="background-color:#fff;" data-color="reset"></li>
+                                </ul>
+                            </div>
+                            <div class="smart-widget-body">
+                                <form id="formToggleLine" class="form-horizontal no-margin form-border">
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">脚本名称</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="text" placeholder="" disabled="" value="发送朋友圈脚本">
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label"></label>
+                                        <div class="col-md-10">
+                                            <a href="#formToggleLine" class="btn btn-danger">修改</a>
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+                                </form>
+                            </div>
+                        </div><!-- ./smart-widget-inner -->
+                    </div>
+
+
+
+                </div><!-- ./inbox-body -->
+            </div><!-- ./inbox-wrapper -->
+
+
+        </div>
+    </div>
+
+
+
+    <!-- Jquery -->
+    <script src="../library/js/jquery-1.11.1.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="../library/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="../library/js/jquery.slimscroll.min.js"></script>
+
+    <!-- Popup Overlay -->
+    <script src="../library/js/jquery.popupoverlay.min.js"></script>
+    <!-- Modernizr -->
+    <script src="../library/js/modernizr.min.js"></script>
+
+
+    <!-- Easy Pie Chart -->
+    <script src='../library/js/jquery.easypiechart.min.js'></script>
+
+    <!-- Owl Carousel -->
+    <script src='../library/js/owl.carousel.min.js'></script>
+
+    <!-- Datepicker -->
+    <script src='../library/js/uncompressed/datepicker.js'></script>
+
+    <script src="../js/lib/artTemplate/template.js"></script>
+
+    <script src="../js/base.js"></script>
+
+    <script src="../js/luaParameter.js"></script>
+
+    <!-- Simplify -->
+    <script src="../library/js/simplify/simplify.js"></script>
+
+
+
+    <script type="text/javascript">
+        $(function () {
+            $.ajax({
+                type: 'POST',
+                url: domain + "/lua/GetList",
+                dataType: 'json',
+                data: { luaType: "搜索加人" },
+                success: function (data) {
+                    if (data.code == 200) {
+                        var list = data.data;
+
+                        //绑定值
+                        $('.form-group input').each(function () {
+                            $el = $(this);
+                            var name = $el.attr('name');
+                            if (name != undefined) {
+                                var json = list.filter(function (item) { return item.luaName == name; });
+                                if (json.length > 0) {
+                                    if ($el.attr('type') == "radio") {
+                                        if ($el.val() == json[0].luaValue)
+                                            $el.attr('checked', 'checked');
+                                    }
+                                    else
+                                        $el.val(json[0].luaValue);
+                                }
+                            }
+                        });
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert('error:' + luaName);
+                }
+            });
+
+        });
+    </script>
+
+</body>
+</html>

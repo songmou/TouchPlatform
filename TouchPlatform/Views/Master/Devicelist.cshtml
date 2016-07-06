@@ -1,0 +1,178 @@
+﻿@{
+    ViewBag.Title = "设备列表";
+    Layout = "~/Views/Shared/_NodeLayout.cshtml";
+}
+
+@section css{
+}
+@section scripts{
+    <!-- Easy Pie Chart -->
+    <script src='~/Assets/library/js/jquery.easypiechart.min.js'></script>
+
+    <!-- Owl Carousel -->
+    <script src='~/Assets/library/js/owl.carousel.min.js'></script>
+
+    <!-- Datepicker -->
+    <script src='~/Assets/library/js/uncompressed/datepicker.js'></script>
+
+    <!--
+    <script type="text/javascript">
+        var loopNums = 0, loopCount = 10;
+        var UdpServer = function () {
+            var dgram = require("dgram");
+            var server = dgram.createSocket("udp4");
+            server.on("error", function (err) {
+                console.log("server error:\n" + err.stack);
+                document.writeln("server error:\n" + err.stack);
+                server.close();
+            });
+            server.on("message", function (msg, rinfo) {
+                console.log("server got: " + msg + " from " + rinfo.address + ":" + rinfo.port);
+                document.writeln("server got: " + msg + " from " + rinfo.address + ":" + rinfo.port);
+
+            });
+            server.on("listening", function () {
+                var address = server.address();
+                console.log("server listening " + address.address + ":" + address.port);
+                document.writeln("server listening " + address.address + ":" + address.port);
+            });
+            server.bind(11028);
+        }
+
+
+        var UdpClient = function (count) {
+            var dgram = require("dgram");
+            var socket = dgram.createSocket("udp4");
+            socket.bind(function () {
+                socket.setBroadcast(true);
+            });
+            var message = new Buffer('{\"ip\":\"192.168.0.50\", \"port\":11028}');
+
+            while (loopNums <= count) {
+                socket.send(message, 0, message.length, 14099, '255.255.255.255', function (err, bytes) {
+                    socket.close();
+                });
+                loopNums++;
+            }
+        }
+
+
+        loopNums = 0, loopCount = 10;
+        UdpServer();
+        UdpClient(loopCount);
+    </script>
+    -->
+
+    <script type="text/javascript">
+        $(function () {
+            $('.inbox-check').click(function () {
+                var activeRow = $(this).parent().parent().parent();
+
+                activeRow.toggleClass('active');
+            });
+
+
+            $('#inboxCollapse').click(function () {
+                $('.inbox-menu-inner').slideToggle();
+            });
+
+            $('#chkAll').click(function () {
+                if ($(this).prop('checked')) {
+                    $('.inbox-check').prop('checked', true);
+                    $('.inbox-check').parent().parent().parent().addClass('active');
+                }
+                else {
+                    $('.inbox-check').prop('checked', false);
+                    $('.inbox-check').parent().parent().parent().removeClass('active');
+                }
+            });
+
+            $(window).resize(function () {
+                if (Modernizr.mq('(min-width: 980px)')) {
+                    $('.inbox-menu ul').show();
+                }
+            });
+
+
+
+            $(".btn-scan").click(function () {
+                //location.href = "Assets\local\scans.html";
+            });
+
+
+        });
+    </script>
+
+}
+
+<div class="inbox-wrapper">
+    <div class="inbox-body padding-md">
+        <div class="pagination-row clearfix m-bottom-md">
+            <div class="col-sm-2 pull-left vertical-middle">
+                设备列表
+            </div>
+            <div class="col-sm-3 text-left-sm">
+                <div class="input-group">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn-scan btn btn-success no-shadow" tabindex="-1">
+                            <i class="fa fa-refresh" aria-hidden="true"></i> 扫描
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="pull-right pull-left-sm">
+                <div class="inline-block vertical-middle m-right-xs">已添加 1 台设备</div>
+            </div>
+        </div><!-- ./pagination-row -->
+        <div class="message-table table-responsive">
+            <table class="table table-bordereds">
+                <thead>
+                    <tr>
+                        <th class="text-center">
+                            <div class="custom-checkbox">
+                                <input type="checkbox" id="chkAll" class="inbox-check">
+                                <label for="chkAll"></label>
+                            </div>
+                        </th>
+                        <th></th>
+                        <th>设备名</th>
+                        <th>自定义设备名</th>
+                        <th>设备IP</th>
+                        <th>端口号</th>
+                        <th>版本号</th>
+                        <th>设备状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var d in Model)
+                    { 
+                    <tr>
+                        <td class="text-center">
+                            <div class="custom-checkbox">
+                                <input type="checkbox" id="chk@(d.ID)" class="inbox-check">
+                                <label for="chk@(d.ID)"></label>
+                            </div>
+                        </td>
+                        <td><a href="#@(d.ID)"><i class="fa fa-star fa-lg text-warning"></i></a></td>
+                        <td>
+                            <strong class="block font-md">@(d.osType)</strong>
+                            <span class="text-muted">@(d.deviceid)</span>
+                        </td>
+                        <td>
+                            @(d.username)
+                        </td>
+                        <td>
+                            @(d.ip)
+                        </td>
+                        <td>@(d.port)</td>
+                        <td>V@(d.tsversion)</td>
+                        <td>@(d.status)</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div><!-- ./message-table -->
+
+    </div><!-- ./inbox-body -->
+</div><!-- ./inbox-wrapper -->
+

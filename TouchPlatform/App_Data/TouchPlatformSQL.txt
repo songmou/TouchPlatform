@@ -1,0 +1,37 @@
+﻿CREATE TABLE [dbo].[devices]
+(
+	[ID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	deviceid varchar(200) UNIQUE NOT NULL,
+	tsversion varchar(50) NOT NULL,
+	ip varchar(50) NOT NULL,
+	port varchar(10) NOT NULL,
+	devname nvarchar(50) NOT NULL,
+	username nvarchar(50) NOT NULL,
+	osType varchar(50) NOT NULL,
+	status nvarchar(50) NOT NULL,
+	remark nvarchar(1000) NOT NULL,
+	createdate datetime,
+	updatedate datetime
+)
+
+
+CREATE TABLE [dbo].[groups]
+(
+	[ID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	groupname varchar(50) UNIQUE NOT NULL,
+	auth varchar(2000) NOT NULL,
+	lastTime datetime NULL,
+	sortcode int NOT NULL,
+	createdate datetime,
+	updatedate datetime
+)
+
+
+CREATE TABLE [dbo].[group_device]
+(
+	[ID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	groupid int NOT NULL,
+	deviceid varchar(200) NOT NULL,
+	createdate datetime,
+	updatedate datetime
+)

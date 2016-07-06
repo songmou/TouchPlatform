@@ -1,0 +1,266 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{89DF7268-E9CA-4088-9BA7-B1836E2889FF}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TouchPlatform</RootNamespace>
+    <AssemblyName>TouchPlatform</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\TouchSpriteService\bin\Debug\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.0.0\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.0.0\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Data\TouchPlatform.accdb" />
+    <Content Include="App_Data\TouchPlatformSQL.txt" />
+    <Content Include="Assets\css\style.css" />
+    <Content Include="Assets\js\authAction.js" />
+    <Content Include="Assets\js\lib\artTemplate\template-debug.js" />
+    <Content Include="Assets\js\lib\artTemplate\template-native-debug.js" />
+    <Content Include="Assets\js\lib\artTemplate\template-native.js" />
+    <Content Include="Assets\js\lib\artTemplate\template.js" />
+    <Content Include="Assets\js\luaParameter.js" />
+    <Content Include="Assets\local\devices.html" />
+    <Content Include="Assets\local\files.html" />
+    <Content Include="Assets\local\luaconfig.html" />
+    <Content Include="Assets\local\scans.html" />
+    <Content Include="Assets\local\snapshot.html" />
+    <Content Include="Global.asax" />
+    <Content Include="Assets\favicon.png" />
+    <Content Include="Assets\index.html" />
+    <Content Include="Assets\js\base.js" />
+    <Content Include="Assets\js\lib\jquery-1.11.1.min.js" />
+    <Content Include="Assets\library\bootstrap\css\bootstrap.min.css" />
+    <Content Include="Assets\library\bootstrap\js\bootstrap.min.js" />
+    <Content Include="Assets\library\css\animate.min.css" />
+    <Content Include="Assets\library\css\bootstrap-slider.css" />
+    <Content Include="Assets\library\css\datepicker.css" />
+    <Content Include="Assets\library\css\font-awesome.min.css" />
+    <Content Include="Assets\library\css\ionicons.min.css" />
+    <Content Include="Assets\library\css\jquery.tagsinput.css" />
+    <Content Include="Assets\library\css\morris.css" />
+    <Content Include="Assets\library\css\owl.carousel.min.css" />
+    <Content Include="Assets\library\css\owl.theme.default.min.css" />
+    <Content Include="Assets\library\css\simplify.css" />
+    <Content Include="Assets\library\css\simplify.min.css" />
+    <Content Include="Assets\library\images\blog\blog1.jpg" />
+    <Content Include="Assets\library\images\blog\blog2.jpg" />
+    <Content Include="Assets\library\images\blog\blog3.jpg" />
+    <Content Include="Assets\library\images\gallery\gallery1.jpg" />
+    <Content Include="Assets\library\images\gallery\gallery2.jpg" />
+    <Content Include="Assets\library\images\gallery\gallery3.jpg" />
+    <Content Include="Assets\library\images\gallery\gallery4.jpg" />
+    <Content Include="Assets\library\images\gallery\gallery5.jpg" />
+    <Content Include="Assets\library\images\gallery\gallery6.jpg" />
+    <Content Include="Assets\library\images\gallery\gallery7.jpg" />
+    <Content Include="Assets\library\images\gallery\gallery8.jpg" />
+    <Content Include="Assets\library\images\img11.jpg" />
+    <Content Include="Assets\library\images\profile\profile1.jpg" />
+    <Content Include="Assets\library\images\profile\profile2.jpg" />
+    <Content Include="Assets\library\images\profile\profile3.jpg" />
+    <Content Include="Assets\library\images\profile\profile4.jpg" />
+    <Content Include="Assets\library\images\profile\profile5.jpg" />
+    <Content Include="Assets\library\images\profile\profile6.jpg" />
+    <Content Include="Assets\library\images\profile\profile7.jpg" />
+    <Content Include="Assets\library\images\profile\profile8.jpg" />
+    <Content Include="Assets\library\images\profile\profile9.jpg" />
+    <Content Include="Assets\library\js\jquery-1.11.1.min.js" />
+    <Content Include="Assets\library\js\jquery.easypiechart.min.js" />
+    <Content Include="Assets\library\js\jquery.flot.min.js" />
+    <Content Include="Assets\library\js\jquery.localScroll.min.js" />
+    <Content Include="Assets\library\js\jquery.popupoverlay.min.js" />
+    <Content Include="Assets\library\js\jquery.scrollTo.min.js" />
+    <Content Include="Assets\library\js\jquery.slimscroll.min.js" />
+    <Content Include="Assets\library\js\modernizr.min.js" />
+    <Content Include="Assets\library\js\morris.min.js" />
+    <Content Include="Assets\library\js\owl.carousel.min.js" />
+    <Content Include="Assets\library\js\rapheal.min.js" />
+    <Content Include="Assets\library\js\simplify\simplify.js" />
+    <Content Include="Assets\library\js\simplify\simplify_dashboard.js" />
+    <Content Include="Assets\library\js\sparkline.min.js" />
+    <Content Include="Assets\library\js\uncompressed\datepicker.js" />
+    <Content Include="Assets\library\js\uncompressed\jquery.sortable.js" />
+    <Content Include="Assets\library\js\uncompressed\skycons.js" />
+    <Content Include="Assets\library\js\waypoints.min.js" />
+    <Content Include="source\files\screenshot.jpg" />
+    <None Include="source\lua\搜索加人\FilesHelper.lua" />
+    <Content Include="source\lua\搜索加人\config.txt" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\ApiController.cs" />
+    <Compile Include="Controllers\LuaController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MasterController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\package.json" />
+    <Content Include="packages.config" />
+    <Content Include="Assets\library\fonts\fontawesome-webfont.eot" />
+    <Content Include="Assets\library\fonts\fontawesome-webfont.svg" />
+    <Content Include="Assets\library\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Assets\library\fonts\fontawesome-webfont.woff" />
+    <Content Include="Assets\library\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Assets\library\fonts\FontAwesome.otf" />
+    <Content Include="Assets\library\fonts\ionicons.eot" />
+    <Content Include="Assets\library\fonts\ionicons.svg" />
+    <Content Include="Assets\library\fonts\ionicons.ttf" />
+    <Content Include="Assets\library\fonts\ionicons.woff" />
+    <Content Include="Views\Shared\_NodeLayout.cshtml" />
+    <Content Include="Views\Shared\_NodeTop.cshtml" />
+    <Content Include="Views\Shared\_NodeMenu.cshtml" />
+    <Content Include="Views\Master\Devicelist.cshtml" />
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\Master\Top.cshtml" />
+    <Content Include="Views\Master\Menu.cshtml" />
+    <Content Include="source\lua\搜索加人\main.lua" />
+    <Content Include="source\lua\搜索加人\timeline.lua" />
+    <Content Include="source\lua\demo\main.lua" />
+    <Content Include="source\lua\搜索加人\basic.lua" />
+    <Content Include="source\lua\搜索加人\TSLib.lua" />
+    <Content Include="source\lua\搜索加人\TSProject.lua" />
+    <Content Include="source\lua\搜索加人\wechat.lua" />
+    <Content Include="source\lua\搜索加人\WechatHelper.lua" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="source\temp\" />
+    <Folder Include="Views\Api\" />
+    <Folder Include="Views\Device\" />
+    <Folder Include="Views\Home\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TouchModel\TouchModel.csproj">
+      <Project>{124ef94c-7bec-4e87-a208-c43623289c0c}</Project>
+      <Name>TouchModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TouchSpriteService\TouchSpriteService.csproj">
+      <Project>{84a4380b-e84f-4f5e-afa5-9d801b6dc9ff}</Project>
+      <Name>TouchSpriteService</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>5355</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:5355/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
