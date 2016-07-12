@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <style type="text/css">
+        body{width:100%; height:100%; overflow:hidden;}
+        * {border: 0px;margin: 0px;padding: 0px; width:100%; height:100%;}
+    </style>
+    <script src="../library/js/jquery-1.11.1.min.js"></script>
+    <script src="../js/base.js"></script>
+    <script type="text/javascript">
+        var query = queryString("q");
+        var deviceids = queryString("deviceids");
+        $(function () {
+            $('.panel').height($(window).height());
+            if (query != undefined)
+                $('.panel').attr('src', domain + query + "?deviceids=" + deviceids);
+        })
+    </script>
+</head>
+<body>
+    <iframe class="panel" src=""></iframe>
+</body>
+</html>

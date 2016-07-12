@@ -662,6 +662,12 @@ namespace TouchPlatform.Controllers
             var zipExtraPath = Server.MapPath(string.Format("~/source/{0}/{1}", luaDir, dirname));
             zipfile.SaveAs(zipPath);
 
+            DirectoryInfo dire = new DirectoryInfo(zipExtraPath);
+            if (dire.Exists)
+            {
+                dire.Delete(true);
+            }
+
             ZipFile.ExtractToDirectory(zipPath, zipExtraPath);
 
             result = new { code = 200, message = "上传成功" };

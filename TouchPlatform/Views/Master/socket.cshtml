@@ -1,0 +1,212 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>socket</title>
+    <!-- Bootstrap core CSS -->
+    <link href="~/Assets/library/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="~/Assets/library/css/font-awesome.min.css" rel="stylesheet">
+    <!-- ionicons -->
+    <link href="~/Assets/library/css/ionicons.min.css" rel="stylesheet">
+    <!-- Simplify -->
+    <link href="~/Assets/library/css/simplify.css" rel="stylesheet">
+    <link href="~/Assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="cmd-header">
+        <div class="col-md-1">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                打开微信
+                <span class="btn-command-icon"><span class="caret"></span></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li>
+                    <a href="javascript:" onclick="ActionButton('openHome')">打开主页</a>
+                </li>
+                <li>
+                    <a href="javascript:" onclick="ActionButton('openFriendline')">打开朋友圈</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                动作
+                <span class="btn-command-icon"><span class="caret"></span></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li>
+                    <a href="javascript:" onclick="ActionButton('nextPage')">下一页</a>
+                </li>
+                <li>
+                    <a href="javascript:" onclick="ActionButton('prevPage')">上一页</a>
+                </li>
+                <li>
+                    <a href="javascript:" onclick="ActionButton('leftSlide')">左滑</a>
+                </li>
+                <li>
+                    <a href="javascript:" onclick="ActionButton('rightSlide')">右滑</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-md-3">
+            <div class="col-md-10">
+                <input class="form-control text-send" type="text" placeholder="请输入要发送的文本...">
+            </div>
+            <div class="col-md-2">
+                <a href="javascript:void()" onclick="ActionButton('sendText')" class="btn btn-danger">发送</a>
+            </div>
+
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="snapshot-panel">
+        加载中...
+    </div>
+    <!--<script src="~/Assets/js/signalr/jquery-1.6.4.min.js"></script>-->
+    <!-- Jquery -->
+    <script src="~/Assets/library/js/jquery-1.11.1.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="~/Assets/library/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="~/Assets/js/base.js"></script>
+    <script src="~/Assets/js/lib/artTemplate/template.js"></script>
+    <script src="~/Assets/js/signalr/jquery.signalR-2.2.0.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script type="text/javascript">
+        $(function () {
+            var deviceids = queryString("deviceids");
+            if (deviceids == undefined)
+                return;
+
+            var arrayDevices = deviceids.split(',');
+            var windowWidth = $(window).width();
+            var FrameWidth = windowWidth / arrayDevices.length;
+
+            var source = '{{each data as d i}}'
+                + '<img src="" class="device{{i}}" data-deviceid="{{d}}" style="width:240px; height:426px;" alt="设备{{i}} 暂无画面" />'
+                + '{{/each}}';
+            var render = template.compile(source);
+            var html = render({
+                data: arrayDevices
+            });
+            $('.snapshot-panel').html(html);
+
+
+
+            var base64 = "";
+            var chat = $.connection.HubImages;
+            $.connection.hub.start().done(function () {
+                for (i = 0; i < arrayDevices.length; i++) {
+                    chat.server.sendMessage(arrayDevices[i], "FullImage");
+                }
+            }).fail(function () { console.log('Could not Connect!'); });
+            chat.client.receiveImage = function (name, bytes) {
+                $el = $('img[data-deviceid="' + name + '"]');
+
+                if (bytes != "") {
+                    //console.info("finish");
+                    $el.attr("src", "data:image/png;base64," + bytes);
+                    console.info(bytes.length);
+                }
+
+                setTimeout(function () {
+                    chat.server.sendMessage(name, "FullImage");
+                    console.info('End send:' + name);
+                }, 200);
+            };
+            //chat.client.receiveImage = function (name, status, tempSplit) {
+            //    $el = $('img[data-deviceid="' + name + '"]');
+
+            //    base64 += tempSplit;
+            //    if (status == "end") {
+            //        if (base64 != "") {
+            //            console.info("finish");
+            //            $el.attr("src", base64);
+            //            console.info(base64.length);
+            //            base64 = "";
+            //        }
+
+            //        setTimeout(function () {
+            //            chat.server.sendMessage(name, "image");
+            //            console.info('End send:' + name);
+            //        }, 100);
+            //    }
+            //};
+
+            //var chat = $.connection.HubImages;
+            //chat.client.receiveMessage = function (name, message) {
+            //    $('#discussion').append('<li><strong>' + htmlEncode(name)
+            //        + '</strong>: ' + htmlEncode(message) + '</li>');
+            //};
+            //$('#message').focus();
+            //$.connection.hub.start().done(function () {
+            //    $('#sendmessage').click(function () {
+            //        chat.server.sendMessage($('#displayKey').val(), $('#message').val());
+            //        //$('#message').val('').focus();
+            //    });
+            //}).fail(function () { console.log('Could not Connect!'); });
+            //var meter = 0;
+            //chat.client.receiveImage = function (name, status, tempSplit) {
+            //    if (status == "ing") { base64 += tempSplit; }
+            //    if (status == "end" && base64 != "") {
+            //        console.info(meter++);
+            //        $('img[data-id="0ff77476a86332438612bc2917705e14"]').attr("src", base64);
+            //        //$('body').append('<img class = "file-preview-image" style="width:auto;" src=' + base64 + '/>');
+            //        base64 = "";
+            //        chat.server.sendMessage($('#displayKey').val(), $('#message').val());
+            //    }
+            //    if (base64 == "")
+            //    {
+            //        //
+            //    }
+            //};
+        });
+        function htmlEncode(value) {
+            var encodedValue = $('<div />').text(value).html();
+            return encodedValue;
+        }
+
+        var queryString = function (query) {
+            var search = window.location.search + '';
+            if (search.charAt(0) != '?') {
+                return undefined;
+            }
+            else {
+                search = search.replace('?', '').split('&');
+                for (var i = 0; i < search.length; i++) {
+                    if (search[i].split('=')[0] == query) {
+                        return decodeURI(search[i].split('=')[1]);
+                    }
+                }
+                return undefined;
+            }
+        };
+
+        function ActionButton(actionName)
+        {
+            $.ajax({
+                type: 'POST',
+                url: domain + "/Lua/DynamicSet",
+                dataType: 'json',
+                data: { luaName:actionName },
+                success: function (data) {
+                    alert(data.message);
+                    if (data.code == 200) {
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert('error:' + actionName);
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

@@ -220,5 +220,52 @@ namespace TouchPlatform.Controllers
             result = new { code = 200, message = "设置成功" };
             return JsonConvert.SerializeObject(result);
         }
+
+
+        public string DynamicLua()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            var result = new { code = 100, message = "参数错误", data = "", status = "" };
+
+            string luaType = "动态脚本";
+            string deviceId = WebHelper.SqlFilter(WebHelper.GetRequestString("deviceId"));
+            //string luaName = WebHelper.SqlFilter(WebHelper.GetRequestString("luaName"));
+            string luaName = "command";
+
+            string where = " and luaType='{0}' and (deviceId='' OR deviceId='{1}') and luaName='{2}' ";
+            luaconfigService service = new luaconfigService();
+            luaconfig config = service.GetConfig(string.Format(where, luaType, deviceId, luaName));
+            if (config != null)
+            {
+                result = new { code = 200, message = "请求成功", data = config.luaValue, status = config.status };
+            }
+            return JsonConvert.SerializeObject(result);
+        }
+
+        public string DynamicSet()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            var result = new { code = 100, message = "参数错误"};
+
+            string luaType = "动态脚本";
+            string deviceId = WebHelper.SqlFilter(WebHelper.GetRequestString("deviceId"));
+            string luaName = WebHelper.SqlFilter(WebHelper.GetRequestString("luaName"));
+
+            string where = " and luaType='{0}' and (deviceId='' OR deviceId='{1}') and luaName='{2}' ";
+            luaconfigService service = new luaconfigService();
+            luaconfig config = service.GetConfig(string.Format(where, luaType, deviceId, luaName));
+            luaconfig command = service.GetConfig(string.Format(where, luaType, deviceId, "command"));
+            if (config != null && command != null)
+            {
+                command.luaValue = config.luaValue;
+                command.updatedate = DateTime.Now;
+                service.UpdateConfig(command);
+
+                result = new { code = 200, message = "命令执行中，请等待..." };
+
+                //SendCommand  TODO
+            }
+            return JsonConvert.SerializeObject(result);
+        }
     }
 }

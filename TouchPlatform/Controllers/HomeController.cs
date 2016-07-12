@@ -10,12 +10,35 @@ namespace TouchPlatform.Controllers
     public class HomeController : Controller
     {
         // GET: Home
-        public JsonResult Index()
+        public string Index()
         {
             //TouchSpriteService.Business.deviceService service = new TouchSpriteService.Business.deviceService();
             //var list=service.GetDevices();
 
-            return Json("欢迎使用中控平台", JsonRequestBehavior.AllowGet);
+            //string base64 = "iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAIAAAA7ljmRAAAAGElEQVQIW2P4DwcMDAxAfBvMAhEQMYgcACEHG8ELxtbPAAAAAElFTkSuQmCC";
+            //string result = "";
+
+            //for (int i = 0; i < base64.Length; i = i + 5)
+            //{
+            //    if (i + 5 <= base64.Length)
+            //    {
+            //        string tempSplit = base64.Substring(i, 5);
+            //        result += tempSplit;
+            //    }
+            //    else
+            //    {
+            //        string tempSplit = base64.Substring(i, base64.Length - i);
+            //        result += tempSplit;
+            //    }
+            //}
+
+            //var screenshot = System.Web.HttpContext.Current.Server.MapPath("~/source/files/screenshot.jpg");
+            //byte[] responseBytes = TouchSpriteService.Common.ImageHelper.BytesFromImageFile(screenshot);
+            //string base64=Convert.ToBase64String(responseBytes);
+
+            //return "<img src='data:image/png;base64," + base64 + "'>";
+
+            return "";
         }
     }
 }

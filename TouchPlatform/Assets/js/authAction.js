@@ -433,5 +433,6 @@ function ViewerDevice()
         alert('请勾选你要查看的设备');
         return false;
     }
-    location.href = "snapshot.html?deviceids=" + selectDevices.join(',');
+    //location.href = "snapshot.html?deviceids=" + selectDevices.join(',');
+    location.href = "iframe.html?q=/Master/socket&deviceids=" + selectDevices.join(',');
 }

@@ -31,7 +31,7 @@ namespace TouchPlatform.Controllers
             var list = service.Get();
             return View(list);
         }
-        public ActionResult Scans()
+        public ActionResult socket()
         {
             return View();
         }

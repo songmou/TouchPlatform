@@ -16,7 +16,6 @@ namespace TouchPlatform
         {
             AreaRegistration.RegisterAllAreas();
 
-
             RouteTable.Routes.MapRoute(
                     "Default",
                     "{controller}/{action}/{id}",

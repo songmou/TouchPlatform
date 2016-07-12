@@ -19,9 +19,14 @@
 .btn-sys-panel:hover .dropdown-menu {display: block;}
 
 .floatleft{float:left;}
+.clear{clear:both;}
 
 #tree-files{display:inline-block;}
 .root-inline{display:inline-block !important;}
 
 .luatree-line li{list-style:none; padding:5px 0px;}
 .luatree-line li label{font-size:16px;}
+
+.cmd-header{margin:15px auto;}
+
+.snapshot-panel{padding:5px;}
