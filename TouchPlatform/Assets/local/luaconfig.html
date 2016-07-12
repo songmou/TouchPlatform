@@ -194,18 +194,92 @@
                                 </ul>
                             </div>
                             <div class="smart-widget-body">
-                                <form id="formToggleLine" class="form-horizontal no-margin form-border">
+                                <form id="formWxTimeLine" class="form-horizontal no-margin form-border">
                                     <div class="form-group">
                                         <label class="col-md-2 control-label">脚本名称</label>
                                         <div class="col-md-10">
                                             <input class="form-control" type="text" placeholder="" disabled="" value="发送朋友圈脚本">
+                                            <input type="hidden" name="luaType" value="发送朋友圈" />
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">网络环境</label>
+                                        <div class="col-md-10">
+                                            <div class="radio inline-block col-md-1">
+                                                <div class="custom-radio m-right-xs">
+                                                    <input type="radio" id="radio1" value="WIFI" name="netWay">
+                                                    <label for="radio1"></label>
+                                                </div>
+                                                <div class="inline-block vertical-top">
+                                                    WIFI
+                                                </div>
+                                            </div>
+                                            <div class="radio inline-block">
+                                                <div class="custom-radio m-right-xs">
+                                                    <input type="radio" id="radio2" value="MobileNet" name="netWay">
+                                                    <label for="radio2"></label>
+                                                </div>
+                                                <div class="inline-block vertical-top">
+                                                    手机流量
+                                                </div>
+                                            </div>
+                                        </div><!-- /.col -->
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">完成延迟（s）</label>
+                                        <div class="col-md-5">
+                                            <input class="form-control" name="RestTime" type="number" placeholder="" value="60">
+                                            <span class="help-block">脚本执行完毕，延迟N秒后退出</span>
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">发送的文本</label>
+                                        <div class="col-md-8">
+                                            <input class="form-control" name="SendMsg" type="text" placeholder="请输入要发送的文本" value="">
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+
+
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">发送的消息类型</label>
+                                        <div class="col-md-8">
+                                            <div class="checkbox inline-block">
+                                                <div class="custom-checkbox">
+                                                    <input type="checkbox" id="inCheckBoxText" class="checkbox-red" checked="">
+                                                    <label for="inCheckBoxText"></label>
+                                                </div>
+                                                <div class="inline-block vertical-top inCheckBoxTip">
+                                                    带图片?
+                                                </div>
+                                            </div>
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">发送的图片</label>
+                                        <div class="col-md-8">
+                                            <div class="fallback">
+                                                <input name="file-img" class="file-img" multiple accept=".jpg,.png" type="file">
+                                            </div>
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label"></label>
+                                        <div class="col-md-8">
+                                            <div class="fallback">
+                                                
+                                            </div>
                                         </div><!-- /.col -->
                                     </div><!-- /form-group -->
 
                                     <div class="form-group">
                                         <label class="col-md-2 control-label"></label>
                                         <div class="col-md-10">
-                                            <a href="#formToggleLine" class="btn btn-danger">修改</a>
+                                            <a href="javascript:;" onclick="LuaConfig('WxTimeLine')" class="btn btn-danger">修改</a>
                                         </div><!-- /.col -->
                                     </div><!-- /form-group -->
                                 </form>

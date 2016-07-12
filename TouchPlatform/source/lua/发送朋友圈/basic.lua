@@ -3,12 +3,14 @@ require("TSLib");	--触动精灵函数扩展库
 --全局变量   系统等待时间基数
 radix=1*1000;
 fuzzy=80;
+httpUrl="http://192.168.1.15/lua/";
+
 --[[
 ** FUNC 返回上一级（i次）  左侧
 ]]
 function Backer(i)
 	local timer=math.floor(i);
-	mSleep(0.3*radix);
+	mSleep(0.2*radix);
 
 	for s = 1, timer, 1 do
 		--选择地区START

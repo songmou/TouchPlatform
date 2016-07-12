@@ -301,7 +301,7 @@ function LooperDevices() {
                 console.log('Looper Error');
             }
         });
-    }, 8000);
+    }, 5000);
 }
 
 function reboot(type) {
@@ -369,7 +369,7 @@ function SetLuaPath(isRun)
         url: domain + "/api/SetLuaPath",
         dataType: 'json',
         data: { groupid: groupid, path: radio.val() },
-        async: false,
+        //async: false,
         success: function (data) {
             if (data.code == 200) {
                 if (isRun == 1) {

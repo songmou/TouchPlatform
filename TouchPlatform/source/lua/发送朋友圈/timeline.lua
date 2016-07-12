@@ -3,30 +3,30 @@ require("basic");
 
 --从微信首页进入 朋友圈
 function intoShareline()
-	if not multiColor({{33,79, 0x39383e},{106,109, 0x434246},{497,85, 0x3b3a3f}}) then
+	if not multiColor({{33,79, 0x39383e},{106,109, 0x434246},{497,85, 0x3b3a3f}},fuzzy) then
 		toast("不是在微信主页");
 		return false;
 	end
 	
 	--点   发现
 	touchDown(1, 399, 1075);
-	mSleep(20*radix); 
+	mSleep(3*radix); 
 	touchUp(1, 399, 1073);
-	mSleep(1*1000*radix); 
+	mSleep(1*radix); 
 	
 	--通过朋友圈的图标判断是不是在发现的界面
-	if not multiColor({{38,199,0xffc817},{53,217,0x66d020},{56,184,0xfa5452},{71,203,0x5283f0}}) then
+	if not multiColor({{38,199,0xffc817},{53,217,0x66d020},{56,184,0xfa5452},{71,203,0x5283f0}},fuzzy) then
 		toast("朋友圈界面异常");
 		return false;
 	end
 	
 	--点朋友圈
 	touchDown(1, 261, 205);
-	mSleep(20*radix); 
+	mSleep(20); 
 	touchUp(1, 260, 205);
-	mSleep(1*1000*radix); 
+	mSleep(1*radix); 
 	
-	if not multiColor({{573,87,0xffffff},{608,86,0xffffff},{590,69,0xffffff},{590,99,0xffffff}}) then
+	if not multiColor({{573,87,0xffffff},{608,86,0xffffff},{590,69,0xffffff},{590,99,0xffffff}},fuzzy) then
 		toast("未能成功进入朋友圈");
 		return false;
 	end
@@ -35,7 +35,7 @@ end
 
 --发送朋友圈纯文本内容
 function sharingTxtAction(content)
-	mSleep(500*radix);
+	mSleep(0.5*radix);
 	if string.len(content)  == 0 then 
 		return false;
 	end
@@ -44,51 +44,54 @@ function sharingTxtAction(content)
 	
 	--点朋友圈相机
 	touchDown(1, 573, 87);
-	mSleep(3000*radix); 
+	mSleep(3*radix); 
 	touchUp(1, 573, 85);
-	mSleep(1*1000*radix); 
+	mSleep(1*radix); 
 	
-	if multiColor({{47,333,0xf9f7fa},{592,339,0xf9f7fa},{309,708,0xaeacaf}}) then
+	if multiColor({{47,333,0xf9f7fa},{592,339,0xf9f7fa},{309,708,0xaeacaf}},fuzzy) then
 		--出现提示
 		touchDown(1, 321, 752);
-		mSleep(20*radix); 
+		mSleep(20); 
 		touchUp(1, 320, 752);
-		mSleep(1*600*radix); 
+		mSleep(1*radix); 
 	end
 	
 	--输入发送的内容
 	inputText(content);
-	mSleep(1*600*radix); 
+	mSleep(1*radix); 
 	
 	
-	touchDown(1, 346,353); --在 (150, 550) 按下
+	touchDown(1, 346,303);
 	mSleep(200);
-	touchMove(1, 331,140); --移动到 (150, 600)
+	touchMove(1, 331,140); 
 	mSleep(200);
 	touchUp(1, 320, 140);
-	mSleep(2000);
+	mSleep(2*radix);
 	--需要勾选发送到QQ空间
-	if multiColor({{35,743,0xc9c9c9},{65,743,0xc9c9c9},{72,743,0xefeff4}}) then
+	if multiColor({{35,743,0xc9c9c9},{65,743,0xc9c9c9},{72,743,0xefeff4}},fuzzy) then
 		--如果出现qq空间的图标
 		--toast("检查到图标");
 		click(51,748,40);
-		mSleep(1000);
+		mSleep(1*radix);
 
 	end
 	
 	
 	--发送
 	touchDown(1, 587, 83);
-	mSleep(20*radix); 
+	mSleep(20); 
 	touchUp(1, 587, 80);
-	mSleep(1*1000*radix); 
+	mSleep(1*radix); 
 	
 	return true;
 end
 
+
+
+
 --发送朋友圈图文内容
 function sharingImageAction(urlColl,content)
-	mSleep(500*radix);
+	mSleep(1*radix);
 	if string.len(content)  == 0 then 
 		--return false;
 		content="";
@@ -98,22 +101,38 @@ function sharingImageAction(urlColl,content)
 	
 	--将图片保存在相册
 	for i, v in pairs(urlColl) do  
-		--local ResPath="/var/mobile/Media/TouchSprite/res/";
-		--toast(filename);
 		
-		saveImageToAlbum(v);
-		mSleep(800*radix);
+		local ResPath="/var/mobile/Media/TouchSprite/lua/发送朋友圈/image/"..v;
+		toast(ResPath);
+		mSleep(2*radix);
+		
+		saveImageToAlbum(ResPath);
+		mSleep(1*radix);
     end 
-	mSleep(1000*radix);
+	mSleep(1*radix);
 	
 	
 	--点朋友圈相机
-	click(573,87,100*radix);
-	mSleep(1*1000*radix);
+	click(573,87,100);
+	mSleep(1*radix);
+	
+	
+	
+	--如果出现“拍照记录生活” 
+	if multiColor({
+		{  212,  384, 0x000000},
+		{  212,  406, 0x000000},
+		{  590,   86, 0x4c4c4c},
+		{  275,  401, 0x000000},
+	},fuzzy) then
+		click(328,757,100);
+		mSleep(1*radix);
+	end
+	
 	
 	--选择手机相册
-	click(320,979,100*radix);
-	mSleep(1*1000*radix);
+	click(320,979,100);
+	mSleep(1*radix);
 	
 	--是否出现选择相册（需要点击一次）
 	if multiColor({
@@ -122,8 +141,8 @@ function sharingImageAction(urlColl,content)
 		{  431,  355, 0xd9d9d9},
 		{  292,  355, 0xd9d9d9},
 	}) then
-		click(325,188,100*radix);
-		mSleep(1*1000*radix);
+		click(325,188,100);
+		mSleep(1*radix);
 	end
 
 	
@@ -159,9 +178,9 @@ function sharingImageAction(urlColl,content)
 			--y=y-(math.floor((ImgCount-index)/4))*158;
 			y=y-(math.floor((ImgCount-1)/4)-math.floor((index-1)/4))*158;
 
-			click(x,y,300*radix);
+			click(x,y,300);
 			logs(x..","..y);
-			mSleep(1*800*radix);
+			mSleep(1*radix);
 			
 		end
 	
@@ -169,24 +188,24 @@ function sharingImageAction(urlColl,content)
 
 	--点击完成
 	if multiColor({{540,1091,0x09bb07},{504,1091,0x09bb07}}) then
-		click(523,1088,300*radix);
-		mSleep(1*600*radix); 
+		click(523,1088,300);
+		mSleep(1*radix); 
 	else
 		toast("选择图片异常");
 		return false;
 	end
 	
 	--输入发送的内容
-	mSleep(1.5*1000*radix); 
-	click(262,174,300*radix);
-	mSleep(2*1000*radix); 
+	mSleep(1.5*radix); 
+	click(262,174,300);
+	mSleep(2*radix); 
 	inputText(content);
-	mSleep(2*1000*radix); 
+	mSleep(2*radix); 
 	
 	
 	--发送
-	click(587,80,300*radix);
-	mSleep(1*1000*radix); 
+	click(587,80,300);
+	mSleep(1*radix); 
 
 	
 	return true;

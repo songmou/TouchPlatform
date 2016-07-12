@@ -245,7 +245,7 @@ namespace TouchPlatform.Controllers
         public string DynamicSet()
         {
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
-            var result = new { code = 100, message = "参数错误"};
+            var result = new { code = 100, message = "参数错误" };
 
             string luaType = "动态脚本";
             string deviceId = WebHelper.SqlFilter(WebHelper.GetRequestString("deviceId"));
@@ -264,7 +264,80 @@ namespace TouchPlatform.Controllers
                 result = new { code = 200, message = "命令执行中，请等待..." };
 
                 //SendCommand  TODO
+
             }
+            return JsonConvert.SerializeObject(result);
+        }
+
+
+
+        /// <summary>
+        /// 微信发送朋友圈 配置
+        /// </summary>
+        /// <returns></returns>
+        public string WxTimeLine()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            var result = new { code = 100, message = "参数错误" };
+
+            luaconfigService service = new luaconfigService();
+            Dictionary<string, string> listValue = new Dictionary<string, string>();
+            string luaType = WebHelper.SqlFilter(WebHelper.GetFormString("luaType", "发送朋友圈"));
+
+            string netWayRadio = WebHelper.SqlFilter(WebHelper.GetFormString("netWay", "WIFI"));
+            listValue.Add("netWay", netWayRadio);
+
+            listValue.Add("Name", luaType);
+
+            int RestTime = WebHelper.GetFormInt("RestTime", 60);
+            listValue.Add("RestTime", RestTime.ToString());
+
+            string SendMsg = WebHelper.SqlFilter(WebHelper.GetFormString("SendMsg"));
+            listValue.Add("SendMsg", SendMsg);
+
+            foreach (var d in listValue)
+            {
+                string luaName = d.Key;
+                string value = d.Value;
+                service.AddOrUpdateConfig(luaType, luaName, value);
+            }
+
+            //文件上传
+            int index = 1; string imageArray = "";
+            HttpFileCollectionBase FileCollect = Request.Files;
+            for (int i = 0; i < FileCollect.AllKeys.Length; i++)
+            {
+                HttpPostedFileBase file = FileCollect[i];
+                if (file == null)
+                    continue;
+                if (file.ContentLength == 0 || file.ContentLength > 2 * 1024 * 1024)
+                    continue;
+                string[] FileInfos = file.FileName.Split('.');
+                if (FileInfos.Length < 2)
+                    continue;
+                //扩展名
+                string[] fileExtends = { ".png", ".jpg" };
+                string fileExtension = FileInfos[FileInfos.Length - 1];
+                if (fileExtends.Contains(fileExtension))
+                {
+                    continue;
+                }
+
+                string fileName = index++ + "." + fileExtension;
+                var dirPath = Server.MapPath(string.Format("~/source/lua/{0}/image/", luaType));
+                var filePath = dirPath + fileName;
+                System.IO.DirectoryInfo direInfo = new System.IO.DirectoryInfo(dirPath);
+                if (!direInfo.Exists)
+                {
+                    direInfo.Create();
+                }
+                file.SaveAs(filePath);
+                imageArray += fileName + ",";
+            }
+            service.AddOrUpdateConfig(luaType, "imageArray", imageArray.TrimEnd(','));
+
+
+            result = new { code = 200, message = "保存成功" };
             return JsonConvert.SerializeObject(result);
         }
     }

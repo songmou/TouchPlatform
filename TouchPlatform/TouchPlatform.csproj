@@ -200,8 +200,6 @@
     <Content Include="Scripts\jquery.signalR-2.2.0.js" />
     <Content Include="Scripts\jquery.signalR-2.2.0.min.js" />
     <Content Include="source\files\screenshot.jpg" />
-    <None Include="source\lua\搜索加人\FilesHelper.lua" />
-    <Content Include="source\lua\搜索加人\config.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -236,14 +234,6 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\Master\Top.cshtml" />
     <Content Include="Views\Master\Menu.cshtml" />
-    <Content Include="source\lua\搜索加人\main.lua" />
-    <Content Include="source\lua\搜索加人\timeline.lua" />
-    <Content Include="source\lua\demo\main.lua" />
-    <Content Include="source\lua\搜索加人\basic.lua" />
-    <Content Include="source\lua\搜索加人\TSLib.lua" />
-    <Content Include="source\lua\搜索加人\TSProject.lua" />
-    <Content Include="source\lua\搜索加人\wechat.lua" />
-    <Content Include="source\lua\搜索加人\WechatHelper.lua" />
     <Content Include="Views\Master\socket.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -254,6 +244,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="source\lua\" />
     <Folder Include="source\temp\" />
     <Folder Include="Views\Api\" />
     <Folder Include="Views\Home\" />

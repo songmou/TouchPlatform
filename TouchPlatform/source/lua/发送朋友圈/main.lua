@@ -1,14 +1,20 @@
 require("TSLib");	--触动精灵函数扩展库
 require("basic");
-require("FilesHelper");
-require("WechatHelper");
+
+require("config");
+
+require("timeline");
 
 pressHomeKey(0);    --Home 键
 pressHomeKey(1);
+
+toast("获取数据中...");
 mSleep(2*radix);
 
+
 local DeviceId = getDeviceID(); 
-local loadDevice=loadconfig(DeviceId);
+local loadDevice=loadconfig();
+
 
 toast("开始执行脚本："..loadDevice.Name);
 mSleep(2*radix);
@@ -25,28 +31,26 @@ if not multiColor({{587,71,0xffffff},{588,96,0xffffff},{575,85,0xffffff}},fuzzy)
 	return ;
 end
 
---点击+
-click(586,86,30);
-mSleep(2*radix);
-
---点击添加朋友
-click(503,278,30);
-mSleep(3*radix);
-
---点击输入框(进入输入微信号或者手机号的输入框界面)
-click(231,202,30);
-mSleep(2*radix);
-
-
-
-local tbPhoneNums=strSplit(loadDevice.PhoneNums);
-for i, v in pairs(tbPhoneNums) do
+if loadDevice.imageArray==nil then
+	toast("纯文本消息");
+	mSleep(3*radix);
 	
-	AddFriendInPage(v,loadDevice.IsSendMsg,loadDevice.WelcomeMsg);
+	local shareResult=sharingTxtAction(loadDevice.SendMsg);
+else
+	local imageArray=strSplit(loadDevice.imageArray,",");
+
 	
-	ToastAwait(loadDevice.Interval,"脚本运行等待中");
+	local shareResult=sharingImageAction(
+		imageArray,
+		loadDevice.SendMsg);
+	if(shareResult) then
+		toast("朋友圈发送成功");
+	else
+		toast("朋友圈发送失败");
+	end
+	mSleep(3*radix);
+
 end
-
 
 ToastAwait(loadDevice.RestTime,"距离脚本结束");
 
