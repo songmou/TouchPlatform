@@ -3,71 +3,37 @@ require("TSLib");	--触动精灵函数扩展库
 --全局变量   系统等待时间基数
 radix=1*1000;
 fuzzy=80;
-httpUrl="http://192.168.1.20/lua/";
-
-
---从微信首页进入 朋友圈
-function intoShareline()
-	if not multiColor({{33,79, 0x39383e},{106,109, 0x434246},{497,85, 0x3b3a3f}},fuzzy) then
-		toast("不是在微信主页");
-		return false;
-	end
-	
-	--点   发现
-	touchDown(1, 399, 1075);
-	mSleep(3*radix); 
-	touchUp(1, 399, 1073);
-	mSleep(1*radix); 
-	
-	--通过朋友圈的图标判断是不是在发现的界面
-	if not multiColor({{38,199,0xffc817},{53,217,0x66d020},{56,184,0xfa5452},{71,203,0x5283f0}},fuzzy) then
-		toast("朋友圈界面异常");
-		return false;
-	end
-	
-	--点朋友圈
-	touchDown(1, 261, 205);
-	mSleep(20); 
-	touchUp(1, 260, 205);
-	mSleep(1*radix); 
-	
-	if not multiColor({{573,87,0xffffff},{608,86,0xffffff},{590,69,0xffffff},{590,99,0xffffff}},fuzzy) then
-		toast("未能成功进入朋友圈");
-		return false;
-	end
-end
-
-
 --[[
 ** FUNC 返回上一级（i次）  左侧
 ]]
 function Backer(i)
 	local timer=math.floor(i);
-	mSleep(0.2*radix);
+	mSleep(200*radix);
 
 	for s = 1, timer, 1 do
 		--选择地区START
 		touchDown(1, 62, 81);
-		mSleep(0.01*radix);        --延迟
+		mSleep(8*radix);        --延迟
 		touchUp(1, 70, 81);
-		mSleep(0.8*radix);
+		mSleep(800*radix);
 	end
 	
+	--toast("返回"..timer.."步");
 end
 
 --[[
-** FUNC 返回上一级（i次）  右侧（取消）
+** FUNC 返回上一级（i次）  右侧
 ]]
 function BackRight(i)
 	local timer=math.floor(i);
-	mSleep(0.2*radix);
+	mSleep(200*radix);
 
 	for s = 1, timer, 1 do
 		--选择地区START
 		touchDown(1, 580, 80);
-		mSleep(0.01*radix);        --延迟
+		mSleep(8*radix);        --延迟
 		touchUp(1, 581, 81);
-		mSleep(0.8*radix);
+		mSleep(800*radix);
 	end
 	
 	--toast("返回"..timer.."步");
@@ -85,7 +51,7 @@ function InitAppHome()
 	do
 		Backer(1);
 		timer=timer+1;
-		mSleep(0.01*radix);
+		mSleep(10*radix);
 	end
 	
 	logs("timer"..timer);
@@ -98,9 +64,8 @@ function InitAppHome()
 		logs("已回到首页");
 		return true;
 	end
-	mSleep(1*radix);
+	mSleep(1000*radix);
 end
-
 
 --[[
 ** FUNC 打开app
@@ -116,29 +81,14 @@ function openAppBid(AppBidName)
 	if isfront == 1 
 	then                            				--如果应用处于前台则继续
 		toast("微信已经运行"); 
-		mSleep(1*radix);
+		mSleep(1000*radix);
 		isfront = isFrontApp(AppBidName);   		--更新前台状态
 	else
 		r = runApp(AppBidName);    					--启动应用 
-		mSleep(5*radix);
+		mSleep(5 * 1000*radix);
 	end
 	
 end
-
-function RebootApp(AppBidName)
-	closeApp(AppBidName);
-	mSleep(1*radix);
-	r = runApp(AppBidName);    --启动应用 
-	
-	mSleep(2*radix);
-	
-	--可能会有发送通知的提示。需要点击确认。
-	
-	if r ~= 0 then
-		dialog("应用启动失败",3);
-	end
-end
-
 
 
 --[[
@@ -284,15 +234,4 @@ function IsInTable(value, tbl)
 	end
 	return false;
 end
-
-
---等待提示
-function ToastAwait(Interval,msg)
-	for s = 0,Interval, 5 do
-		local leftSecond=Interval-s+5;
-		toast(msg.."...\n 剩余"..leftSecond.."秒");
-		mSleep(5*radix);
-	end
-end
-
 

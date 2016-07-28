@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using TouchModel;
@@ -13,6 +14,9 @@ namespace TouchPlatform.Controllers
 {
     public class LuaController : Controller
     {
+        SimpleCacheProvider cache = SimpleCacheProvider.GetInstance();
+
+        private static object olock = new object();
 
         public string Index()
         {
@@ -21,6 +25,7 @@ namespace TouchPlatform.Controllers
 
         /// <summary>
         /// 微信搜索手机添加好友
+        /// 保存配置项目
         /// </summary>
         /// <returns></returns>
         public string WxSerach()
@@ -85,20 +90,36 @@ namespace TouchPlatform.Controllers
             result = new { code = 200, message = "保存成功" };
             return JsonConvert.SerializeObject(result);
         }
+
+        /// <summary>
+        /// 获取配置项目的列表
+        /// </summary>
+        /// <returns></returns>
         public string GetList()
         {
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
             List<luaconfig> list = new List<luaconfig>();
-            var result = new { code = 100, message = "参数错误", data = list };
+            var result = new { code = 100, message = "参数错误", data = list, PageInfo = new { pageIndex = 1, pageSize = 100, Total = 0 } };
 
             string luaType = WebHelper.SqlFilter(WebHelper.GetRequestString("luaType"));
-            if (luaType == "")
-                return JsonConvert.SerializeObject(result);
+            string[] luaTypes = WebHelper.GetRequestString("luaTypes").Split(',');
+            string where = "";
+            foreach (var str in luaTypes)
+            {
+                where += "'" + WebHelper.SqlFilter(str) + "',";
+            }
+            where = where.TrimEnd(',');
+
+            //需要分页
+            var pageSize = WebHelper.GetRequestInt("pageSize", 100);
+            var pageIndex = WebHelper.GetRequestInt("pageIndex", 1);
+            int Total = 0;
 
             luaconfigService service = new luaconfigService();
-            list = service.GetList(string.Format(" and luaType='{0}'", luaType));
+            string sql = string.Format(" and (luaType='{0}' or luaType in({1}))", luaType, where);
+            list = service.GetPageList(sql, out Total, pageSize, pageIndex);
 
-            result = new { code = 200, message = "获取成功", data = list };
+            result = new { code = 200, message = "获取成功", data = list, PageInfo = new { pageIndex = pageIndex, pageSize = pageSize, Total = Total } };
             return JsonConvert.SerializeObject(result);
         }
 
@@ -141,6 +162,11 @@ namespace TouchPlatform.Controllers
             return JsonConvert.SerializeObject(result);
         }
 
+        /// <summary>
+        /// 搜索加人脚本，获取添加的微信号
+        /// 并添加设备标记
+        /// </summary>
+        /// <returns></returns>
         public string GetPhoneNums()
         {
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
@@ -164,22 +190,30 @@ namespace TouchPlatform.Controllers
                 int.TryParse(size, out Count);
             }
 
-            List<luaconfig> list = service.GetList(query, Count);
-            dic = new Dictionary<string, object>();
-            foreach (var d in list)
+            lock (olock)
             {
-                if (!dic.ContainsKey(d.luaName))
-                    dic.Add(d.luaName, d.luaValue);
-                else
-                    dic[d.luaName] += "@" + d.luaValue;
+                List<luaconfig> list = service.GetList(query, Count);
 
+                var taskNumbers = new Task<bool>[list.Count];
 
-                if (deviceId != "")
+                dic = new Dictionary<string, object>();
+                for (int i = 0; i < list.Count; i++)
                 {
-                    d.deviceId = deviceId;
-                    service.UpdateConfig(d);
+                    var d = list[i];
+                    if (!dic.ContainsKey(d.luaName))
+                        dic.Add(d.luaName, d.luaValue);
+                    else
+                        dic[d.luaName] += "@" + d.luaValue;
+
+                    taskNumbers[i] = Task.Run(() =>
+                    {
+                        d.deviceId = deviceId;
+                        return service.UpdateConfig(d);
+                    });
                 }
+                Task.WaitAll(taskNumbers);
             }
+
 
             result = new { code = 200, message = "获取成功", data = dic };
             return JsonConvert.SerializeObject(result);
@@ -188,6 +222,7 @@ namespace TouchPlatform.Controllers
         /// <summary>
         /// 添加设备标记
         /// 记录 添加过的微信号
+        /// 手机设备，搜索加人脚本访问使用
         /// </summary>
         /// <returns></returns>
         public string SetStatus()
@@ -221,7 +256,56 @@ namespace TouchPlatform.Controllers
             return JsonConvert.SerializeObject(result);
         }
 
+        /// <summary>
+        /// 获取配置表的数据项详细
+        /// </summary>
+        /// <returns></returns>
+        public string GetDetail()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            luaconfig config = null;
+            var result = new { code = 100, message = "参数错误", data = config };
 
+            string where = " ";
+            int ID = WebHelper.GetRequestInt("ID");
+            if (ID != 0)
+            {
+                where += string.Format("and ID={0} ", ID);
+            }
+            string luaType = WebHelper.SqlFilter(WebHelper.GetRequestString("luaType"));
+            if (luaType != "")
+            {
+                where += string.Format("and luaType='{0}' ", luaType);
+            }
+            string luaName = WebHelper.SqlFilter(WebHelper.GetRequestString("luaName"));
+            if (luaName != "")
+            {
+                where += string.Format("and luaName='{0}' ", luaName);
+            }
+            string luaValue = WebHelper.SqlFilter(WebHelper.GetRequestString("luaValue"));
+            if (luaValue != "")
+            {
+                where += string.Format("and luaValue='{0}' ", luaValue);
+            }
+
+            //string status = WebHelper.SqlFilter(WebHelper.GetRequestString("status"));
+            string deviceId = WebHelper.SqlFilter(WebHelper.GetRequestString("deviceId"));
+            if (deviceId != "")
+            {
+                where += string.Format("and deviceId='{0}' ", deviceId);
+            }
+            luaconfigService service = new luaconfigService();
+            config = service.GetConfig(where);
+
+            result = new { code = 200, message = "请求成功", data = config };
+            return JsonConvert.SerializeObject(result);
+        }
+
+
+        /// <summary>
+        /// 提供给手机设备，手机设备储存并执行动态脚本
+        /// </summary>
+        /// <returns></returns>
         public string DynamicLua()
         {
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
@@ -242,30 +326,122 @@ namespace TouchPlatform.Controllers
             return JsonConvert.SerializeObject(result);
         }
 
+        /// <summary>
+        /// 发送已有的命令到设备（配合脚本使用）
+        /// </summary>
+        /// <returns></returns>
         public string DynamicSet()
         {
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
             var result = new { code = 100, message = "参数错误" };
 
             string luaType = "动态脚本";
-            string deviceId = WebHelper.SqlFilter(WebHelper.GetRequestString("deviceId"));
+            string devices = WebHelper.GetRequestString("deviceids");
+            if (devices == "")
+            {
+                result = new { code = 101, message = "参数错误" };
+                return JsonConvert.SerializeObject(result);
+            }
+            string[] deviceids = devices.Split(',');
+
+            //string deviceId = WebHelper.SqlFilter(WebHelper.GetRequestString("deviceId"));
+            string deviceId = "";
             string luaName = WebHelper.SqlFilter(WebHelper.GetRequestString("luaName"));
 
             string where = " and luaType='{0}' and (deviceId='' OR deviceId='{1}') and luaName='{2}' ";
             luaconfigService service = new luaconfigService();
-            luaconfig config = service.GetConfig(string.Format(where, luaType, deviceId, luaName));
             luaconfig command = service.GetConfig(string.Format(where, luaType, deviceId, "command"));
-            if (config != null && command != null)
+            if (command != null)
             {
-                command.luaValue = config.luaValue;
-                command.updatedate = DateTime.Now;
-                service.UpdateConfig(command);
-
-                result = new { code = 200, message = "命令执行中，请等待..." };
+                string StringCmd = service.GetValue("动态脚本", luaName);
+                service.SetValue(luaType, "command", StringCmd);
+                result = new { code = 200, message = "发送中，请等待..." };
 
                 //SendCommand  TODO
 
+                #region 设置执行路径
+                //多任务发送命令
+                var taskSendDevices = new Task<bool>[deviceids.Length];
+                var ActionService = new TouchSpriteService.authActionService();
+                for (int i = 0; i < deviceids.Length; i++)
+                {
+                    var deviceid = deviceids[i];
+
+                    taskSendDevices[i] = Task.Run(() =>
+                    {
+                        //此次需要执行的脚本路径
+                        string luaPath = "/var/mobile/Media/TouchSprite/lua/Command/main.lua";
+
+                        //与上次执行路径对比，路径一样就跳过这一步
+                        var modelPath = cache.GetCache(deviceid) as TouchModel.device2GroupDetail;
+                        if (modelPath != null && modelPath.luapath == luaPath)
+                            return true;
+                        else
+                            return ActionService.setLuaPath(deviceid, luaPath);
+
+                    });
+                }
+                Task.WaitAll(taskSendDevices);
+                #endregion
+
+                #region 执行脚本
+                //多任务发送命令
+                var taskDevices = new Task<string>[deviceids.Length];
+                for (int i = 0; i < deviceids.Length; i++)
+                {
+                    var deviceid = deviceids[i];
+                    taskDevices[i] = Task.Run(() =>
+                    {
+                        return ActionService.Runlua(deviceid); ;
+                    });
+                }
+
+                #endregion
+
+                result = new { code = 200, message = "执行成功" };
             }
+            return JsonConvert.SerializeObject(result);
+        }
+
+        /// <summary>
+        /// 保存单项的配置文件
+        /// </summary>
+        /// <returns></returns>
+        [ValidateInput(false)]
+        public string ConfigSave()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            var result = new { code = 100, message = "参数错误" };
+
+            int ID = WebHelper.GetRequestInt("ID");
+
+            string luaType = WebHelper.SqlFilter(WebHelper.GetRequestString("luaType"));
+            if (luaType == "")
+            {
+                result = new { code = 101, message = "类别错误" };
+                return JsonConvert.SerializeObject(result);
+            }
+            string luaName = WebHelper.SqlFilter(WebHelper.GetRequestString("luaName"), true);
+            if (luaName == "")
+            {
+                result = new { code = 102, message = "名称错误" };
+                return JsonConvert.SerializeObject(result);
+            }
+            int sortcode = WebHelper.GetRequestInt("sortcode");
+            string luaValue = WebHelper.GetRequestString("luaValue");
+
+
+            luaconfigService service = new luaconfigService();
+            luaconfig config = service.GetConfig(ID);
+            if (config == null) config = new luaconfig();
+            config.luaType = luaType;
+            config.luaName = luaName;
+            config.luaValue = luaValue;
+            config.sortcode = sortcode;
+
+            bool success = service.AddOrUpdateConfig(config);
+
+            result = new { code = 200, message = success ? "保存成功" : "保存失败" };
             return JsonConvert.SerializeObject(result);
         }
 
@@ -339,6 +515,97 @@ namespace TouchPlatform.Controllers
 
             result = new { code = 200, message = "保存成功" };
             return JsonConvert.SerializeObject(result);
+        }
+
+        /// <summary>
+        /// 读取文本内容
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult fileInfo()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            var result = new { code = 100, message = "参数错误", data = "" };
+
+            string luaPath = "~/source/" + WebHelper.GetRequestString("path");
+            string filePath = Server.MapPath(luaPath);
+
+            System.IO.FileInfo fileInfo = new System.IO.FileInfo(filePath);
+            if (!fileInfo.Exists)
+            {
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+
+            if (fileInfo.Extension == ".lua" || fileInfo.Extension == ".txt")
+            {
+                System.IO.StreamReader sw = new System.IO.StreamReader(filePath, System.Text.Encoding.GetEncoding("utf-8"));
+                result = new { code = 200, message = "请求成功", data = sw.ReadToEnd() };
+                sw.Close();
+                sw.Dispose();
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+
+        }
+
+        /// <summary>
+        /// 网页保存文件内容
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult SavefileInfo()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            var result = new { code = 100, message = "参数错误" };
+
+            string luaPath = "~/source/" + WebHelper.GetFormString("luapath");
+            string content = WebHelper.GetFormString("content");
+            string filePath = Server.MapPath(luaPath);
+
+            System.IO.FileInfo fileInfo = new System.IO.FileInfo(filePath);
+            if (content == "" || !fileInfo.Exists)
+            {
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+
+            if (fileInfo.Extension == ".lua" || fileInfo.Extension == ".txt")
+            {
+                System.IO.StreamWriter sw = new System.IO.StreamWriter(filePath, false, System.Text.Encoding.GetEncoding("utf-8"));
+                sw.Write(content);
+                result = new { code = 200, message = "保存成功" };
+                sw.Close();
+                sw.Dispose();
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+
+        }
+
+
+
+        /// <summary>
+        /// 提供给脚本使用（lua脚本没有随机种子）
+        /// </summary>
+        /// <returns></returns>
+        public string GetRandom()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+
+            Random rand = new Random();
+            string type = WebHelper.GetQueryString("t", "int");
+            string max = WebHelper.GetQueryString("max", "1000");
+            string randStr = "";
+            switch (type)
+            {
+                case "int":
+                    int maxNum = 0;
+                    int.TryParse(max, out maxNum);
+                    randStr = rand.Next(0, maxNum).ToString();
+                    break;
+                default:
+                    randStr = rand.NextDouble().ToString();
+                    break;
+            }
+
+            return randStr;
         }
     }
 }

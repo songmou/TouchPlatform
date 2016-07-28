@@ -14,6 +14,8 @@ namespace TouchPlatform
 
         protected void Application_Start(object sender, EventArgs e)
         {
+            RouteTable.Routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+
             AreaRegistration.RegisterAllAreas();
 
             RouteTable.Routes.MapRoute(

@@ -93,7 +93,9 @@
                                     </div>
                                     <a href="#" class="root-inline"><i class="fa fa-file m-right-xs"></i>{{d}}</a>
 
-                                    <label>路径：</label><label class="file-src">{{Fullfiles[i]}}{{d}}</label>
+                                    <label>路径：</label>
+                                    <label class="file-src"><a href="javascript:;">{{Fullfiles[i]}}{{d}}</a></label>
+                                    <label><a href="javascript:;" onclick="fileInfo('{{Fullfiles[i]}}{{d}}')" title="查看脚本内容">编辑</a></label>
                                 </li>
                                 {{/each}}
                             </ul>
@@ -150,6 +152,51 @@
                                     <a href="javascript:void()" class="btn-upload btn btn-danger" data-toggle="modal">保存</a>
                                 </div><!-- /.col -->
                             </div><!-- /form-group -->
+                        </form>
+                    </div>
+                </div><!-- ./smart-widget-inner -->
+            </div>
+        </div>
+
+        <!--文件查看-->
+        <div class="overlap fileinfo-panel">
+            <div class="header-mini"></div>
+            <div class="smart-widget col-xs-12">
+                <div class="smart-widget-header">
+                    文件查看
+                    <span class="smart-widget-option">
+                        <a href="javascript:" onclick="$('.fileinfo-panel').hide()" class="widget-remove-option">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </span>
+                </div>
+                <div class="smart-widget-inner" id="fileinfo-panel">
+                    <div class="smart-widget-body">
+                        <form id="fileinfo-form" method="post" class="form-horizontal no-margin form-border">
+                            <div class="form-group">
+                                <label class="col-lg-1 control-label">脚本路径</label>
+                                <div class="col-lg-8">
+                                    <input class="form-control luapath" name="luapath" type="text" placeholder="">
+                                </div><!-- /.col -->
+                            </div><!-- /form-group -->
+
+                            <div class="form-group">
+                                <label class="col-lg-1 control-label">脚本内容</label>
+                                <div class="col-lg-10">
+                                    <textarea class="form-control content" name="content"
+                                               placeholder="" rows="16"></textarea>
+                                </div><!-- /.col -->
+                            </div><!-- /form-group -->
+
+
+                            <div class="form-group">
+                                <label class="col-lg-1 control-label"></label>
+                                <div class="col-lg-4">
+                                    <a href="javascript:void()" onclick="SaveContent()" class="btn-save btn btn-danger" data-toggle="modal">保存</a>
+                                    <a href="javascript:void()" onclick="$('.fileinfo-panel').hide()" class="btn-canel btn btn-default">取消</a>
+                                </div>
+                            </div>
+
                         </form>
                     </div>
                 </div><!-- ./smart-widget-inner -->
@@ -252,7 +299,7 @@
                 checkbox.each(function () {
                     var $box = $(this);
                     if ($box.data("type") == "f")
-                        filesSrc += $box.parent().parent().find('.file-src').html() + ",";
+                        filesSrc += $box.parent().parent().find('.file-src a').html() + ",";
                 });
                 $('.btn-update').html('<i class="fa fa-spinner fa-spin m-right-xs"></i>加载中...');
 
@@ -382,6 +429,47 @@
         function openUploadPanel() {
             $('.addlua-panel').show();
             //$('#zip-form').attr('action', domain + '/API/UploadZip');
+        }
+
+        function fileInfo(path)
+        {
+            //window.open(domain + "/lua/fileInfo?path=" + encodeURI(path));
+            $.ajax({
+                type: 'POST',
+                url: domain + "/Lua/fileInfo",
+                dataType: 'json',
+                data: { path:path },
+                success: function (data) {
+                    //alert(data.message);
+                    if (data.code == 200) {
+                        $("#fileinfo-panel .luapath").val(path);
+                        $("#fileinfo-panel .content").val(data.data);
+                        $('.fileinfo-panel').show();
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert('error:reboot');
+                }
+            });
+
+
+
+        }
+
+        function SaveContent()
+        {
+            $.ajax({
+                type: 'POST',
+                url: domain + "/Lua/SavefileInfo",
+                dataType: 'json',
+                data: $("#fileinfo-form").serialize(),
+                success: function (data) {
+                    alert(data.message);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert('error:SaveFileInfo');
+                }
+            });
         }
     </script>
 

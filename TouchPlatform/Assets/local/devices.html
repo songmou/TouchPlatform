@@ -146,7 +146,7 @@
         <!--添加分组面板-->
         <div class="overlap addgroupPanel">
             <div class="header-mini"></div>
-            <div class="smart-widget col-xs-10 col-xs-offset-1">
+            <div class="smart-widget col-xs-12">
                 <div class="smart-widget-header">
                     添加分组
                     <span class="smart-widget-option">
@@ -191,7 +191,7 @@
         <!--修改设备分组面板-->
         <div class="overlap mod-de2group-panel">
             <div class="header-mini"></div>
-            <div class="smart-widget col-xs-10 col-xs-offset-1">
+            <div class="smart-widget col-xs-12">
                 <div class="smart-widget-header">
                     修改设备信息
                     <span class="smart-widget-option">
@@ -221,6 +221,20 @@
                             </div><!-- /form-group -->
 
                             <div class="form-group">
+                                <label class="col-lg-2 control-label">IP</label>
+                                <div class="col-lg-4">
+                                    <input class="form-control d-ip" name="ip" type="text" placeholder="请输入IP...">
+                                </div><!-- /.col -->
+                            </div><!-- /form-group -->
+
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">排序号</label>
+                                <div class="col-lg-4">
+                                    <input class="form-control d-sortcode" name="sortcode" type="number" maxlength="3" placeholder="请输入排序号...">
+                                </div><!-- /.col -->
+                            </div><!-- /form-group -->
+
+                            <div class="form-group">
                                 <label class="col-lg-2 control-label"></label>
                                 <div class="col-lg-4">
                                     <a href="javascript:void()" onclick="SaveGroupDevice()" class="btn-de2group btn btn-danger" data-toggle="modal">保存</a>
@@ -236,7 +250,7 @@
         <!--发送脚本文件面板-->
         <div class="overlap luaPath-Panel">
             <div class="header-mini"></div>
-            <div class="smart-widget col-xs-10 col-xs-offset-1">
+            <div class="smart-widget col-xs-12">
                 <div class="smart-widget-header">
                     发送脚本文件 　　
                     <span class=""> <i class="fa fa-warning"></i> 必须保证该文件夹下存在 main.lua 入口文件</span>
@@ -295,7 +309,7 @@
                 <a href="javascript:" onclick="de2group('{{d.deviceid}}')">{{d.deviceid}}</a>
             </td>
             <td>
-                <strong class="block font-md">{{d.osType}}：{{d.username}}</strong>
+                <strong class="block font-md">排序：{{d.sortcode}}，{{d.username}}</strong>
                 <span class="text-muted">{{d.deviceid}}</span>
             </td>
             <td>
@@ -359,26 +373,7 @@
 
         $(function () {
 
-            $('.inbox-check').click(function () {
-                var activeRow = $(this).parent().parent().parent();
-
-                activeRow.toggleClass('active');
-            });
-
-            $('#inboxCollapse').click(function () {
-                $('.inbox-menu-inner').slideToggle();
-            });
-
-            $('#chkAll').click(function () {
-                if ($(this).prop('checked')) {
-                    $('.inbox-check').prop('checked', true);
-                    $('.inbox-check').parent().parent().parent().addClass('active');
-                }
-                else {
-                    $('.inbox-check').prop('checked', false);
-                    $('.inbox-check').parent().parent().parent().removeClass('active');
-                }
-            });
+            bindCheckbox();
 
             $(window).resize(function () {
                 if (Modernizr.mq('(min-width: 980px)')) {

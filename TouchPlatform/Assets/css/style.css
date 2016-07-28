@@ -27,8 +27,28 @@
 .luatree-line li{list-style:none; padding:5px 0px;}
 .luatree-line li label{font-size:16px;}
 
-.cmd-header{margin:15px auto;}
+.cmd-header{
+    width:auto;
+}
 
 .snapshot-panel{padding:5px;}
 
 .fallback{padding-top:7px;}
+
+
+.snapshot-panel {text-align: center;}
+.snapshot-panel img {margin: 2px;border: 1px solid #ccc;}
+.small-display{display:none;padding:8px 0px; 
+    width:120px; 
+    height:80px;
+    line-height:60px;
+    border-radius:60px;
+    cursor:move;
+    text-align:center;
+    position:absolute;
+    top:0px;
+    left:0px;
+}
+.block-display{display:block; padding:8px 0px; border-bottom:1px solid #B9B9B9;}
+
+.pager-tip{ vertical-align:text-bottom;}

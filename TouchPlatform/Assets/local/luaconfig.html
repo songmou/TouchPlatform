@@ -270,9 +270,7 @@
                                     <div class="form-group">
                                         <label class="col-md-2 control-label"></label>
                                         <div class="col-md-8">
-                                            <div class="fallback">
-                                                
-                                            </div>
+                                            <input type="text" class="form-control" name="imageArray" />
                                         </div><!-- /.col -->
                                     </div><!-- /form-group -->
 
@@ -339,17 +337,33 @@
                 type: 'POST',
                 url: domain + "/lua/GetList",
                 dataType: 'json',
-                data: { luaType: "搜索加人" },
+                data: { luaTypes: "搜索加人,发送朋友圈" },
                 success: function (data) {
                     if (data.code == 200) {
                         var list = data.data;
 
                         //绑定值
-                        $('.form-group input').each(function () {
+                        $('#formWxSerach .form-group input').each(function () {
                             $el = $(this);
                             var name = $el.attr('name');
                             if (name != undefined) {
-                                var json = list.filter(function (item) { return item.luaName == name; });
+                                var json = list.filter(function (item) { return item.luaName == name && item.luaType == "搜索加人"; });
+                                if (json.length > 0) {
+                                    if ($el.attr('type') == "radio") {
+                                        if ($el.val() == json[0].luaValue)
+                                            $el.attr('checked', 'checked');
+                                    }
+                                    else
+                                        $el.val(json[0].luaValue);
+                                }
+                            }
+                        });
+                        //绑定值
+                        $('#formWxTimeLine .form-group input').each(function () {
+                            $el = $(this);
+                            var name = $el.attr('name');
+                            if (name != undefined) {
+                                var json = list.filter(function (item) { return item.luaName == name && item.luaType == "发送朋友圈"; });
                                 if (json.length > 0) {
                                     if ($el.attr('type') == "radio") {
                                         if ($el.val() == json[0].luaValue)

@@ -117,8 +117,6 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\TouchPlatform.accdb" />
-    <Content Include="App_Data\TouchPlatformSQL.txt" />
     <Content Include="Assets\css\style.css" />
     <Content Include="Assets\js\authAction.js" />
     <Content Include="Assets\js\lib\artTemplate\template-debug.js" />
@@ -132,7 +130,9 @@
     <Content Include="Assets\js\signalr\jquery.signalR-2.2.0.js" />
     <Content Include="Assets\js\signalr\jquery.signalR-2.2.0.min.js" />
     <Content Include="Assets\local\devices.html" />
+    <Content Include="Assets\local\dynamic.html" />
     <Content Include="Assets\local\files.html" />
+    <Content Include="Assets\local\groups.html" />
     <Content Include="Assets\local\luaconfig.html" />
     <Content Include="Assets\local\scans.html" />
     <Content Include="Assets\local\snapshot.html" />
@@ -194,6 +194,7 @@
     <Content Include="Assets\library\js\uncompressed\jquery.sortable.js" />
     <Content Include="Assets\library\js\uncompressed\skycons.js" />
     <Content Include="Assets\library\js\waypoints.min.js" />
+    <None Include="Properties\PublishProfiles\public.pubxml" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
@@ -243,6 +244,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\" />
     <Folder Include="Models\" />
     <Folder Include="source\lua\" />
     <Folder Include="source\temp\" />

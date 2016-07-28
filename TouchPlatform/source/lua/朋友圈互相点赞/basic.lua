@@ -5,39 +5,6 @@ radix=1*1000;
 fuzzy=80;
 httpUrl="http://192.168.1.20/lua/";
 
-
---从微信首页进入 朋友圈
-function intoShareline()
-	if not multiColor({{33,79, 0x39383e},{106,109, 0x434246},{497,85, 0x3b3a3f}},fuzzy) then
-		toast("不是在微信主页");
-		return false;
-	end
-	
-	--点   发现
-	touchDown(1, 399, 1075);
-	mSleep(3*radix); 
-	touchUp(1, 399, 1073);
-	mSleep(1*radix); 
-	
-	--通过朋友圈的图标判断是不是在发现的界面
-	if not multiColor({{38,199,0xffc817},{53,217,0x66d020},{56,184,0xfa5452},{71,203,0x5283f0}},fuzzy) then
-		toast("朋友圈界面异常");
-		return false;
-	end
-	
-	--点朋友圈
-	touchDown(1, 261, 205);
-	mSleep(20); 
-	touchUp(1, 260, 205);
-	mSleep(1*radix); 
-	
-	if not multiColor({{573,87,0xffffff},{608,86,0xffffff},{590,69,0xffffff},{590,99,0xffffff}},fuzzy) then
-		toast("未能成功进入朋友圈");
-		return false;
-	end
-end
-
-
 --[[
 ** FUNC 返回上一级（i次）  左侧
 ]]
@@ -56,7 +23,7 @@ function Backer(i)
 end
 
 --[[
-** FUNC 返回上一级（i次）  右侧（取消）
+** FUNC 返回上一级（i次）  右侧
 ]]
 function BackRight(i)
 	local timer=math.floor(i);
@@ -101,7 +68,6 @@ function InitAppHome()
 	mSleep(1*radix);
 end
 
-
 --[[
 ** FUNC 打开app
 ]]
@@ -130,9 +96,7 @@ function RebootApp(AppBidName)
 	mSleep(1*radix);
 	r = runApp(AppBidName);    --启动应用 
 	
-	mSleep(2*radix);
-	
-	--可能会有发送通知的提示。需要点击确认。
+	mSleep(3*radix);
 	
 	if r ~= 0 then
 		dialog("应用启动失败",3);

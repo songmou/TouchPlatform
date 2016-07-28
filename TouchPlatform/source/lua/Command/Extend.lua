@@ -1,2 +1,2 @@
-toast('测试');
-finishTag=false;
+
+RebootApp("com.tencent.xin");

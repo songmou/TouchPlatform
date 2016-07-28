@@ -14,9 +14,10 @@
         var query = queryString("q");
         var deviceids = queryString("deviceids");
         $(function () {
-            $('.panel').height($(window).height());
+            //$('.panel').height($(window).height());
             if (query != undefined)
                 $('.panel').attr('src', domain + query + "?deviceids=" + deviceids);
+
         })
     </script>
 </head>

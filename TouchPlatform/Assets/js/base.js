@@ -28,9 +28,10 @@ $(function () {
         async: false
     }).responseText;
     $('.header-block').html(htmlHeader);
-})
+});
 
 
+//公共方法 获取地址参数
 var queryString = function (query) {
     var search = window.location.search + '';
     if (search.charAt(0) != '?') {
@@ -46,3 +47,112 @@ var queryString = function (query) {
         return undefined;
     }
 };
+
+//公共方法 绑定事件
+function bindCheckbox() {
+    $('.inbox-check').click(function () {
+        var activeRow = $(this).parent().parent().parent();
+
+        activeRow.toggleClass('active');
+    });
+
+    $('#inboxCollapse').click(function () {
+        $('.inbox-menu-inner').slideToggle();
+    });
+
+    $('#chkAll').click(function () {
+        if ($(this).prop('checked')) {
+            $('.inbox-check').prop('checked', true);
+            $('.inbox-check').parent().parent().parent().addClass('active');
+        }
+        else {
+            $('.inbox-check').prop('checked', false);
+            $('.inbox-check').parent().parent().parent().removeClass('active');
+        }
+    });
+}
+
+//扩展方法 格式化
+$.format = function (source, params) {
+    if (arguments.length == 1)
+        return function () {
+            var args = $.makeArray(arguments);
+            args.unshift(source);
+            return $.format.apply(this, args);
+        };
+    if (arguments.length > 2 && params.constructor != Array) {
+        params = $.makeArray(arguments).slice(1);
+    }
+    if (params.constructor != Array) {
+        params = [params];
+    }
+    $.each(params, function (i, n) {
+        source = source.replace(new RegExp("\\{" + i + "\\}", "g"), n);
+    });
+    return source;
+};
+
+(function ($) {
+
+    var PagerPanel = function (that, options) {
+        this.opts = $.extend({
+            index: 1,
+            size: 10,
+            total: 0,
+            pageCount: 1,
+            callback:function(){},
+            selector: "pagination",
+            tags: "li",
+        }, options);
+        this.opts.pageCount = Math.floor(this.opts.total / this.opts.size) +
+                ((this.opts.total != 0 && this.opts.total % this.opts.size == 0) ? 0 : 1);
+
+        this.$el = $(that);
+
+        this.init();
+        this.bindclick();
+
+
+        return this.opts;
+    }
+
+    PagerPanel.prototype = {
+        init: function () {
+            var opts = this.opts;
+
+            var html = "";
+            html += $.format('<ul class="{0}">', opts.selector);
+            html += $.format('<{0}><a href="javascript:;" data-page="1">«</a></{0}>',
+                opts.tags);
+
+            for (i = opts.index - 3; i <= opts.index + 3; i++) {
+                if (i > 0 && i <= opts.pageCount) {
+                    html += $.format('<{0} class="{2}"><a href="javascript:;" data-page="{1}">{1}</a></{0}>',
+                        opts.tags, i,
+                        opts.index == i ? "active" : "");
+                }
+            }
+            html += $.format('<{0}><a href="javascript:;" data-page="{1}">»</a></{0}>',
+                opts.tags, opts.pageCount)
+            html += '</ul>';
+
+            html += $.format('<span class="pager-tip pull-right">{0}/{1} 页　{2} 条数据　</span>',
+                opts.index, opts.pageCount, opts.total);
+
+            this.$el.html(html);
+        },
+        bindclick: function (){
+            var opts = this.opts;
+            this.$el.find("ul li a[data-page]").click(function () {
+                var current = $(this).data("page");
+                if (opts.callback) opts.callback(current);
+            });
+        }
+    };
+
+    $.fn.PagerPanel = function (options, callback) {
+        var plugin = new PagerPanel(this, options, callback);
+
+    }
+
+})(jQuery);

@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using TouchModel;
 using TouchSpriteService;
+using TouchSpriteService.Business;
 using TouchSpriteService.Common;
 
 namespace TouchPlatform.Controllers
@@ -152,6 +154,19 @@ namespace TouchPlatform.Controllers
             return JsonConvert.SerializeObject(result);
         }
 
+        public string GroupDetail()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+
+            int id = WebHelper.GetRequestInt("id");
+            groups model = null;
+            var result = new { code = 100, message = "参数错误", data = model };
+            DataReflector<groups> service = new DataReflector<groups>();
+            model = service.Get(id);
+            result = new { code = 200, message = "请求成功", data = model };
+            return JsonConvert.SerializeObject(result);
+        }
+
         /// <summary>
         /// 设备信息（包括分组）
         /// </summary>
@@ -180,6 +195,8 @@ namespace TouchPlatform.Controllers
             var groupid = WebHelper.GetFormInt("groupname");
             var deviceid = WebHelper.GetFormString("deviceid");
             var username = WebHelper.GetFormString("username");
+            var sortcode = WebHelper.GetFormInt("sortcode");
+            var ip = WebHelper.GetFormString("ip");
 
             devices model = null;
             var result = new { code = 100, message = "参数错误", data = model };
@@ -195,6 +212,8 @@ namespace TouchPlatform.Controllers
                 return JsonConvert.SerializeObject(result);
             }
             model.username = WebHelper.SqlFilter(username);
+            model.ip = WebHelper.SqlFilter(ip);
+            model.sortcode = sortcode;
             model.updatedate = DateTime.Now;
             service.Update(model);
 
@@ -278,10 +297,25 @@ namespace TouchPlatform.Controllers
 
             int success = 0, fail = 0;
             var ActionService = new TouchSpriteService.authActionService();
-            foreach (var d in list)
+
+            var taskDevices = new Task<string>[list.Count];
+            for (int i = 0; i < list.Count; i++)
             {
-                var luaReturn = ActionService.Runlua(d.deviceid);
-                if (luaReturn == "ok") success++;
+                var d = list[i];
+                taskDevices[i] = Task.Run(() =>
+                {
+                    return ActionService.Runlua(d.deviceid); ;
+                });
+
+                //var luaReturn = ActionService.Runlua(d.deviceid);
+                //if (luaReturn == "ok") success++;
+                //else fail++;
+            }
+
+            Task.WaitAll(taskDevices);
+            foreach (var task in taskDevices)
+            {
+                if (task.Result == "ok") success++;
                 else fail++;
             }
 
@@ -300,14 +334,27 @@ namespace TouchPlatform.Controllers
             var deviceids = WebHelper.GetFormString("deviceids").Split(',');
             var ActionService = new TouchSpriteService.authActionService();
             int success = 0, fail = 0;
-            foreach (var deviceid in deviceids)
+            //foreach (var deviceid in deviceids)
+            //{
+            //    var luaReturn = ActionService.Runlua(deviceid);
+            //    if (luaReturn == "ok") success++;
+            //    else fail++;
+            //}
+
+            var taskDevices = new Task<string>[deviceids.Length];
+            for (int i = 0; i < deviceids.Length; i++)
             {
-                if (!string.IsNullOrWhiteSpace(deviceid))
+                var deviceid = deviceids[i];
+                taskDevices[i] = Task.Run(() =>
                 {
-                    var luaReturn = ActionService.Runlua(deviceid);
-                    if (luaReturn == "ok") success++;
-                    else fail++;
-                }
+                    return ActionService.Runlua(deviceid);
+                });
+            }
+            Task.WaitAll(taskDevices);
+            foreach (var task in taskDevices)
+            {
+                if (task.Result == "ok") success++;
+                else fail++;
             }
 
             string message = string.Format("{0}台设备命令发送成功，{1}台失败", success, fail);
@@ -331,10 +378,26 @@ namespace TouchPlatform.Controllers
 
             int success = 0, fail = 0;
             var ActionService = new TouchSpriteService.authActionService();
-            foreach (var d in list)
+            //foreach (var d in list)
+            //{
+            //    var luaReturn = ActionService.Stoplua(d.deviceid);
+            //    if (luaReturn == "ok") success++;
+            //    else fail++;
+            //}
+
+            var taskDevices = new Task<string>[list.Count];
+            for (int i = 0; i < list.Count; i++)
             {
-                var luaReturn = ActionService.Stoplua(d.deviceid);
-                if (luaReturn == "ok") success++;
+                var deviceid = list[i].deviceid;
+                taskDevices[i] = Task.Run(() =>
+                {
+                    return ActionService.Stoplua(deviceid);
+                });
+            }
+            Task.WaitAll(taskDevices);
+            foreach (var task in taskDevices)
+            {
+                if (task.Result == "ok") success++;
                 else fail++;
             }
 
@@ -353,14 +416,24 @@ namespace TouchPlatform.Controllers
             var deviceids = WebHelper.GetFormString("deviceids").Split(',');
             var ActionService = new TouchSpriteService.authActionService();
             int success = 0, fail = 0;
-            foreach (var deviceid in deviceids)
+
+            var taskDevices = new Task<string>[deviceids.Length];
+
+            for (int i = 0; i < deviceids.Length; i++)
             {
-                if (!string.IsNullOrWhiteSpace(deviceid))
+                var deviceid = deviceids[i];
+                taskDevices[i] = Task.Run(() =>
                 {
-                    var luaReturn = ActionService.Stoplua(deviceid);
-                    if (luaReturn == "ok") success++;
-                    else fail++;
-                }
+                    return ActionService.Stoplua(deviceid);
+                });
+                //if (luaReturn == "ok") success++;
+                //else fail++;
+            }
+            Task.WaitAll(taskDevices);
+            foreach (var task in taskDevices)
+            {
+                if (task.Result == "ok") success++;
+                else fail++;
             }
 
             string message = string.Format("{0}台设备停止执行,{1}台失败", success, fail);
@@ -398,13 +471,21 @@ namespace TouchPlatform.Controllers
 
             list = new List<devices>();
             var ActionService = new TouchSpriteService.authActionService();
-            foreach (var deviceid in deviceids)
+
+            var taskDevices = new Task<devices>[deviceids.Length];
+
+            for (int i = 0; i < deviceids.Length; i++)
             {
-                if (!string.IsNullOrWhiteSpace(deviceid))
+                var deviceid = deviceids[i];
+                taskDevices[i] = Task.Run(() =>
                 {
-                    var model = ActionService.getStatus(deviceid);
-                    list.Add(model);
-                }
+                    return ActionService.getStatus(deviceid);
+                });
+            }
+            Task.WaitAll(taskDevices);
+            foreach (var task in taskDevices)
+            {
+                list.Add(task.Result);
             }
 
             result = new { code = 200, message = "已发送更新命令", list = list };
@@ -428,15 +509,27 @@ namespace TouchPlatform.Controllers
             }
 
             int success = 0, fail = 0;
-            foreach (var deviceid in deviceids)
+            var ActionService = new TouchSpriteService.authActionService();
+
+            var taskDevices = new Task<string>[deviceids.Length];
+
+            for (int i = 0; i < deviceids.Length; i++)
             {
-                if (!string.IsNullOrWhiteSpace(deviceid))
+                var deviceid = deviceids[i];
+                taskDevices[i] = Task.Run(() =>
                 {
-                    var ActionService = new TouchSpriteService.authActionService();
-                    var luaReturn = ActionService.DoAction(deviceid, "reboot?type=1");
-                    if (luaReturn == "ok") success++;
-                    else fail++;
-                }
+                    return ActionService.DoAction(deviceid, "reboot?type=1");
+                });
+                //var ActionService = new TouchSpriteService.authActionService();
+                //var luaReturn = ActionService.DoAction(deviceid, "reboot?type=1");
+                //if (luaReturn == "ok") success++;
+                //else fail++;
+            }
+            Task.WaitAll(taskDevices);
+            foreach (var task in taskDevices)
+            {
+                if (task.Result == "ok") success++;
+                else fail++;
             }
 
             string message = string.Format("{0}台设备命令发送成功，{1}台失败", success, fail);
@@ -523,7 +616,7 @@ namespace TouchPlatform.Controllers
 
 
         /// <summary>
-        /// 循环将文件发送到设备
+        /// 遍历循环将文件发送到设备
         /// </summary>
         /// <returns></returns>
         public string Updatelua()
@@ -553,32 +646,72 @@ namespace TouchPlatform.Controllers
             var ActionService = new TouchSpriteService.authActionService();
 
             int success = 0, fail = 0;
-            //先循环设备
-            foreach (var deviceid in deviceids)
-            {
-                if (!string.IsNullOrWhiteSpace(deviceid))
-                {
-                    var failNum = 0;
-                    //再循环发送文件
-                    foreach (var d in Arrayfiles)
-                    {
-                        string luaReturn = ActionService.uploadlua(deviceid, d);
-                        if (luaReturn == "ok") { }
-                        else { failNum++; }
-                    }
+            var Current = System.Web.HttpContext.Current;
 
-                    if (failNum == 0)
-                        success++;
-                    else
-                        fail++;
-                }
+            //设备多任务
+            var taskDevices = new Task[deviceids.Length];
+
+            //先循环设备
+            //foreach (var deviceid in deviceids)
+            for (int z = 0; z < deviceids.Length; z++)
+            {
+                var deviceid = deviceids[z];
+                taskDevices[z] = Task.Run(() =>
+                 {
+                     #region 多任务（同时向多台设备发送文件）
+                     if (!string.IsNullOrWhiteSpace(deviceid))
+                     {
+                         var failNum = 0;
+
+                         //文件发送多任务
+                         var taskUploads = new Task<string>[Arrayfiles.Length];
+
+                         //再循环发送文件
+                         //foreach (var d in Arrayfiles)
+                         for (int i = 0; i < Arrayfiles.Length; i++)
+                         {
+                             var d = Arrayfiles[i];
+                             taskUploads[i] = Task.Run(() =>
+                             {
+                                 return ActionService.uploadlua(Current, deviceid, d);
+                             });
+
+                             //改造成异步方式
+                             //string luaReturn = ActionService.uploadlua(deviceid, d);
+                             //if (luaReturn == "ok") { }
+                             //else { failNum++; } 
+                         }
+
+                         Task.WaitAll(taskUploads);
+
+                         foreach (var task in taskUploads)
+                         {
+                             var luaReturn = task.Result;
+                             if (luaReturn == "ok") { }
+                             else { failNum++; }
+                         }
+
+                         if (failNum == 0)
+                             success++;
+                         else
+                             fail++;
+                     }
+                     #endregion
+                 });
             }
+
+            Task.WaitAll(taskDevices);
+
 
             string message = string.Format("{0}台设备文件发送成功，{1}台失败", success, fail);
             result = new { code = 200, message = message };
             return JsonConvert.SerializeObject(result);
         }
 
+        /// <summary>
+        /// 删除服务器上的文件或者文件夹
+        /// </summary>
+        /// <returns></returns>
         public string Deletelua()
         {
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
@@ -635,7 +768,7 @@ namespace TouchPlatform.Controllers
         }
 
         /// <summary>
-        /// 将ZIP文件上传到服务器
+        /// 将ZIP文件上传到服务器，并解压
         /// </summary>
         /// <returns></returns>
         public string UploadZip()
@@ -668,6 +801,7 @@ namespace TouchPlatform.Controllers
                 dire.Delete(true);
             }
 
+            //解压到指定目录
             ZipFile.ExtractToDirectory(zipPath, zipExtraPath);
 
             result = new { code = 200, message = "上传成功" };
@@ -675,6 +809,12 @@ namespace TouchPlatform.Controllers
 
         }
 
+        /// <summary>
+        /// 设置设备的执行路径
+        /// 手机设备要执行脚本
+        /// 需要先设定执行路径 请求，再发送“执行命令” 请求
+        /// </summary>
+        /// <returns></returns>
         public string SetLuaPath()
         {
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
@@ -685,10 +825,8 @@ namespace TouchPlatform.Controllers
             var groupid = WebHelper.GetFormInt("groupid");
             var deviceids = GetDevicesParam();
 
-            DataReflector<groups> service = new DataReflector<groups>();
-            var group = service.Get(groupid);
 
-            if (deviceids.Length == 0 || path == "" || group == null)
+            if (deviceids.Length == 0 || path == "")
             {
                 return JsonConvert.SerializeObject(result);
             }
@@ -701,39 +839,53 @@ namespace TouchPlatform.Controllers
                 result = new { code = 101, message = "入口文件main不存在" };
                 return JsonConvert.SerializeObject(result);
             }
-            bool isSuccess = true;
+
+            var Current = System.Web.HttpContext.Current;
+
+            //bool isSuccess = true;
             var ActionService = new TouchSpriteService.authActionService();
-            foreach (var deviceid in deviceids)
+            //判断是否需要将服务器的文件发送到各个手机设备
+            if (WebHelper.GetFormString("send") == "1")
             {
-                if (!string.IsNullOrWhiteSpace(deviceid))
-                {
-                    //循环所有文件
-                    string re = loopsendSource(folderFullName, deviceid) + ",";
-                    if (re.IndexOf("fail") > -1)
-                        isSuccess = false;
-                }
-            }
+                var taskDevices = new Task<string>[deviceids.Length];
 
-            //文件发送是否成功
-            if (isSuccess)
-            {
-                //保存到组信息
-                group.issend = true;
-                group.luapath = string.Format("/var/mobile/Media/TouchSprite/lua/{0}/main.lua",path);
-                service.Update(group);
-
-                foreach (var deviceid in deviceids)
+                for (int i = 0; i < deviceids.Length; i++)
                 {
-                    if (!string.IsNullOrWhiteSpace(deviceid))
+                    var deviceid = deviceids[i];
+                    taskDevices[i] = Task.Run(() =>
                     {
-                        ActionService.setLuaPath(deviceid, group.luapath);
-                    }
+                        //循环所有文件
+                        return loopsendSource(Current, folderFullName, deviceid) + ",";
+                    });
                 }
 
-                result = new { code = 200, message = "保存成功" };
+                //Task.WaitAll(taskDevices);
+
+                //foreach (var task in taskDevices)
+                //{
+                //    if (task.Result.IndexOf("fail") > -1)
+                //        isSuccess = false;
+                //}
             }
-            else
-                result = new { code = 100, message = "保存失败" };
+
+            string luapath = string.Format("/var/mobile/Media/TouchSprite/lua/{0}/main.lua", path);
+            //文件发送是否成功
+            //if (isSuccess)
+
+            //多任务发送命令
+            var taskSendDevices = new Task<bool>[deviceids.Length];
+
+            for (int i = 0; i < deviceids.Length; i++)
+            {
+                var deviceid = deviceids[i];
+                taskSendDevices[i] = Task.Run(() =>
+                {
+                    return ActionService.setLuaPath(deviceid, luapath);
+                });
+            }
+            Task.WaitAll(taskSendDevices);
+
+            result = new { code = 200, message = "保存成功" };
             return JsonConvert.SerializeObject(result);
         }
 
@@ -742,7 +894,7 @@ namespace TouchPlatform.Controllers
         /// </summary>
         /// <param name="folderFullName">文件夹的实际路径</param>
         /// <param name="deviceid"></param>
-        private string loopsendSource(string folderFullName, string deviceid)
+        private string loopsendSource(HttpContext Current, string folderFullName, string deviceid)
         {
             DirectoryInfo TheFolder = new DirectoryInfo(folderFullName);
             if (!TheFolder.Exists)
@@ -752,16 +904,34 @@ namespace TouchPlatform.Controllers
             var result = "";
             var rootPath = Server.MapPath("~/source/");
             var ActionService = new TouchSpriteService.authActionService();
-            foreach (FileInfo NextFile in TheFolder.GetFiles())
+
+            FileInfo[] files = TheFolder.GetFiles();
+            //var Current = System.Web.HttpContext.Current;
+
+            //多任务  发送文件
+            var taskfiles = new Task<string>[files.Length];
+
+            for (int i = 0; i < files.Length; i++)
             {
-                string filePath = NextFile.FullName.Replace(rootPath, "").Replace('\\', '/');
-                result += ActionService.uploadlua(deviceid, filePath) + ",";
+                FileInfo NextFile = files[i];
+                taskfiles[i] = Task.Run(() =>
+                {
+                    string filePath = NextFile.FullName.Replace(rootPath, "").Replace('\\', '/');
+                    return ActionService.uploadlua(Current, deviceid, filePath) + ",";
+                });
             }
             foreach (DirectoryInfo NextFolder in TheFolder.GetDirectories())
             {
                 //递归循环
-                result += loopsendSource(NextFolder.FullName, deviceid) + ",";
+                result += loopsendSource(Current, NextFolder.FullName, deviceid) + ",";
             }
+
+            Task.WaitAll(taskfiles);
+            foreach (var task in taskfiles)
+            {
+                result += task.Result;
+            }
+
             return result;
         }
         #endregion
@@ -773,7 +943,7 @@ namespace TouchPlatform.Controllers
             int compressInt = WebHelper.GetQueryInt("compress");
             int orient = WebHelper.GetQueryInt("orient");
             decimal compress = compressInt == 0 ? 0.1M : (decimal)(compressInt / 10);
-            string ext = WebHelper.GetQueryString("ext","jpg");
+            string ext = WebHelper.GetQueryString("ext", "jpg");
 
             var ActionService = new TouchSpriteService.authActionService();
             byte[] bytes = ActionService.snapshot(deviceid, ext, compress, orient);
