@@ -38,8 +38,8 @@
 
 .snapshot-panel {text-align: center;}
 .snapshot-panel img {margin: 2px;border: 1px solid #ccc;}
-.small-display{display:none;padding:8px 0px; 
-    width:120px; 
+.small-display{display:block;padding:8px 0px; 
+    width:150px; 
     height:80px;
     line-height:60px;
     border-radius:60px;
@@ -49,6 +49,11 @@
     top:0px;
     left:0px;
 }
-.block-display{display:block; padding:8px 0px; border-bottom:1px solid #B9B9B9;}
+.small-display a{border-radius:12px;}
+.block-display{display:none; padding:8px 0px; border-bottom:1px solid #B9B9B9;}
 
 .pager-tip{ vertical-align:text-bottom;}
+
+.open>.dropdown-menu{left:170px;}
+
+.action-icon{margin:0px 3px;}

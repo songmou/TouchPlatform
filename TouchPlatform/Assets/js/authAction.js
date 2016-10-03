@@ -21,16 +21,17 @@ function BindDevice() {
 
 
 //ajax绑定分组Select
-function BindGroup() {
+function BindGroup(groupid) {
     var source = '{{each list as d i}}'
                 + '<option value="{{d.ID}}">{{d.groupname}}</option>'
                 + '{{/each}}';
+    groupid = groupid || 0;
     $.ajax({
         type: 'POST',
         url: domain + "/api/Grouplist",
         async: false,
         dataType: 'json',
-        data: {},
+        data: { groupid: groupid },
         success: function (data) {
             var render = template.compile(source);
             var html = render({
@@ -39,6 +40,7 @@ function BindGroup() {
             html = '<option value="0">选择分组</option>' + html;
             $(".select-groups").html(html);
             $(".d-groups").html(html);
+            $(".select-groups").val(groupid);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             //alert("XMLHttpRequest:" + XMLHttpRequest + ",textStatus" + textStatus + ",errorThrown" + errorThrown);
@@ -111,6 +113,7 @@ function de2group(deviceid) {
             $(".d-deviceid").val(d.deviceid);
             $(".d-groups").val(d.groupid);
             $(".d-username").val(d.username);
+            $(".d-usbip").val(d.usbip);
             $(".d-ip").val(d.ip);
             $(".d-sortcode").val(d.sortcode);
         },
@@ -148,8 +151,7 @@ function SaveGroupDevice() {
 function GroupRunlua() {
     var groupid = $(".select-groups").val();
     var luaName = $(".select-luas").val();
-    if (groupid == 0 || luaName == 0)
-    {
+    if (groupid == 0 || luaName == 0) {
         alert('请选择要执行的脚本和分组!');
         return;
     }
@@ -194,7 +196,7 @@ function Runlua() {
     //先设置执行的路径
     var groupid = $(".select-groups").val();
     var luaName = $(".select-luas").val();
-    if ( luaName == 0) {
+    if (luaName == 0) {
         alert('请选择要执行的脚本和分组!');
         return;
     }
@@ -301,37 +303,42 @@ function StopluaByDeviceIds(ids) {
 
 
 function LooperDevices() {
-    setInterval(function () {
-        var groupid = $(".select-groups").val();
+    //setInterval(function () {
 
-        var AllDevices = new Array();
-        $('#tr-panel input[type=checkbox]').each(function () {
-            AllDevices.push($(this).attr("deviceid"));
-        });
+    var groupid = $(".select-groups").val();
 
-        if (groupid != "0") {
-            $.ajax({
-                type: 'POST',
-                url: domain + "/api/getStatus",
-                //async: false,
-                dataType: 'json',
-                //data: { groupid: groupid, deviceids: AllDevices.join(',') },
-                data: { deviceids: AllDevices.join(',') },
-                success: function (data) {
-                    if (data.code == 200) {
-                        $(data.list).each(function (index, d) {
-                            if (d != null) {
-                                $('.tr' + d.ID).find('.action-status').html(d.status);
-                            }
-                        })
-                    }
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    console.log('Looper Error');
+    var AllDevices = new Array();
+    $('#tr-panel input[type=checkbox]').each(function () {
+        AllDevices.push($(this).attr("deviceid"));
+    });
+
+    if (groupid != "0") {
+        $('.tip-panel').show();
+
+        $.ajax({
+            type: 'POST',
+            url: domain + "/api/getStatus",
+            //async: false,
+            dataType: 'json',
+            //data: { groupid: groupid, deviceids: AllDevices.join(',') },
+            data: { deviceids: AllDevices.join(',') },
+            success: function (data) {
+                if (data.code == 200) {
+                    $(data.list).each(function (index, d) {
+                        if (d != null) {
+                            $('.tr' + d.ID).find('.action-status').html(d.status);
+                        }
+                    })
                 }
-            });
-        }
-    }, 5000);
+                $('.tip-panel').hide();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log('Looper Error');
+                $('.tip-panel').hide();
+            }
+        });
+    }
+    //}, 10000);
 }
 
 function reboot(type) {
@@ -361,11 +368,9 @@ function reboot(type) {
 
 
 //打开设置脚本路径panel
-function OpenSetLuaPathPanel()
-{
+function OpenSetLuaPathPanel() {
     var groupid = $(".select-groups").val();
-    if (groupid == 0)
-    {
+    if (groupid == 0) {
         alert('请选择分组');
         return;
     }
@@ -382,8 +387,42 @@ function OpenSetLuaPathPanel()
     $('.luapath-body').html(html);
 }
 
-function SetLuaPath(isRun)
-{
+function UploadluaFiles() {
+    var groupid = $(".select-groups").val();
+    if (groupid == 0) { alert('请选择分组'); return; }
+
+    $.ajax({
+        type: 'POST',
+        url: domain + "/api/UploadFilesToDevices",
+        dataType: 'json',
+        data: { groupid: groupid },
+        success: function (data) {
+            alert(data.message);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert('error:UploadluaFiles');
+        }
+    });
+}
+
+function UploadFriendlineImg() {
+    var groupid = $(".select-groups").val();
+
+    $.ajax({
+        type: 'POST',
+        url: domain + "/api/UploadFriendlineImg",
+        dataType: 'json',
+        data: { groupid: groupid },
+        success: function (data) {
+            alert(data.message);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert('error:UploadFriendlineImg');
+        }
+    });
+}
+
+function SetLuaPath(isRun) {
     var radio = $('.luapath-body input[type=radio]:checked');
     if (radio.val() == undefined) {
         alert("请选择脚本文件夹");
@@ -398,7 +437,7 @@ function SetLuaPath(isRun)
         type: 'POST',
         url: domain + "/api/SetLuaPath",
         dataType: 'json',
-        data: { groupid: groupid, path: radio.val(),send:"1" },
+        data: { groupid: groupid, path: radio.val(), send: "1" },
         //async: false,
         success: function (data) {
             if (data.code == 200) {
@@ -424,14 +463,14 @@ function SetLuaPath(isRun)
         }
     });
 
-    
+
 }
 
 
-function BindLuaDir()
-{
+function BindLuaDir() {
     var treestr = $.ajax({
-        url: domain + '/API/getSourceList',
+        //url: domain + '/API/getSourceList',
+        url: domain + '/API/getluaList',
         async: false,
         method: 'GET',
         data: { path: 'lua' },
@@ -439,32 +478,30 @@ function BindLuaDir()
     var treejson = JSON.parse(treestr);
 
 
-    var source = '{{each dics as d i}}'
-                + '<option value="{{d}}">{{d}}</option>'
-                + '{{/each}}';
-    var render = template.compile(source);
-    var html = render({
-        dics: treejson.data.dics
-    });
+    var source = '<option value="{0}">{1}</option>';
+    var data = treejson.data;
+    var html = "";
+    for (var key in treejson.data) {
+        html += $.format(source, data[key], key);
+    }
     html = '<option value="0">选择脚本</option>' + html;
     $(".select-luas").html(html);
 }
 
 
-function ViewerDevice()
-{
+function ViewerDevice(connectType) {
+    connectType = connectType || "WiFi";
     var selectDevices = new Array();
     $('#tr-panel input[type=checkbox]').each(function () {
         if ($(this).prop('checked')) {
             selectDevices.push($(this).attr("deviceid"));
         }
     });
-    if (selectDevices.length == 0)
-    {
+    if (selectDevices.length == 0) {
         alert('请勾选你要查看的设备');
         return false;
     }
     //location.href = "snapshot.html?deviceids=" + selectDevices.join(',');
     //location.href = "iframe.html?q=/Master/socket&deviceids=" + selectDevices.join(',');
-    window.open("iframe.html?q=/Master/socket&deviceids=" + selectDevices.join(','));
+    window.open(domain + "/Master/socket?deviceids=" + selectDevices.join(',') + "&t=" + connectType);
 }

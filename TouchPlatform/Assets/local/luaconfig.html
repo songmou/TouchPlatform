@@ -239,6 +239,7 @@
                                         <label class="col-md-2 control-label">发送的文本</label>
                                         <div class="col-md-8">
                                             <input class="form-control" name="SendMsg" type="text" placeholder="请输入要发送的文本" value="">
+                                            <span class="help-block">发送带表情的朋友圈示例：[微笑] </span>
                                         </div><!-- /.col -->
                                     </div><!-- /form-group -->
 
@@ -285,6 +286,145 @@
                         </div><!-- ./smart-widget-inner -->
                     </div>
 
+
+
+                    <div class="smart-widget widget-yellow">
+                        <div class="smart-widget-header">
+                            微信通讯录添加好友
+                            <span class="smart-widget-option">
+                                <span class="refresh-icon-animated">
+                                    <i class="fa fa-circle-o-notch fa-spin"></i>
+                                </span>
+                                <a href="#" class="widget-toggle-hidden-option">
+                                    <i class="fa fa-cog"></i>
+                                </a>
+                                <a href="#" class="widget-collapse-option" data-toggle="collapse">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a href="#" class="widget-refresh-option">
+                                    <i class="fa fa-refresh"></i>
+                                </a>
+                                <a href="#" class="widget-remove-option">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </span>
+                        </div>
+                        <div class="smart-widget-inner">
+                            <div class="smart-widget-hidden-section">
+                                <ul class="widget-color-list clearfix">
+                                    <li style="background-color:#20232b;" data-color="widget-dark"></li>
+                                    <li style="background-color:#4c5f70;" data-color="widget-dark-blue"></li>
+                                    <li style="background-color:#23b7e5;" data-color="widget-blue"></li>
+                                    <li style="background-color:#2baab1;" data-color="widget-green"></li>
+                                    <li style="background-color:#edbc6c;" data-color="widget-yellow"></li>
+                                    <li style="background-color:#fbc852;" data-color="widget-orange"></li>
+                                    <li style="background-color:#e36159;" data-color="widget-red"></li>
+                                    <li style="background-color:#7266ba;" data-color="widget-purple"></li>
+                                    <li style="background-color:#f5f5f5;" data-color="widget-light-grey"></li>
+                                    <li style="background-color:#fff;" data-color="reset"></li>
+                                </ul>
+                            </div>
+                            <div class="smart-widget-body">
+                                <form id="formWxContacts" class="form-horizontal no-margin form-border">
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">脚本名称</label>
+                                        <div class="col-md-8">
+                                            <input class="form-control" type="text" placeholder="" disabled="" value="通讯录配置项">
+                                            <input type="hidden" name="luaType" value="通讯录配置项" />
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">网络环境</label>
+                                        <div class="col-md-10">
+                                            <div class="radio inline-block col-md-1">
+                                                <div class="custom-radio m-right-xs">
+                                                    <input type="radio" id="radio1_contact" value="WIFI" name="netWay">
+                                                    <label for="radio1_contact"></label>
+                                                </div>
+                                                <div class="inline-block vertical-top">
+                                                    WIFI
+                                                </div>
+                                            </div>
+                                            <div class="radio inline-block">
+                                                <div class="custom-radio m-right-xs">
+                                                    <input type="radio" id="radio2_contact" value="MobileNet" name="netWay">
+                                                    <label for="radio2_contact"></label>
+                                                </div>
+                                                <div class="inline-block vertical-top">
+                                                    手机流量
+                                                </div>
+                                            </div>
+                                        </div><!-- /.col -->
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">是否清空通讯录</label>
+                                        <div class="col-md-10">
+                                            <div class="radio inline-block col-md-1">
+                                                <div class="custom-radio m-right-xs">
+                                                    <input type="radio" id="radio1_ClearContact" value="是" name="ClearContact">
+                                                    <label for="radio1_ClearContact"></label>
+                                                </div>
+                                                <div class="inline-block vertical-top">
+                                                    是
+                                                </div>
+                                            </div>
+                                            <div class="radio inline-block">
+                                                <div class="custom-radio m-right-xs">
+                                                    <input type="radio" id="radio2_ClearContact" value="否" name="ClearContact">
+                                                    <label for="radio2_ClearContact"></label>
+                                                </div>
+                                                <div class="inline-block vertical-top">
+                                                    否
+                                                </div>
+                                            </div>
+                                        </div><!-- /.col -->
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">一次生成的联系人数量</label>
+                                        <div class="col-md-2">
+                                            <input class="form-control" name="Count" type="number" placeholder="" value="5">
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">单个延迟（s）</label>
+                                        <div class="col-md-5">
+                                            <input class="form-control" name="Interval" type="number" placeholder="" value="20">
+                                            <span class="help-block">成功发送申请后延迟N秒进行下一个</span>
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">完成延迟（s）</label>
+                                        <div class="col-md-5">
+                                            <input class="form-control" name="RestTime" type="number" placeholder="" value="60">
+                                            <span class="help-block">脚本执行完毕，延迟N秒后退出</span>
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">验证消息</label>
+                                        <div class="col-md-8">
+                                            <input class="form-control" name="WelcomeMsg" type="text" placeholder="请输入验证消息" value="">
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">通讯录号码库</label>
+                                        <div class="col-md-6">
+                                            <textarea class="form-control" name="Contacts" placeholder="一行一个，已经上传的将会被忽略" rows="8"></textarea>
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label"></label>
+                                        <div class="col-md-10">
+                                            <a href="javascript:;" onclick="LuaConfig('WxContacts')" class="btn btn-danger">修改</a>
+                                        </div><!-- /.col -->
+                                    </div><!-- /form-group -->
+                                </form>
+                            </div>
+                        </div><!-- ./smart-widget-inner -->
+                    </div>
 
 
                 </div><!-- ./inbox-body -->
@@ -337,42 +477,24 @@
                 type: 'POST',
                 url: domain + "/lua/GetList",
                 dataType: 'json',
-                data: { luaTypes: "搜索加人,发送朋友圈" },
+                data: { luaTypes: "搜索加人,发送朋友圈,通讯录配置项" },
                 success: function (data) {
                     if (data.code == 200) {
                         var list = data.data;
 
                         //绑定值
                         $('#formWxSerach .form-group input').each(function () {
-                            $el = $(this);
-                            var name = $el.attr('name');
-                            if (name != undefined) {
-                                var json = list.filter(function (item) { return item.luaName == name && item.luaType == "搜索加人"; });
-                                if (json.length > 0) {
-                                    if ($el.attr('type') == "radio") {
-                                        if ($el.val() == json[0].luaValue)
-                                            $el.attr('checked', 'checked');
-                                    }
-                                    else
-                                        $el.val(json[0].luaValue);
-                                }
-                            }
+                            BindInput(list, this, "搜索加人");
                         });
+
                         //绑定值
                         $('#formWxTimeLine .form-group input').each(function () {
-                            $el = $(this);
-                            var name = $el.attr('name');
-                            if (name != undefined) {
-                                var json = list.filter(function (item) { return item.luaName == name && item.luaType == "发送朋友圈"; });
-                                if (json.length > 0) {
-                                    if ($el.attr('type') == "radio") {
-                                        if ($el.val() == json[0].luaValue)
-                                            $el.attr('checked', 'checked');
-                                    }
-                                    else
-                                        $el.val(json[0].luaValue);
-                                }
-                            }
+                            BindInput(list,this, "发送朋友圈");
+                        });
+
+                        //绑定值
+                        $('#formWxContacts .form-group input').each(function () {
+                            BindInput(list, this, "通讯录配置项");
                         });
                     }
                 },
@@ -382,6 +504,23 @@
             });
 
         });
+
+        function BindInput(list, object, luaType)
+        {
+            $el = $(object);
+            var name = $el.attr('name');
+            if (name != undefined) {
+                var json = list.filter(function (item) { return item.luaName == name && item.luaType == luaType; });
+                if (json.length > 0) {
+                    if ($el.attr('type') == "radio") {
+                        if ($el.val() == json[0].luaValue)
+                            $el.attr('checked', 'checked');
+                    }
+                    else
+                        $el.val(json[0].luaValue);
+                }
+            }
+        }
     </script>
 
 </body>

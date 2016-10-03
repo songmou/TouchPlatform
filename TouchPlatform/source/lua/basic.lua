@@ -2,8 +2,35 @@ require("TSLib");	--触动精灵函数扩展库
 
 --全局变量   系统等待时间基数
 radix=1*1000;
-fuzzy=80;
+fuzzy=85;
 httpUrl="http://192.168.1.20/lua/";
+
+
+function IsUSBConnect()
+	if multiColor({
+				{    7,   58, 0x2484e8},
+				{  617,   58, 0x2484e8},
+				{  312,   37, 0x2484e8},
+			})
+	then
+		return true;
+	else
+		return false;
+	end
+	
+end
+
+
+function getUsbHeight()
+	if IsUSBConnect()
+	then
+		return 40;
+	else
+		return 0;
+	end
+	
+end
+
 
 --[[
 ** FUNC 返回上一级（i次）  左侧
@@ -96,7 +123,7 @@ function RebootApp(AppBidName)
 	mSleep(1*radix);
 	r = runApp(AppBidName);    --启动应用 
 	
-	mSleep(4*radix);
+	mSleep(5*radix);
 	
 	if r ~= 0 then
 		dialog("应用启动失败",3);

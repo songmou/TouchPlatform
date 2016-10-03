@@ -38,6 +38,7 @@ namespace TouchPlatform.Controllers
                     model.deviceid = d.deviceid;
                     model.devname = d.devname;
                     model.ip = d.ip;
+                    model.usbip = "";
                     model.port = d.port;
                     model.osType = d.osType;
                     model.username = d.ip;
@@ -52,6 +53,7 @@ namespace TouchPlatform.Controllers
                     model.deviceid = d.deviceid;
                     model.devname = d.devname;
                     model.ip = d.ip;
+                    model.usbip = d.usbip;
                     model.port = d.port;
                     model.osType = d.osType;
                     model.tsversion = d.tsversion;
@@ -71,15 +73,16 @@ namespace TouchPlatform.Controllers
             List<device2GroupDetail> list = null;
             var result = new { code = 100, message = "参数错误", data = list };
 
-            int groupid = WebHelper.GetFormInt("groupid");
+            int groupid = WebHelper.GetRequestInt("groupid");
+
 
             //DataReflector<devices> service = new DataReflector<devices>();
             //list = service.Get();
 
             string where = "";
-            if (groupid != 0)
+            if (groupid != -1)
             {
-                where = " groups.ID=" + groupid;
+                where = " (groups.ID=" + groupid + " or groups.ID is null)";
             }
             var service = new TouchSpriteService.Business.deviceService();
             list = service.GetDevice2GroupDetail(where);
@@ -150,6 +153,10 @@ namespace TouchPlatform.Controllers
             DataReflector<groups> service = new DataReflector<groups>();
             list = service.Get();
 
+            var groupid = WebHelper.GetRequestInt("groupid");
+            if (groupid != 0)
+                list = list.Where(q => q.ID == groupid).ToList();
+
             result = new { code = 200, message = "查询成功", data = list };
             return JsonConvert.SerializeObject(result);
         }
@@ -197,6 +204,7 @@ namespace TouchPlatform.Controllers
             var username = WebHelper.GetFormString("username");
             var sortcode = WebHelper.GetFormInt("sortcode");
             var ip = WebHelper.GetFormString("ip");
+            var usbip = WebHelper.GetFormString("usbip");
 
             devices model = null;
             var result = new { code = 100, message = "参数错误", data = model };
@@ -213,6 +221,7 @@ namespace TouchPlatform.Controllers
             }
             model.username = WebHelper.SqlFilter(username);
             model.ip = WebHelper.SqlFilter(ip);
+            model.usbip = WebHelper.SqlFilter(usbip);
             model.sortcode = sortcode;
             model.updatedate = DateTime.Now;
             service.Update(model);
@@ -235,6 +244,9 @@ namespace TouchPlatform.Controllers
                 group_deviceService.Update(group_deviceModel);
             }
 
+            TouchSpriteService.Common.SimpleCacheProvider cache = TouchSpriteService.Common.SimpleCacheProvider.GetInstance();
+            cache.SetCache(deviceid, null);
+
             result = new { code = 200, message = "保存成功", data = model };
             return JsonConvert.SerializeObject(result);
 
@@ -252,8 +264,8 @@ namespace TouchPlatform.Controllers
             List<devices> list = null;
             var result = new { code = 100, message = "参数错误", list = list };
 
-            var groupid = WebHelper.GetFormInt("groupid");
-            string deviceStr = WebHelper.GetFormString("deviceids");
+            var groupid = WebHelper.GetRequestInt("groupid");
+            string deviceStr = WebHelper.GetRequestString("deviceids");
             if (groupid == 0 && deviceStr == "")
             {
                 string[] temp = { };
@@ -304,7 +316,7 @@ namespace TouchPlatform.Controllers
                 var d = list[i];
                 taskDevices[i] = Task.Run(() =>
                 {
-                    return ActionService.Runlua(d.deviceid); ;
+                    return ActionService.Runlua(d.deviceid);
                 });
 
                 //var luaReturn = ActionService.Runlua(d.deviceid);
@@ -362,6 +374,65 @@ namespace TouchPlatform.Controllers
 
             return JsonConvert.SerializeObject(result);
         }
+
+
+        /// <summary>
+        /// 设置路径并运行
+        /// </summary>
+        /// <returns></returns>
+        public string RunDevices()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+
+            var result = new { code = 100, message = "参数错误" };
+
+            var ActionService = new TouchSpriteService.authActionService();
+            int success = 0, fail = 0;
+
+            var deviceids = GetDevicesParam();
+
+            var path = WebHelper.GetRequestString("path");
+
+            var connectType = WebHelper.GetRequestString("connectType");
+            bool IsUSB = connectType == "USB";
+
+            //string luapath = string.Format("/var/mobile/Media/TouchSprite/lua/{0}/main.lua", path);
+            string luapath = string.Format("/var/mobile/Media/TouchSprite/lua/{0}", path);
+
+            #region 设置执行路径，并执行
+            var taskSendDevices = new Task<string>[deviceids.Length];
+
+            for (int i = 0; i < deviceids.Length; i++)
+            {
+                var deviceid = deviceids[i];
+                taskSendDevices[i] = Task.Run(() =>
+                {
+                    bool IsSend = true;
+                    if (!string.IsNullOrWhiteSpace(path))
+                    {
+                        IsSend = ActionService.setLuaPath(deviceid, luapath, IsUSB);
+                    }
+
+                    if (IsSend)
+                        return ActionService.Runlua(deviceid, IsUSB);
+                    else
+                        return "fail";
+                });
+            }
+            Task.WaitAll(taskSendDevices);
+
+            foreach (var task in taskSendDevices)
+            {
+                if (task.Result == "ok") success++;
+                else fail++;
+            }
+            #endregion
+
+            string message = string.Format("{0}台设备命令执行成功，{1}台失败", success, fail);
+            result = new { code = 200, message = message };
+
+            return JsonConvert.SerializeObject(result);
+        }
         #endregion
 
         #region 停止脚本
@@ -413,9 +484,12 @@ namespace TouchPlatform.Controllers
 
             var result = new { code = 100, message = "参数错误" };
 
-            var deviceids = WebHelper.GetFormString("deviceids").Split(',');
             var ActionService = new TouchSpriteService.authActionService();
             int success = 0, fail = 0;
+
+            var deviceids = GetDevicesParam();
+            var connectType = WebHelper.GetRequestString("connectType");
+            bool IsUSB = connectType == "USB";
 
             var taskDevices = new Task<string>[deviceids.Length];
 
@@ -424,10 +498,8 @@ namespace TouchPlatform.Controllers
                 var deviceid = deviceids[i];
                 taskDevices[i] = Task.Run(() =>
                 {
-                    return ActionService.Stoplua(deviceid);
+                    return ActionService.Stoplua(deviceid, IsUSB);
                 });
-                //if (luaReturn == "ok") success++;
-                //else fail++;
             }
             Task.WaitAll(taskDevices);
             foreach (var task in taskDevices)
@@ -456,12 +528,12 @@ namespace TouchPlatform.Controllers
             List<devices> list = null;
             var result = new { code = 100, message = "参数错误", list = list };
 
-            var groupid = WebHelper.GetFormInt("groupid");
-            string deviceStr = WebHelper.GetFormString("deviceids");
-            if (groupid == 0 && deviceStr == "")
-            {
-                return JsonConvert.SerializeObject(result);
-            }
+            //var groupid = WebHelper.GetFormInt("groupid");
+            //string deviceStr = WebHelper.GetFormString("deviceids");
+            //if (groupid == 0 && deviceStr == "")
+            //{
+            //    return JsonConvert.SerializeObject(result);
+            //}
 
             var deviceids = GetDevicesParam();
             if (deviceids.Length == 0)
@@ -612,6 +684,19 @@ namespace TouchPlatform.Controllers
             data = new { files = files, dics = dics, Fullfiles = Fullfiles, Fulldics = Fulldics };
             result = new { code = 200, message = "请求成功", data = data };
             return JsonConvert.SerializeObject(result);
+        }
+
+        public string getluaList()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+
+            var result = new { code = 100, message = "参数错误", data = new Dictionary<string, string>() };
+
+            //var array=String.Join(",", TsRemoteConfig.luaPathDic.Keys);
+
+            result = new { code = 200, message = "请求成功", data = TsRemoteConfig.luaPathDic };
+            return JsonConvert.SerializeObject(result);
+
         }
 
 
@@ -792,7 +877,7 @@ namespace TouchPlatform.Controllers
             }
             var luaDir = WebHelper.GetFormString("luaDir", "lua");
             var zipPath = Server.MapPath(string.Format("~/source/temp/{0}.zip", dirname));
-            var zipExtraPath = Server.MapPath(string.Format("~/source/{0}/{1}", luaDir, dirname));
+            var zipExtraPath = Server.MapPath(string.Format("~/source/{0}/", luaDir));
             zipfile.SaveAs(zipPath);
 
             DirectoryInfo dire = new DirectoryInfo(zipExtraPath);
@@ -807,6 +892,69 @@ namespace TouchPlatform.Controllers
             result = new { code = 200, message = "上传成功" };
             return JsonConvert.SerializeObject(result);
 
+        }
+
+        public string UploadFilesToDevices()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            var result = new { code = 100, message = "参数错误" };
+
+            var deviceids = GetDevicesParam();
+            if (deviceids.Length == 0)
+            {
+                return JsonConvert.SerializeObject(result);
+            }
+            string dirname = WebHelper.GetRequestString("dirname");
+            if (dirname != "") dirname = dirname + "/";
+
+            var folderName = Server.MapPath("~/source/lua/" + dirname);
+
+            var Current = System.Web.HttpContext.Current;
+
+            var ActionService = new TouchSpriteService.authActionService();
+            var taskDevices = new Task<string>[deviceids.Length];
+            for (int i = 0; i < deviceids.Length; i++)
+            {
+                var deviceid = deviceids[i];
+                taskDevices[i] = Task.Run(() =>
+                {
+                    //循环所有文件
+                    return loopsendSource(Current, folderName, deviceid) + ",";
+                });
+            }
+
+            result = new { code = 200, message = "发送成功" };
+            return JsonConvert.SerializeObject(result);
+        }
+
+        public string UploadFriendlineImg()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            var result = new { code = 100, message = "参数错误" };
+
+            var deviceids = GetDevicesParam();
+            if (deviceids.Length == 0)
+            {
+                return JsonConvert.SerializeObject(result);
+            }
+            var folderName = Server.MapPath("~/source/lua/images/");
+
+            var Current = System.Web.HttpContext.Current;
+
+            var ActionService = new TouchSpriteService.authActionService();
+            var taskDevices = new Task<string>[deviceids.Length];
+            for (int i = 0; i < deviceids.Length; i++)
+            {
+                var deviceid = deviceids[i];
+                taskDevices[i] = Task.Run(() =>
+                {
+                    //循环所有文件
+                    return loopsendSource(Current, folderName, deviceid) + ",";
+                });
+            }
+
+            result = new { code = 200, message = "发送成功" };
+            return JsonConvert.SerializeObject(result);
         }
 
         /// <summary>
@@ -831,12 +979,14 @@ namespace TouchPlatform.Controllers
                 return JsonConvert.SerializeObject(result);
             }
 
-            var folderFullName = Server.MapPath("~/source/lua/" + path);
-            var fileFullName = Server.MapPath(string.Format("~/source/lua/{0}/main.lua", path));
+            //var folderFullName = Server.MapPath("~/source/lua/" + path);
+            var folderFullName = Server.MapPath("~/source/lua/");
+            var fileFullName = Server.MapPath(string.Format("~/source/lua/{0}", path));
+
             FileInfo TheFile = new FileInfo(fileFullName);
             if (!TheFile.Exists)
             {
-                result = new { code = 101, message = "入口文件main不存在" };
+                result = new { code = 101, message = "入口文件不存在" };
                 return JsonConvert.SerializeObject(result);
             }
 
@@ -868,7 +1018,8 @@ namespace TouchPlatform.Controllers
                 //}
             }
 
-            string luapath = string.Format("/var/mobile/Media/TouchSprite/lua/{0}/main.lua", path);
+            //string luapath = string.Format("/var/mobile/Media/TouchSprite/lua/{0}/main.lua", path);
+            string luapath = string.Format("/var/mobile/Media/TouchSprite/lua/{0}", path);
             //文件发送是否成功
             //if (isSuccess)
 

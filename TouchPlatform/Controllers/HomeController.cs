@@ -10,7 +10,7 @@ namespace TouchPlatform.Controllers
     public class HomeController : Controller
     {
         // GET: Home
-        public string Index()
+        public ActionResult Index()
         {
             //TouchSpriteService.Business.deviceService service = new TouchSpriteService.Business.deviceService();
             //var list=service.GetDevices();
@@ -38,7 +38,11 @@ namespace TouchPlatform.Controllers
 
             //return "<img src='data:image/png;base64," + base64 + "'>";
 
-            return "";
+            //return Request.UserHostAddress+ Request.ServerVariables["HTTP_VIA"]+"，"
+            //    +Request.ServerVariables["HTTP_X_FORWARDED_FOR"]+"，"+
+            //    Request.ServerVariables["REMOTE_ADDR"];
+
+            return Redirect("/Assets/index.html");
         }
     }
 }

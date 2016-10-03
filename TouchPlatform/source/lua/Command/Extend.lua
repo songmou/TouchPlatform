@@ -1,2 +1,0 @@
-
-RebootApp("com.tencent.xin");

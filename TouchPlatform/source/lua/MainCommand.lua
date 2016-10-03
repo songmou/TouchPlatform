@@ -8,7 +8,7 @@ jsonstring=httpGet(httpUrl.."Dynamiclua");
 local tb = sz.json.decode(jsonstring);
 local config=tb.data;
 
-writeFileString("/var/mobile/Media/TouchSprite/lua/Command/Extend.lua",config);
+writeFileString("/var/mobile/Media/TouchSprite/lua/CommandExtend.lua",config);
 
 
-require("Extend");
+require("CommandExtend");

@@ -35,7 +35,7 @@
                                 操作
                                 <span class="btn-command-icon"><span class="caret"></span></span>
                             </button>
-                            <ul class="dropdown-menu" role="menu">
+                            <ul class="dropdown-menu" role="menu" style="left:15px;">
                                 <li><a href="javascript:" onclick="openPanel(-1)">添加</a></li>
 
                             </ul>
@@ -63,9 +63,10 @@
                                         </div>
                                     </th>
                                     <th style="width:50px;">序号</th>
-                                    <th>编号</th>
-                                    <th>名称</th>
-                                    <th>类别</th>
+                                    <th>IP</th>
+                                    <th>设备名称</th>
+                                    <th style="width:18%;">关键词</th>
+                                    <th style="width:25%;">值</th>
                                     <th>状态</th>
                                     <th>排序号</th>
                                     <th>更新时间</th>
@@ -88,9 +89,10 @@
                                 </div>
                             </td>
                             <td>{{i+1}}</td>
-                            <td><a href="javascript:;" class="block" title="编辑" onclick="openPanel({{d.ID}})">No.{{d.ID}}</a></td>
+                            <td><a href="javascript:;" class="block" title="编辑" onclick="openPanel({{d.ID}})">No.{{d.username}}</a></td>
+                            <td><a href="javascript:;" class="block" title="编辑" onclick="openPanel({{d.ID}})">{{d.ip}}</a></td>
                             <td><a href="javascript:;" class="block" title="编辑" onclick="openPanel({{d.ID}})">{{d.luaName}}</a></td>
-                            <td>{{d.luaType}}</td>
+                            <td>{{d.luaValue}}</td>
                             <td>{{d.status}}</td>
                             <td>{{d.sortcode}}</td>
                             <td>{{d.updatedate | dateFormat:'yyyy/MM/dd hh:mm:ss'}}</td>

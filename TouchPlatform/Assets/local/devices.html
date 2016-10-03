@@ -32,6 +32,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="col-md-6 text-left-sm">
+
                                 <div class="btn-group">
                                     <select class="form-control select-groups"></select>
                                 </div>
@@ -61,7 +62,9 @@
                                         </ul>
                                     </li>
                                     <li class="divider"></li>
-                                    <li><a href="javascript:" onclick="OpenSetLuaPathPanel()">发送脚本文件</a></li>
+                                    <li class="hide"><a href="javascript:" onclick="OpenSetLuaPathPanel()">发送全部脚本文件</a></li>
+                                    <li><a href="javascript:" onclick="UploadluaFiles()">发送脚本文件</a></li>
+                                    <li><a href="javascript:" onclick="UploadFriendlineImg()">发送朋友圈照片</a></li>
 
                                     <li class="divider"></li>
                                     <li><a href="javascript:" onclick="$('.addgroupPanel').show()">添加分组</a></li>
@@ -72,31 +75,32 @@
                             </div>
                             <div class="col-md-6 text-left-sm">
 
-                                <div class="input-group inline-block col-md-1">
+                                <div class="input-group inline-block action-icon">
                                     <a href="javascript:" onclick="Runlua()" title="执行命令(勾选的设备)">
                                         <i class="fa fa-play" aria-hidden="true"></i>
                                     </a>
                                 </div>
-                                <div class="input-group inline-block col-md-1" title="停止命令(勾选的设备)">
+                                <div class="input-group inline-block action-icon" title="停止命令(勾选的设备)">
                                     <a href="javascript:" onclick="Stoplua()">
                                         <i class="fa fa-stop" aria-hidden="true"></i>
                                     </a>
                                 </div>
-                                <div class="input-group inline-block col-md-1" title="查看设备(勾选的设备)">
+                                <div class="input-group inline-block action-icon" title="查看设备(勾选的设备)">
                                     <a href="javascript:" onclick="ViewerDevice()">
                                         <i class="fa fa-eye" aria-hidden="true" style="font-size:15px;"></i>
                                     </a>
                                 </div>
+                                <div class="input-group inline-block action-icon" title="">
+                                    <a href="javascript:" onclick="ViewerDevice('USB')">
+                                        <i class="fa fa-usb" aria-hidden="true" style="font-size:15px;"></i>
+                                    </a>
+                                </div>
 
-                                <div class="input-group inline-block col-md-5 text-right">
+                                <div class="input-group inline-block col-md-4 text-right">
                                     <div class="input-group-btn inline-block">
                                         <a class="btn-scan btn btn-success no-shadow" href="scans.html"
                                            title="更新设备信息或者添加设备">
                                             <i class="fa fa-refresh" aria-hidden="true"></i> 扫描更新
-                                        </a>
-                                        <a class="btn-scan btn btn-success no-shadow" href="files.html"
-                                           title="上传或删除脚本">
-                                            脚本管理
                                         </a>
                                     </div>
                                 </div>
@@ -228,6 +232,13 @@
                             </div><!-- /form-group -->
 
                             <div class="form-group">
+                                <label class="col-lg-2 control-label">USB-IP</label>
+                                <div class="col-lg-4">
+                                    <input class="form-control d-usbip" name="usbip" type="text" placeholder="请输入USBIP...">
+                                </div><!-- /.col -->
+                            </div><!-- /form-group -->
+
+                            <div class="form-group">
                                 <label class="col-lg-2 control-label">排序号</label>
                                 <div class="col-lg-4">
                                     <input class="form-control d-sortcode" name="sortcode" type="number" maxlength="3" placeholder="请输入排序号...">
@@ -253,7 +264,7 @@
             <div class="smart-widget col-xs-12">
                 <div class="smart-widget-header">
                     发送脚本文件 　　
-                    <span class=""> <i class="fa fa-warning"></i> 必须保证该文件夹下存在 main.lua 入口文件</span>
+                    <span class=""> <i class="fa fa-warning"></i> 发送前请检查脚本文件是否存在</span>
                     <span class="smart-widget-option">
                         <a href="javascript:" onclick="$('.luaPath-Panel').hide()" class="widget-remove-option">
                             <i class="fa fa-times"></i>
@@ -328,6 +339,13 @@
         {{/each}}
     </script>
 
+    <div class="overlap tip-panel" style="opacity:0.8">
+        <div class="col-sm-3 vertical-center">
+            <div class="m-bottom-md">
+                <div class="text-center chart-skill-text"><h3>加载中...</h3></div>
+            </div>
+        </div>
+    </div>
 
     <!-- Jquery -->
     <script src="../library/js/jquery-1.11.1.min.js"></script>
@@ -365,9 +383,9 @@
 
         //绑定分组，设备等信息
         var BindInfo = function () {
-            BindLuaDir();
+            var groupid = queryString("groupid");
 
-            BindGroup();
+            BindGroup(groupid);
             BindDevice();
         }
 
@@ -386,12 +404,15 @@
             });
 
             $('.btn-freshen').click(function () {
-                BindDevice();
+                //BindDevice();
+                LooperDevices();
             });
+
+            BindLuaDir();
 
             BindInfo();
 
-            LooperDevices();
+            //LooperDevices();
         });
 
 

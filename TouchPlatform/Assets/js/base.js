@@ -1,5 +1,5 @@
 ﻿//var domain = "http://192.168.0.50:8092";
-var domain = "http://localhost";
+var domain = "http://" + document.domain;
 
 $(function () {
     //var html = '<div class="col-xs-6 col-xs-offset-3 text-left-sm">';
@@ -100,7 +100,7 @@ $.format = function (source, params) {
             size: 10,
             total: 0,
             pageCount: 1,
-            callback:function(){},
+            callback: function () { },
             selector: "pagination",
             tags: "li",
         }, options);
@@ -141,7 +141,7 @@ $.format = function (source, params) {
 
             this.$el.html(html);
         },
-        bindclick: function (){
+        bindclick: function () {
             var opts = this.opts;
             this.$el.find("ul li a[data-page]").click(function () {
                 var current = $(this).data("page");

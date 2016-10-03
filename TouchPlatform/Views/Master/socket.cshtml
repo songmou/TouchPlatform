@@ -27,9 +27,9 @@
                     <span class="btn-command-icon"><span class="caret"></span></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                    <li><a href="javascript:" onclick="ActionButton(this)">打开微信</a></li>
-                    <li><a href="javascript:" onclick="ActionButton(this)">打开朋友圈</a></li>
-                    <li><a href="javascript:" onclick="ActionButton(this)">返回桌面</a></li>
+                    <li><a href="javascript:" onclick="ActionButton(this)" action="打开微信">打开微信</a></li>
+                    <li><a href="javascript:" onclick="ActionButton(this)" action="打开朋友圈">打开朋友圈</a></li>
+                    <li><a href="javascript:" onclick="ActionButton(this)" action="返回桌面">返回桌面</a></li>
                 </ul>
             </div>
             <div class="col-md-1">
@@ -38,11 +38,11 @@
                     <span class="btn-command-icon"><span class="caret"></span></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                    <li><a href="javascript:" onclick="ActionButton(this)">返回</a></li>
-                    <li><a href="javascript:" onclick="ActionButton(this)">取消</a></li>
+                    <li><a href="javascript:" onclick="ActionButton(this)" action="返回">返回</a></li>
+                    <li><a href="javascript:" onclick="ActionButton(this)" action="取消">取消</a></li>
                     <li class="divider"></li>
-                    <li><a href="javascript:" onclick="ActionButton(this)">上滑</a></li>
-                    <li><a href="javascript:" onclick="ActionButton(this)">下滑</a></li>
+                    <li><a href="javascript:" onclick="ActionButton(this)" action="上滑">上滑</a></li>
+                    <li><a href="javascript:" onclick="ActionButton(this)" action="下滑">下滑</a></li>
                     <li class="divider"></li>
                 </ul>
             </div>
@@ -56,6 +56,19 @@
                 </div>
 
             </div>
+            <div class="col-md-2">
+                <div class="col-md-3">
+                </div>
+                <div class="col-md-9">
+                    <a class="btn" onclick="ActionButton(this)" action="上滑" href="javascript:;" title="上滑">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="btn" onclick="ActionButton(this)" action="下滑" href="javascript:;" title="下滑">
+                        <i class="fa fa-chevron-down"></i>
+                    </a>
+                </div>
+
+            </div>
 
             <div class="col-md-1 pull-right text-right">
                 <a class="btn btn-success no-shadow" onclick="InlineDisplay(false)" href="javascript:;">
@@ -66,9 +79,16 @@
             <div class="clear"></div>
         </div>
         <div class="small-display" id="move-block">
-            <a class="btn btn-success no-shadow" onclick="InlineDisplay(true)" href="javascript:;">
-                <i class="fa fa-chevron-left" aria-hidden="true"></i>
-                展开
+            <a class="btn" onclick="ActionButton(this)" action="上滑" href="javascript:;" title="上滑">
+                <i class="fa fa-chevron-up"></i>
+            </a>
+
+            <a class="btn btn-success no-shadow" onclick="InlineDisplay(true)" href="javascript:;" title="展开">
+                <i class="fa fa-circle-o"></i>
+            </a>
+
+            <a class="btn" onclick="ActionButton(this)" action="下滑" href="javascript:;" title="下滑">
+                <i class="fa fa-chevron-down"></i>
             </a>
         </div>
         <div class="clear"></div>
@@ -98,12 +118,15 @@
             if (deviceids == undefined)
                 return;
 
+            var connectType = queryString("t") || "WiFi";
+
+
             var arrayDevices = deviceids.split(',');
             var windowWidth = $(window).width();
             var FrameWidth = windowWidth / arrayDevices.length;
 
             var source = '{{each data as d i}}'
-                + '<img src="" class="device{{i}} img-block" data-deviceid="{{d}}" style="width:12%;" alt="设备{{i+1}} 暂无画面" />'
+                + '<img src="" class="device{{i}} img-block" data-deviceid="{{d}}" style="width:10%;" alt="设备{{i+1}} 暂无画面" />'
                 + '{{/each}}';
             var render = template.compile(source);
             var html = render({
@@ -116,7 +139,7 @@
             var base64 = "";
             $.connection.hub.start({ transport: ['webSockets'] }).done(function () {
                 for (i = 0; i < arrayDevices.length; i++) {
-                    chat.server.sendMessage(arrayDevices[i], "FullImage");
+                    chat.server.sendMessage(arrayDevices[i], "FullImage", connectType);
                 }
             }).fail(function () { console.log('Could not Connect!'); });
             chat.client.receiveImage = function (name, bytes) {
@@ -127,15 +150,15 @@
                 }
 
                 setTimeout(function () {
-                    chat.server.sendMessage(name, "FullImage");
-                }, 400);
+                    chat.server.sendMessage(name, "FullImage", connectType);
+                }, 500);
             };
 
 
             $('.img-block').on('click', function (e) {
                 var $el = $(this)[0];
                 var pointStart = { x: $el.offsetLeft, y: $el.offsetTop };
-                var pointClick = { x: e.clientX, y: e.clientY };
+                var pointClick = { x: e.pageX, y: e.pageY };
 
                 var RatioX = $el.clientWidth / 640;
                 var RatioY = $el.clientHeight / 1136;
@@ -162,22 +185,8 @@
         }
 
         function ActionButton(obj) {
-            var actionName = $(obj).html();
+            var actionName = $(obj).attr("action");
             var deviceids = queryString("deviceids");
-            //$.ajax({
-            //    type: 'POST',
-            //    url: domain + "/Lua/DynamicSet",
-            //    dataType: 'json',
-            //    data: { deviceids: deviceids, luaName: actionName },
-            //    success: function (data) {
-            //        //alert(data.message);
-            //        if (data.code == 200) {
-            //        }
-            //    },
-            //    error: function (XMLHttpRequest, textStatus, errorThrown) {
-            //        alert('error:' + actionName);
-            //    }
-            //});
 
             chat.server.sendCommand(deviceids, actionName, "");
         }
@@ -190,8 +199,7 @@
         }
 
         function InlineDisplay(display) {
-            if (display)
-            {
+            if (display) {
                 $('.block-display').show();
                 $('.small-display').hide();
             }

@@ -13,8 +13,9 @@ namespace TouchPlatform
     public class ImagesHub : Hub
     {
         SimpleCacheProvider cache = SimpleCacheProvider.GetInstance();
-        public void sendMessage(string deviceid, string data)
+        public void sendMessage(string deviceid, string data,string ConnectType)
         {
+            bool IsUSB = ConnectType == "USB";
             //System.Diagnostics.Debug.WriteLine("客户端发送消息：" + data);
             switch (data)
             {
@@ -63,7 +64,7 @@ namespace TouchPlatform
                         decimal compress = 0.1M;
                         string ext = "jpg";
                         TouchSpriteService.authActionService service = new TouchSpriteService.authActionService();
-                        byte[] bytes = service.snapshot(deviceid, ext, compress, orient);
+                        byte[] bytes = service.snapshot(deviceid, ext, compress, orient,IsUSB);
                         if (bytes.Length == 0)
                         {
                             Clients.All.receiveImage(deviceid, bytes);
@@ -143,14 +144,18 @@ namespace TouchPlatform
                         taskSendDevices[i] = Task.Run(() =>
                         {
                             //此次需要执行的脚本路径
-                            string luaPath = "/var/mobile/Media/TouchSprite/lua/Command/main.lua";
+                            //string luaPath = "/var/mobile/Media/TouchSprite/lua/Command/main.lua";
+                            string luaPath = "/var/mobile/Media/TouchSprite/lua/MainCommand.lua";
+
+
+                            return ActionService.setLuaPath(deviceid, luaPath);
 
                             //与上次执行路径对比，路径一样就跳过这一步
-                            var modelPath = cache.GetCache(deviceid) as TouchModel.device2GroupDetail;
-                            if (modelPath != null && modelPath.luapath == luaPath)
-                                return true;
-                            else
-                                return ActionService.setLuaPath(deviceid, luaPath);
+                            //var modelPath = cache.GetCache(deviceid) as TouchModel.device2GroupDetail;
+                            //if (modelPath != null && modelPath.luapath == luaPath)
+                            //    return true;
+                            //else
+                            //    return ActionService.setLuaPath(deviceid, luaPath);
 
                         });
                     }
