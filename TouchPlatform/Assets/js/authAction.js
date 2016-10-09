@@ -149,6 +149,10 @@ function SaveGroupDevice() {
 }
 
 function GroupRunlua() {
+
+    var IsUSB = $("#connectType").prop('checked') || false;
+    var connectType = IsUSB ? "USB" : "WIFI";
+
     var groupid = $(".select-groups").val();
     var luaName = $(".select-luas").val();
     if (groupid == 0 || luaName == 0) {
@@ -161,7 +165,7 @@ function GroupRunlua() {
         type: 'POST',
         url: domain + "/api/SetLuaPath",
         dataType: 'json',
-        data: { groupid: groupid, path: luaName },
+        data: { groupid: groupid, path: luaName, connectType: connectType },
         async: false,
         success: function (data) {
             if (data.code == 200) {
@@ -186,6 +190,10 @@ function GroupStoplua() {
 
 //勾选的设备
 function Runlua() {
+
+    var IsUSB = $("#connectType").prop('checked') || false;
+    var connectType = IsUSB ? "USB" : "WIFI";
+
     var selectDevices = new Array();
     $('#tr-panel input[type=checkbox]').each(function () {
         if ($(this).prop('checked')) {
@@ -206,7 +214,7 @@ function Runlua() {
         type: 'POST',
         url: domain + "/api/SetLuaPath",
         dataType: 'json',
-        data: { groupid: 0, deviceids: deviceids, path: luaName },
+        data: { groupid: 0, deviceids: deviceids, path: luaName, connectType: connectType },
         success: function (data) {
             if (data.code == 200) {
                 //执行命令
@@ -236,6 +244,10 @@ function Stoplua() {
 
 
 function RunluaByGroupID(groupid) {
+
+    var IsUSB = $("#connectType").prop('checked') || false;
+    var connectType = IsUSB ? "USB" : "WIFI";
+
     $.ajax({
         type: 'POST',
         url: domain + "/api/GroupRunlua",
@@ -254,6 +266,10 @@ function RunluaByGroupID(groupid) {
 }
 
 function RunluaByDeviceIds(ids) {
+
+    var IsUSB = $("#connectType").prop('checked') || false;
+    var connectType = IsUSB ? "USB" : "WIFI";
+
     $.ajax({
         type: 'POST',
         url: domain + "/api/Runlua",
@@ -269,6 +285,10 @@ function RunluaByDeviceIds(ids) {
 }
 
 function StopluaByGroupID(groupid) {
+
+    var IsUSB = $("#connectType").prop('checked') || false;
+    var connectType = IsUSB ? "USB" : "WIFI";
+
     $.ajax({
         type: 'POST',
         url: domain + "/api/GroupStoplua",
@@ -286,11 +306,15 @@ function StopluaByGroupID(groupid) {
 }
 
 function StopluaByDeviceIds(ids) {
+
+    var IsUSB = $("#connectType").prop('checked') || false;
+    var connectType = IsUSB ? "USB" : "WIFI";
+
     $.ajax({
         type: 'POST',
         url: domain + "/api/Stoplua",
         dataType: 'json',
-        data: { deviceids: ids },
+        data: { deviceids: ids, connectType: connectType },
         success: function (data) {
             alert(data.message);
         },
@@ -304,6 +328,8 @@ function StopluaByDeviceIds(ids) {
 
 function LooperDevices() {
     //setInterval(function () {
+    var IsUSB = $("#connectType").prop('checked') || false;
+    var connectType = IsUSB ? "USB" : "WIFI";
 
     var groupid = $(".select-groups").val();
 
@@ -321,7 +347,7 @@ function LooperDevices() {
             //async: false,
             dataType: 'json',
             //data: { groupid: groupid, deviceids: AllDevices.join(',') },
-            data: { deviceids: AllDevices.join(',') },
+            data: { deviceids: AllDevices.join(','), connectType: connectType },
             success: function (data) {
                 if (data.code == 200) {
                     $(data.list).each(function (index, d) {
@@ -342,6 +368,9 @@ function LooperDevices() {
 }
 
 function reboot(type) {
+    var IsUSB = $("#connectType").prop('checked') || false;
+    var connectType = IsUSB ? "USB" : "WIFI";
+
     var selectDevices = new Array();
     $('#tr-panel input[type=checkbox]').each(function () {
         if ($(this).prop('checked')) {
@@ -354,7 +383,12 @@ function reboot(type) {
         type: 'POST',
         url: domain + "/api/reboot",
         dataType: 'json',
-        data: { groupid: groupid, deviceids: selectDevices.join(','), type: type },
+        data: {
+            groupid: groupid,
+            deviceids: selectDevices.join(','),
+            type: type,
+            connectType: connectType
+        },
         success: function (data) {
             alert(data.message);
             if (data.code == 200) {
@@ -391,11 +425,14 @@ function UploadluaFiles() {
     var groupid = $(".select-groups").val();
     if (groupid == 0) { alert('请选择分组'); return; }
 
+    var IsUSB = $("#connectType").prop('checked') || false;
+    var connectType = IsUSB ? "USB" : "WIFI";
+
     $.ajax({
         type: 'POST',
         url: domain + "/api/UploadFilesToDevices",
         dataType: 'json',
-        data: { groupid: groupid },
+        data: { groupid: groupid, connectType: connectType },
         success: function (data) {
             alert(data.message);
         },
@@ -408,11 +445,14 @@ function UploadluaFiles() {
 function UploadFriendlineImg() {
     var groupid = $(".select-groups").val();
 
+    var IsUSB = $("#connectType").prop('checked') || false;
+    var connectType = IsUSB ? "USB" : "WIFI";
+
     $.ajax({
         type: 'POST',
         url: domain + "/api/UploadFriendlineImg",
         dataType: 'json',
-        data: { groupid: groupid },
+        data: { groupid: groupid, connectType: connectType },
         success: function (data) {
             alert(data.message);
         },
@@ -430,6 +470,10 @@ function SetLuaPath(isRun) {
     }
     var groupid = $(".select-groups").val();
 
+    var IsUSB = $("#connectType").prop('checked') || false;
+    var connectType = IsUSB ? "USB" : "WIFI";
+
+
     $('.btn-SetPath').html('<i class="fa fa-spinner fa-spin m-right-xs"></i>发送中...');
     $('.btn-SetPathRun').html('<i class="fa fa-spinner fa-spin m-right-xs"></i>发送中...');
 
@@ -437,7 +481,7 @@ function SetLuaPath(isRun) {
         type: 'POST',
         url: domain + "/api/SetLuaPath",
         dataType: 'json',
-        data: { groupid: groupid, path: radio.val(), send: "1" },
+        data: { groupid: groupid, path: radio.val(), send: "1", connectType: connectType },
         //async: false,
         success: function (data) {
             if (data.code == 200) {
@@ -489,8 +533,12 @@ function BindLuaDir() {
 }
 
 
-function ViewerDevice(connectType) {
-    connectType = connectType || "WiFi";
+function ViewerDevice() {
+
+    var IsUSB = $("#connectType").prop('checked') || false;
+    var connectType = IsUSB ? "USB" : "WIFI";
+
+    //connectType = connectType || "WIFI";
     var selectDevices = new Array();
     $('#tr-panel input[type=checkbox]').each(function () {
         if ($(this).prop('checked')) {

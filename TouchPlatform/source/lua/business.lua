@@ -207,12 +207,21 @@ function sharingImageAction(urlColl,content)
 	--local list = getList("/var/mobile/Media/DCIM/100APPLE/");
 	--local ImgCount=table.getn(list);
 	
+	--[[
 	local list100 = getList("/var/mobile/Media/DCIM/100APPLE/");
 	local list101 = getList("/var/mobile/Media/DCIM/101APPLE/");
 	local list102 = getList("/var/mobile/Media/DCIM/102APPLE/");
 	local list103 = getList("/var/mobile/Media/DCIM/103APPLE/");
 	local list104 = getList("/var/mobile/Media/DCIM/104APPLE/");
 	local list105 = getList("/var/mobile/Media/DCIM/105APPLE/");
+	]]
+	local listPath="/var/mobile/Media/PhotoData/Thumbnails/V2/DCIM/";
+	local list100 = getList(listPath.."100APPLE/");
+	local list101 = getList(listPath.."101APPLE/");
+	local list102 = getList(listPath.."102APPLE/");
+	local list103 = getList(listPath.."103APPLE/");
+	local list104 = getList(listPath.."104APPLE/");
+	local list105 = getList(listPath.."105APPLE/");
 	
 	local ImgCount=table.getn(list100)+table.getn(list101)+table.getn(list102)+table.getn(list103)+table.getn(list104)+table.getn(list105);
 

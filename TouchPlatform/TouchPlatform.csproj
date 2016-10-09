@@ -236,6 +236,19 @@
     <Content Include="Views\Master\Top.cshtml" />
     <Content Include="Views\Master\Menu.cshtml" />
     <Content Include="Views\Master\socket.cshtml" />
+    <Content Include="source\lua\basic.lua" />
+    <Content Include="source\lua\business.lua" />
+    <Content Include="source\lua\CommandExtend.lua" />
+    <Content Include="source\lua\config.lua" />
+    <Content Include="source\lua\main.lua" />
+    <Content Include="source\lua\MainAddContacts.lua" />
+    <Content Include="source\lua\MainAddFriends.lua" />
+    <Content Include="source\lua\MainCommand.lua" />
+    <Content Include="source\lua\MainGetFriendsCount.lua" />
+    <Content Include="source\lua\MainTimeline.lua" />
+    <Content Include="source\lua\MainWxlike.lua" />
+    <Content Include="source\lua\TSLib.lua" />
+    <Content Include="source\lua\TSProject.lua" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -246,7 +259,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
-    <Folder Include="source\lua\" />
     <Folder Include="source\temp\" />
     <Folder Include="Views\Api\" />
     <Folder Include="Views\Home\" />

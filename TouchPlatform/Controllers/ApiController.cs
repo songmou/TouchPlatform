@@ -304,6 +304,9 @@ namespace TouchPlatform.Controllers
             //DataReflector<groups> Service = new DataReflector<groups>();
             //var group = Service.Get(groupid);
 
+            var connectType = WebHelper.GetRequestString("connectType");
+            bool IsUSB = connectType == "USB";
+
             var service = new TouchSpriteService.Business.deviceService();
             var list = service.GetDevice2GroupDetail(" groups.ID=" + groupid);
 
@@ -316,7 +319,7 @@ namespace TouchPlatform.Controllers
                 var d = list[i];
                 taskDevices[i] = Task.Run(() =>
                 {
-                    return ActionService.Runlua(d.deviceid);
+                    return ActionService.Runlua(d.deviceid, IsUSB);
                 });
 
                 //var luaReturn = ActionService.Runlua(d.deviceid);
@@ -444,6 +447,9 @@ namespace TouchPlatform.Controllers
 
             var groupid = WebHelper.GetFormInt("groupid");
 
+            var connectType = WebHelper.GetRequestString("connectType");
+            bool IsUSB = connectType == "USB";
+
             var service = new TouchSpriteService.Business.deviceService();
             var list = service.GetDevice2GroupDetail(" groups.ID=" + groupid);
 
@@ -462,7 +468,7 @@ namespace TouchPlatform.Controllers
                 var deviceid = list[i].deviceid;
                 taskDevices[i] = Task.Run(() =>
                 {
-                    return ActionService.Stoplua(deviceid);
+                    return ActionService.Stoplua(deviceid, IsUSB);
                 });
             }
             Task.WaitAll(taskDevices);
@@ -535,6 +541,9 @@ namespace TouchPlatform.Controllers
             //    return JsonConvert.SerializeObject(result);
             //}
 
+            var connectType = WebHelper.GetRequestString("connectType");
+            bool IsUSB = connectType == "USB";
+
             var deviceids = GetDevicesParam();
             if (deviceids.Length == 0)
             {
@@ -551,7 +560,7 @@ namespace TouchPlatform.Controllers
                 var deviceid = deviceids[i];
                 taskDevices[i] = Task.Run(() =>
                 {
-                    return ActionService.getStatus(deviceid);
+                    return ActionService.getStatus(deviceid, IsUSB);
                 });
             }
             Task.WaitAll(taskDevices);
@@ -580,6 +589,9 @@ namespace TouchPlatform.Controllers
                 return JsonConvert.SerializeObject(result);
             }
 
+            var connectType = WebHelper.GetRequestString("connectType");
+            bool IsUSB = connectType == "USB";
+
             int success = 0, fail = 0;
             var ActionService = new TouchSpriteService.authActionService();
 
@@ -590,7 +602,7 @@ namespace TouchPlatform.Controllers
                 var deviceid = deviceids[i];
                 taskDevices[i] = Task.Run(() =>
                 {
-                    return ActionService.DoAction(deviceid, "reboot?type=1");
+                    return ActionService.DoAction(deviceid, "reboot?type=1", IsUSB);
                 });
                 //var ActionService = new TouchSpriteService.authActionService();
                 //var luaReturn = ActionService.DoAction(deviceid, "reboot?type=1");
@@ -628,6 +640,9 @@ namespace TouchPlatform.Controllers
                 return JsonConvert.SerializeObject(result);
             }
 
+            var connectType = WebHelper.GetRequestString("connectType");
+            bool IsUSB = connectType == "USB";
+
             string[] roots = { "lua", "res", "log", "plugin" };
             string root = WebHelper.GetRequestString("root");
             if (!roots.Contains(root))
@@ -642,7 +657,7 @@ namespace TouchPlatform.Controllers
             }
 
             var ActionService = new TouchSpriteService.authActionService();
-            var luaReturn = ActionService.getFileList(deviceid, root, path);
+            var luaReturn = ActionService.getFileList(deviceid, root, path, IsUSB);
 
             result = new { code = 200, message = "请求成功", data = JsonConvert.DeserializeObject(luaReturn) };
             return JsonConvert.SerializeObject(result);
@@ -718,6 +733,9 @@ namespace TouchPlatform.Controllers
                 return JsonConvert.SerializeObject(result);
             }
 
+            var connectType = WebHelper.GetRequestString("connectType");
+            bool IsUSB = connectType == "USB";
+
             foreach (var d in Arrayfiles)
             {
                 FileInfo file = new FileInfo(Server.MapPath("~/source/" + d));
@@ -758,7 +776,7 @@ namespace TouchPlatform.Controllers
                              var d = Arrayfiles[i];
                              taskUploads[i] = Task.Run(() =>
                              {
-                                 return ActionService.uploadlua(Current, deviceid, d);
+                                 return ActionService.uploadlua(Current, deviceid, d, IsUSB);
                              });
 
                              //改造成异步方式
@@ -911,6 +929,9 @@ namespace TouchPlatform.Controllers
 
             var Current = System.Web.HttpContext.Current;
 
+            var connectType = WebHelper.GetRequestString("connectType");
+            bool IsUSB = connectType == "USB";
+
             var ActionService = new TouchSpriteService.authActionService();
             var taskDevices = new Task<string>[deviceids.Length];
             for (int i = 0; i < deviceids.Length; i++)
@@ -919,7 +940,7 @@ namespace TouchPlatform.Controllers
                 taskDevices[i] = Task.Run(() =>
                 {
                     //循环所有文件
-                    return loopsendSource(Current, folderName, deviceid) + ",";
+                    return loopsendSource(Current, folderName, deviceid, IsUSB) + ",";
                 });
             }
 
@@ -941,6 +962,9 @@ namespace TouchPlatform.Controllers
 
             var Current = System.Web.HttpContext.Current;
 
+            var connectType = WebHelper.GetRequestString("connectType");
+            bool IsUSB = connectType == "USB";
+
             var ActionService = new TouchSpriteService.authActionService();
             var taskDevices = new Task<string>[deviceids.Length];
             for (int i = 0; i < deviceids.Length; i++)
@@ -949,7 +973,7 @@ namespace TouchPlatform.Controllers
                 taskDevices[i] = Task.Run(() =>
                 {
                     //循环所有文件
-                    return loopsendSource(Current, folderName, deviceid) + ",";
+                    return loopsendSource(Current, folderName, deviceid, IsUSB) + ",";
                 });
             }
 
@@ -979,6 +1003,10 @@ namespace TouchPlatform.Controllers
                 return JsonConvert.SerializeObject(result);
             }
 
+            var connectType = WebHelper.GetRequestString("connectType");
+            bool IsUSB = connectType == "USB";
+
+
             //var folderFullName = Server.MapPath("~/source/lua/" + path);
             var folderFullName = Server.MapPath("~/source/lua/");
             var fileFullName = Server.MapPath(string.Format("~/source/lua/{0}", path));
@@ -1005,7 +1033,7 @@ namespace TouchPlatform.Controllers
                     taskDevices[i] = Task.Run(() =>
                     {
                         //循环所有文件
-                        return loopsendSource(Current, folderFullName, deviceid) + ",";
+                        return loopsendSource(Current, folderFullName, deviceid, IsUSB) + ",";
                     });
                 }
 
@@ -1031,7 +1059,7 @@ namespace TouchPlatform.Controllers
                 var deviceid = deviceids[i];
                 taskSendDevices[i] = Task.Run(() =>
                 {
-                    return ActionService.setLuaPath(deviceid, luapath);
+                    return ActionService.setLuaPath(deviceid, luapath, IsUSB);
                 });
             }
             Task.WaitAll(taskSendDevices);
@@ -1045,7 +1073,7 @@ namespace TouchPlatform.Controllers
         /// </summary>
         /// <param name="folderFullName">文件夹的实际路径</param>
         /// <param name="deviceid"></param>
-        private string loopsendSource(HttpContext Current, string folderFullName, string deviceid)
+        private string loopsendSource(HttpContext Current, string folderFullName, string deviceid, bool IsUSB = false)
         {
             DirectoryInfo TheFolder = new DirectoryInfo(folderFullName);
             if (!TheFolder.Exists)
@@ -1068,13 +1096,13 @@ namespace TouchPlatform.Controllers
                 taskfiles[i] = Task.Run(() =>
                 {
                     string filePath = NextFile.FullName.Replace(rootPath, "").Replace('\\', '/');
-                    return ActionService.uploadlua(Current, deviceid, filePath) + ",";
+                    return ActionService.uploadlua(Current, deviceid, filePath, IsUSB) + ",";
                 });
             }
             foreach (DirectoryInfo NextFolder in TheFolder.GetDirectories())
             {
                 //递归循环
-                result += loopsendSource(Current, NextFolder.FullName, deviceid) + ",";
+                result += loopsendSource(Current, NextFolder.FullName, deviceid, IsUSB) + ",";
             }
 
             Task.WaitAll(taskfiles);
@@ -1096,8 +1124,11 @@ namespace TouchPlatform.Controllers
             decimal compress = compressInt == 0 ? 0.1M : (decimal)(compressInt / 10);
             string ext = WebHelper.GetQueryString("ext", "jpg");
 
+            var connectType = WebHelper.GetRequestString("connectType");
+            bool IsUSB = connectType == "USB";
+
             var ActionService = new TouchSpriteService.authActionService();
-            byte[] bytes = ActionService.snapshot(deviceid, ext, compress, orient);
+            byte[] bytes = ActionService.snapshot(deviceid, ext, compress, orient, IsUSB);
 
             return File(bytes, "image/jpeg");
         }
