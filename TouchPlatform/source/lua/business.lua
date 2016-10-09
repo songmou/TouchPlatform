@@ -161,7 +161,7 @@ function sharingImageAction(urlColl,content)
 	if multiColor({
 		{  212,  384, 0x000000},
 		{  212,  406, 0x000000},
-		{  590,   86, 0x4c4c4c},
+		{  590,   86, 0x7f7f7f},
 		{  275,  401, 0x000000},
 	},90) then
 		click(328,757,100);
@@ -215,7 +215,8 @@ function sharingImageAction(urlColl,content)
 	local list104 = getList("/var/mobile/Media/DCIM/104APPLE/");
 	local list105 = getList("/var/mobile/Media/DCIM/105APPLE/");
 	]]
-	local listPath="/var/mobile/Media/PhotoData/Thumbnails/V2/DCIM/";
+	local listPath="/var/mobile/Media/DCIM/";
+	--local listPath="/var/mobile/Media/PhotoData/Thumbnails/V2/DCIM/";
 	local list100 = getList(listPath.."100APPLE/");
 	local list101 = getList(listPath.."101APPLE/");
 	local list102 = getList(listPath.."102APPLE/");

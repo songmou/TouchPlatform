@@ -11,7 +11,6 @@ namespace TouchSpriteService.Common
     /// </summary>
     public class SimpleCacheProvider : ICacheProvider
     {
-
         private static bool useCache = ConfigurationManager.ConnectionStrings["useCache"].ConnectionString.ToString().ToLower() == "true";
         private static SimpleCacheProvider _instance;
 
