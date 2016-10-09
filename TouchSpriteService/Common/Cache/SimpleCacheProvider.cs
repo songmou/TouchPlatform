@@ -31,7 +31,10 @@ namespace TouchSpriteService.Common
 
         public void SetCache(string key, object value, int expire = 300)
         {
-            this._caches[key] = new CacheItem(key, value, expire);
+            if (this._caches.ContainsKey(key))
+                this._caches[key] = new CacheItem(key, value, expire);
+            else
+                this._caches.Add(key, new CacheItem(key, value, expire));
         }
 
         class CacheItem
