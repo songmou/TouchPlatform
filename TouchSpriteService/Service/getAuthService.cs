@@ -47,7 +47,7 @@ namespace TouchSpriteService
 
             var timeSpan = DateTime.Now.Subtract(authDevice.lastTime);
             var valid = timeSpan.TotalSeconds;
-            if (valid > 3600)
+            if (valid > 3600 || string.IsNullOrWhiteSpace(authDevice.auth))
             {
                 var deviceService = new Business.deviceService();
                 var list = deviceService.GetDevice2GroupDetail(" groups.ID=" + authDevice.groupid);

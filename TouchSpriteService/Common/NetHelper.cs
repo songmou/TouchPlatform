@@ -125,6 +125,7 @@ namespace TouchSpriteService.Common
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = method.Trim().ToLower();
             request.Timeout = timeout;
+            request.ReadWriteTimeout = timeout;
             request.AllowAutoRedirect = true;
             request.ContentType = "text/html";
             request.Accept = "text/html, application/xhtml+xml, */*,zh-CN";

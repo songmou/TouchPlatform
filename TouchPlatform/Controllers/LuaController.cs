@@ -885,7 +885,35 @@ namespace TouchPlatform.Controllers
                 return JsonConvert.SerializeObject(result);
 
             string No = model.ip.Split('.').Last();
-            result = new { code = 200, USBIP = "172.20."+No+".1", data = No };
+            result = new { code = 200, USBIP = "192.168." + No + ".1", data = No };
+            return JsonConvert.SerializeObject(result);
+        }
+
+        /// <summary>
+        /// 清除缓存+更新AccessKey
+        /// </summary>
+        /// <returns></returns>
+        public string InitCaches()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+
+            SimpleCacheProvider.GetInstance().ClearAll();
+
+            int groupid = WebHelper.GetRequestInt("groupid");
+            if (groupid != 0)
+            {
+                TouchSpriteService.DataReflector<groups> service = new TouchSpriteService.DataReflector<groups>();
+                groups model = service.Get(groupid);
+                if (model != null)
+                {
+                    model.auth = "";
+                    model.lastTime = DateTime.Now.AddHours(-1);
+                    model.updatedate = DateTime.Now;
+                    service.Update(model);
+                }
+            }
+
+            var result = new { code = 200, message = "更新成功" };
             return JsonConvert.SerializeObject(result);
         }
     }

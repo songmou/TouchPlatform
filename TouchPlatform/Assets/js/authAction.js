@@ -553,3 +553,19 @@ function ViewerDevice() {
     //location.href = "iframe.html?q=/Master/socket&deviceids=" + selectDevices.join(',');
     window.open(domain + "/Master/socket?deviceids=" + selectDevices.join(',') + "&t=" + connectType);
 }
+
+function InitCaches() {
+    var groupid = $(".select-groups").val();
+    $.ajax({
+        type: 'POST',
+        url: domain + "/lua/InitCaches",
+        dataType: 'json',
+        data: { groupid: groupid },
+        success: function (data) {
+            alert(data.message);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert('error:GroupLuaPath');
+        }
+    });
+}

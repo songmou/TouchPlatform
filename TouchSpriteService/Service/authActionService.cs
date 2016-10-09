@@ -128,8 +128,11 @@ namespace TouchSpriteService
                 status = "运行";
             else if (result == "f02")
                 status = "录制";
+            else if (result == "error:操作超时")
+                status = "超时";
             else
                 status = "离线";
+
             if (model.status != status)
             {
                 model.status = status;

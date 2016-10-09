@@ -37,6 +37,14 @@ namespace TouchSpriteService.Common
                 this._caches.Add(key, new CacheItem(key, value, expire));
         }
 
+        /// <summary>
+        /// 去掉所有缓存
+        /// </summary>
+        public void ClearAll()
+        {
+            _instance = new SimpleCacheProvider();
+        }
+
         class CacheItem
         {
 
