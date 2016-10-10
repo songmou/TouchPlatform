@@ -872,6 +872,10 @@ namespace TouchPlatform.Controllers
             return JsonConvert.SerializeObject(result);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public string GetIPAddress()
         {
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
@@ -885,7 +889,8 @@ namespace TouchPlatform.Controllers
                 return JsonConvert.SerializeObject(result);
 
             string No = model.ip.Split('.').Last();
-            result = new { code = 200, USBIP = "192.168." + No + ".1", data = No };
+            //result = new { code = 200, USBIP = "192.168." + No + ".1", data = No };
+            result = new { code = 200, USBIP = model.usbip, data = No };
             return JsonConvert.SerializeObject(result);
         }
 

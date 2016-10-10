@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace TouchSpriteService.Common
 {
     class ConvertHelper
-    {// 时间戳转为C#格式时间
+    {
+        // 时间戳转为C#格式时间
         public static DateTime StampToDateTime(string timeStamp)
         {
             DateTime dateTimeStart = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));

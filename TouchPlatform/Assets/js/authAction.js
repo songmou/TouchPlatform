@@ -37,7 +37,7 @@ function BindGroup(groupid) {
             var html = render({
                 list: data.data
             });
-            html = '<option value="0">选择分组</option>' + html;
+            html = '<option value="0">全部分组</option>' + html;
             $(".select-groups").html(html);
             $(".d-groups").html(html);
             $(".select-groups").val(groupid);
@@ -501,7 +501,7 @@ function SetLuaPath(isRun) {
             $('.btn-SetPathRun').html('发送并执行');
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert('error:SetLuaPath');
+            console.log('error:SetLuaPath');
             $('.btn-SetPath').html('发送');
             $('.btn-SetPathRun').html('发送并执行');
         }
@@ -565,7 +565,45 @@ function InitCaches() {
             alert(data.message);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert('error:GroupLuaPath');
+            console.log('error:GroupLuaPath');
         }
     });
 }
+
+
+function GetAuth(deviceid) {
+    var d = $.ajax({
+        type: 'POST',
+        url: domain + "/api/GetAuth",
+        dataType: 'json',
+        data: { deviceid: deviceid },
+        async: false
+    }).responseText;
+    var json = JSON.parse(d);
+
+    return json.data;
+}
+
+//跨域问题
+//function requestDevice(deviceid) {
+//    var d = GetAuth(deviceid);
+//    if (typeof (d) == "undefined") {
+//        alert("请求Auth失败");
+//        return;
+//    }
+
+//    $.ajax({
+//        url: d.url + "/deviceid",
+//        timeout: 10000,
+//        dataType: "text",
+//        type: "GET",
+//        //async: false,   //同步
+//        headers: { Auth: d.auth },
+//        success: function (data) {
+//            alert(data);
+//        },
+//        error: function (XMLHttpRequest, textStatus, errorThrown) {
+//            console.log('error:requestDevice');
+//        }
+//    });
+//}

@@ -9,6 +9,8 @@ namespace TouchSpriteService.Business
 {
     public class deviceService
     {
+        Common.SimpleCacheProvider cache = Common.SimpleCacheProvider.GetInstance();
+
         /// <summary>
         /// 设备信息
         /// </summary>
@@ -39,12 +41,11 @@ namespace TouchSpriteService.Business
 
         public device2GroupDetail GetCacheDeviceDetail(string deviceid)
         {
-            Common.SimpleCacheProvider cache = Common.SimpleCacheProvider.GetInstance();
             var authDevice = cache.GetCache(deviceid) as TouchModel.device2GroupDetail;
             if (authDevice == null)
             {
                 authDevice = GetDeviceDetail(deviceid);
-                cache.SetCache(deviceid, authDevice, 3600);
+                cache.SetCache(deviceid, authDevice, 1000);
             }
             return authDevice;
         }
@@ -89,6 +90,11 @@ namespace TouchSpriteService.Business
                 where = " AND " + where;
             ViewReflector<device2GroupDetail> service = new ViewReflector<device2GroupDetail>();
             var list = service.GetList(ViewerConfig.device2Group_SQL + where + ViewerConfig.device2Group_SQL_OrderBy);
+
+            //foreach (var d in list)
+            //{
+            //    cache.SetCache(d.deviceid, d, 1000);
+            //}
 
             return list;
         }

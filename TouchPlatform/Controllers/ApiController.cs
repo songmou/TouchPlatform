@@ -80,7 +80,7 @@ namespace TouchPlatform.Controllers
             //list = service.Get();
 
             string where = "";
-            if (groupid != -1)
+            if (groupid != 0)
             {
                 where = " (groups.ID=" + groupid + " or groups.ID is null)";
             }
@@ -286,6 +286,50 @@ namespace TouchPlatform.Controllers
             }
             return deviceStr.Split(',');
         }
+
+        public string GetAuth()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            var result = new
+            {
+                code = 100,
+                message = "参数错误",
+                data = new { auth = "", ip = "", url = "", lastTime = default(DateTime) }
+            };
+
+            var groupid = WebHelper.GetRequestInt("groupid");
+            var deviceid = WebHelper.GetRequestString("deviceid");
+
+            getAuthService AuthService = new getAuthService();
+            if (deviceid == "")
+            {
+                return JsonConvert.SerializeObject(result);
+            }
+
+            var auth = AuthService.GetAuth(deviceid);
+
+            var service = new deviceService();
+            var model = service.GetCacheDeviceDetail(deviceid);
+
+            var connectType = WebHelper.GetRequestString("connectType");
+            bool IsUSB = connectType == "USB";
+            string ip = model.ip;
+            if (IsUSB && !string.IsNullOrWhiteSpace(model.usbip))
+            {
+                ip = model.usbip;
+            }
+            var url = string.Format("http://{0}:{1}", model.ip, model.port);
+
+            result = new
+            {
+                code = 200,
+                message = "请求成功",
+                data = new { auth = auth, ip = ip, url = url, lastTime = model.lastTime }
+            };
+
+            return JsonConvert.SerializeObject(result);
+        }
+
         #endregion
 
         #region 运行脚本
