@@ -290,41 +290,60 @@ namespace TouchPlatform.Controllers
         public string GetAuth()
         {
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            var list = new List<device2GroupDetail>();
             var result = new
             {
                 code = 100,
                 message = "参数错误",
-                data = new { auth = "", ip = "", url = "", lastTime = default(DateTime) }
+                data = list 
             };
 
-            var groupid = WebHelper.GetRequestInt("groupid");
-            var deviceid = WebHelper.GetRequestString("deviceid");
+            var deviceids = GetDevicesParam();
+            //var groupid = WebHelper.GetRequestInt("groupid");
+            //var deviceid = WebHelper.GetRequestString("deviceid");
 
             getAuthService AuthService = new getAuthService();
-            if (deviceid == "")
+            if (deviceids.Length == 0)
             {
                 return JsonConvert.SerializeObject(result);
             }
 
-            var auth = AuthService.GetAuth(deviceid);
 
-            var service = new deviceService();
-            var model = service.GetCacheDeviceDetail(deviceid);
+            var taskDevices = new Task<device2GroupDetail>[deviceids.Length];
 
-            var connectType = WebHelper.GetRequestString("connectType");
-            bool IsUSB = connectType == "USB";
-            string ip = model.ip;
-            if (IsUSB && !string.IsNullOrWhiteSpace(model.usbip))
+            for (int i = 0; i < deviceids.Length; i++)
             {
-                ip = model.usbip;
+                var deviceid = deviceids[i];
+                taskDevices[i] = Task.Run(() =>
+                {
+                    var auth = AuthService.GetAuth(deviceid);
+
+                    var service = new deviceService();
+                    var model = service.GetCacheDeviceDetail(deviceid);
+                    return model;
+                });
             }
-            var url = string.Format("http://{0}:{1}", model.ip, model.port);
+            Task.WaitAll(taskDevices);
+
+            foreach (var task in taskDevices)
+            {
+                list.Add(task.Result);
+            }
+
+            //var connectType = WebHelper.GetRequestString("connectType");
+            //bool IsUSB = connectType == "USB";
+            //string ip = model.ip;
+            //if (IsUSB && !string.IsNullOrWhiteSpace(model.usbip))
+            //{
+            //    ip = model.usbip;
+            //}
+            //var url = string.Format("http://{0}:{1}", model.ip, model.port);
 
             result = new
             {
                 code = 200,
                 message = "请求成功",
-                data = new { auth = auth, ip = ip, url = url, lastTime = model.lastTime }
+                data = list
             };
 
             return JsonConvert.SerializeObject(result);

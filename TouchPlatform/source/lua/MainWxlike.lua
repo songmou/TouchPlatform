@@ -44,3 +44,5 @@ mSleep(2*radix);
 
 
 openAppBid('com.touchsprite.ios');
+mSleep(4*radix);
+openAppBid("com.tencent.xin");

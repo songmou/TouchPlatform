@@ -46,7 +46,9 @@
     <Compile Include="FieldsAttribute\Entity.cs" />
     <Compile Include="groups.cs" />
     <Compile Include="group_device.cs" />
+    <Compile Include="Lua\devices_command.cs" />
     <Compile Include="Lua\luaconfig.cs" />
+    <Compile Include="Lua\luaDeviceCmd.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

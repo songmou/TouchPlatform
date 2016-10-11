@@ -921,5 +921,43 @@ namespace TouchPlatform.Controllers
             var result = new { code = 200, message = "更新成功" };
             return JsonConvert.SerializeObject(result);
         }
+
+
+        /// <summary>
+        /// 被动模式
+        /// 请求触动精灵的TS Remote API时，经常会离线或者超时（去掉这种方式）
+        /// 被动模式即，手机端一直请求该链接获取执行的脚本。
+        /// 需要手机端一直运行主程序。
+        /// </summary>
+        /// <returns></returns>
+        public string getCommandline()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+
+            //将该设备添加到缓存
+            string deviceid = WebHelper.GetRequestString("deviceid");
+
+            var luaCmdModel = new TouchModel.Lua.luaDeviceCmd();
+
+            //Database
+
+
+            //默认等待
+            var result = new
+            {
+                code = 200,
+                message = "请求成功",
+                data = luaCmdModel
+            };
+
+            result = new
+            {
+                code = 200,
+                message = "请求成功",
+                data = luaCmdModel
+            };
+
+            return JsonConvert.SerializeObject(result);
+        }
     }
 }

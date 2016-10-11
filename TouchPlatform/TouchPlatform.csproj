@@ -129,6 +129,7 @@
     <Content Include="Assets\js\signalr\jquery-1.6.4.min.js" />
     <Content Include="Assets\js\signalr\jquery.signalR-2.2.0.js" />
     <Content Include="Assets\js\signalr\jquery.signalR-2.2.0.min.js" />
+    <Content Include="Assets\local\command.html" />
     <Content Include="Assets\local\devices.html" />
     <Content Include="Assets\local\dynamic.html" />
     <Content Include="Assets\local\files.html" />

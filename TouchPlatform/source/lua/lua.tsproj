@@ -1,7 +1,7 @@
 [res]
+lua.tsproj
 [lib]
 [file]
-TSProject.lua
 TSLib.lua
 MainWxlike.lua
 MainTimeline.lua

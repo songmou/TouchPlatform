@@ -5,6 +5,14 @@ radix=1*1000;
 fuzzy=85;
 httpUrl="http://192.168.0.50/lua/";
 
+luaPath="/var/mobile/Media/TouchSprite/lua/";
+
+--脚本执行，提示信息
+function WelcomeInfo(msg)
+	toast("欢迎使用微领航系统\n即将开始执行脚本\n"..msg);
+	mSleep(5*radix);
+end
+
 
 function IsUSBConnect()
 	if multiColor({

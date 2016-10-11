@@ -26,6 +26,8 @@ toast("开始执行脚本："..loadDevice.Name);
 mSleep(2*radix);
 
 RebootApp("com.tencent.xin");
+mSleep(4*radix);
+openAppBid("com.tencent.xin");
 
 mSleep(3*radix);
 click(84,1080,30);
@@ -69,3 +71,6 @@ mSleep(2*radix);
 
 
 openAppBid('com.touchsprite.ios');
+
+mSleep(4*radix);
+openAppBid("com.tencent.xin");

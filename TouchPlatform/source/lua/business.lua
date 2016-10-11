@@ -130,7 +130,8 @@ function sharingImageAction(urlColl,content)
 	--将图片保存在相册
 	for i, v in pairs(urlColl) do  
 		
-		local ResPath="/var/mobile/Media/TouchSprite/lua/images/"..v;
+		local ResPath=luaPath.."images/"..v;
+		--local ResPath="/var/mobile/Media/TouchSprite/lua/images/"..v;
 		--toast(ResPath);
 		--mSleep(2*radix);
 		
