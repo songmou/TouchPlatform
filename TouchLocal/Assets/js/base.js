@@ -1,5 +1,5 @@
-﻿//var domain = "http://192.168.0.50:8092";
-var domain = "http://" + document.domain;
+﻿var domain = "http://10.0.1.50";
+//var domain = "http://" + document.domain;
 
 $(function () {
     //var html = '<div class="col-xs-6 col-xs-offset-3 text-left-sm">';

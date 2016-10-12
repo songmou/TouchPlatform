@@ -51,6 +51,7 @@
     <Compile Include="Business\luaconfigService.cs" />
     <Compile Include="Common\CacheHelper.cs" />
     <Compile Include="Common\ImageHelper.cs" />
+    <Compile Include="Service\localActionService.cs" />
     <Compile Include="ViewerConfig.cs" />
     <Compile Include="Common\Cache\ICacheProvider.cs" />
     <Compile Include="Common\Cache\SimpleCacheProvider.cs" />

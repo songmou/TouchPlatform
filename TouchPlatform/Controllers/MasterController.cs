@@ -25,12 +25,12 @@ namespace TouchPlatform.Controllers
         }
 
 
-        public ActionResult Devicelist()
-        {
-            DataReflector<devices> service = new DataReflector<devices>();
-            var list = service.Get();
-            return View(list);
-        }
+        //public ActionResult Devicelist()
+        //{
+        //    DataReflector<devices> service = new DataReflector<devices>();
+        //    var list = service.Get();
+        //    return View(list);
+        //}
         public ActionResult socket()
         {
             return View();
