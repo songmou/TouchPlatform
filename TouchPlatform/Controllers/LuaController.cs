@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using TouchModel;
+using TouchModel.Lua;
 using TouchSpriteService;
 using TouchSpriteService.Business;
 using TouchSpriteService.Common;
@@ -14,7 +15,6 @@ namespace TouchPlatform.Controllers
 {
     public class LuaController : Controller
     {
-        SimpleCacheProvider cache = SimpleCacheProvider.GetInstance();
 
         private static object olock = new object();
 
@@ -923,9 +923,11 @@ namespace TouchPlatform.Controllers
         }
 
 
+        #region 被动模式  20161010
         /// <summary>
         /// 被动模式
-        /// 请求触动精灵的TS Remote API时，经常会离线或者超时（去掉这种方式）
+        /// 请求触动精灵的TS Remote API时，经常会离线或者超时
+        /// （由于服务器有多个网络接入点）
         /// 被动模式即，手机端一直请求该链接获取执行的脚本。
         /// 需要手机端一直运行主程序。
         /// </summary>
@@ -937,7 +939,7 @@ namespace TouchPlatform.Controllers
             //将该设备添加到缓存
             string deviceid = WebHelper.GetRequestString("deviceid");
 
-            var luaCmdModel = new TouchModel.Lua.luaDeviceCmd();
+            var luaCmdModel = new luaDeviceCmd();
 
             //Database
 
@@ -956,8 +958,31 @@ namespace TouchPlatform.Controllers
                 message = "请求成功",
                 data = luaCmdModel
             };
+            CacheHelper.SetCache("lua", deviceid, luaCmdModel);
 
             return JsonConvert.SerializeObject(result);
         }
+
+        public string getluaStatus()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+
+            var deviceids = GetDevicesParam();
+            var list = new Dictionary<string, luaDeviceCmd>();
+            foreach (var deviceid in deviceids)
+            {
+                var luaCmd = CacheHelper.GetCache<luaDeviceCmd>("lua", deviceid);
+                list.Add(deviceid, luaCmd);
+            }
+
+            var result = new
+            {
+                code = 200,
+                message = "请求成功",
+                data = list
+            };
+            return JsonConvert.SerializeObject(result);
+        }
+        #endregion
     }
 }
