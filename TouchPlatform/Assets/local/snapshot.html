@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>设备实时查看</title>
+    <meta charset="utf-8" />
+    <style type="text/css">
+        .snapshot-panel img{border:1px solid #ccc;margin:5px 10px; background:#ccc;}
+    </style>
+</head>
+<body style="text-align:center;">
+    <div class="snapshot-panel">
+        加载中...
+    </div>
+    <script src="../library/js/jquery-1.11.1.min.js"></script>
+    <script src="../js/lib/artTemplate/template.js"></script>
+
+    <script type="text/javascript">
+        var Fps = 1500;
+        $(function () {
+            var deviceids = queryString("deviceids");
+            if (deviceids == undefined)
+                return;
+
+            var arrayDevices = deviceids.split(',');
+            var windowWidth = $(window).width();
+            var FrameWidth = windowWidth / arrayDevices.length;
+
+            var source = '{{each data as d i}}'
+                + '<img src="" class="device{{i}}" data-deviceid="{{d}}" style="width:240px; height:426px;" alt="设备{{i}} 暂无画面" />'
+                + '{{/each}}';
+            var render = template.compile(source);
+            var html = render({
+                data: arrayDevices
+            });
+            $('.snapshot-panel').html(html);
+
+
+            var frames = $('.snapshot-panel img[data-deviceid]');
+            setInterval(function () {
+                frames.each(function (index, d) {
+                    var deviceid = $(d).data("deviceid");
+                    var SRC = 'http://localhost/API/snapshot?deviceid=' + deviceid + '&compress=0.1&' + Math.random();
+                    $(d).attr('src', SRC);
+                });
+            }, Fps);
+        });
+
+
+        var queryString = function (query) {
+            var search = window.location.search + '';
+            if (search.charAt(0) != '?') {
+                return undefined;
+            }
+            else {
+                search = search.replace('?', '').split('&');
+                for (var i = 0; i < search.length; i++) {
+                    if (search[i].split('=')[0] == query) {
+                        return decodeURI(search[i].split('=')[1]);
+                    }
+                }
+                return undefined;
+            }
+        };
+
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@ require("TSLib");	--触动精灵函数扩展库
 --全局变量   系统等待时间基数
 radix=1*1000;
 fuzzy=85;
-httpUrl="http://192.168.0.50/lua/";
+httpUrl="http://192.168.1.20/lua/";
 
 luaPath="/var/mobile/Media/TouchSprite/lua/";
 

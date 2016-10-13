@@ -1,0 +1,477 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>脚本文件管理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width" />
+
+    <!-- Bootstrap core CSS -->
+    <link href="../library/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="../library/css/font-awesome.min.css" rel="stylesheet">
+    <!-- ionicons -->
+    <link href="../library/css/ionicons.min.css" rel="stylesheet">
+    <!-- Simplify -->
+    <link href="../library/css/simplify.css" rel="stylesheet">
+
+    <link href="../css/style.css" rel="stylesheet">
+
+</head>
+<body class="overflow-hidden">
+    <div class="preload no-footer">
+
+        <div class="header-block" style="min-height:52px;"></div>
+        <div class="menu-block"></div>
+
+        <div class="main-container sidebar-mini">
+            <div class="inbox-wrapper">
+                <div class="inbox-body padding-md">
+                    <div class="pagination-row clearfix m-bottom-md">
+                        <div class="col-xs-3 pull-left vertical-middle">
+                            脚本文件管理
+                        </div>
+                        <div class="col-xs-6 text-left-sm">
+                            <div class="floatleft" style="margin-right:10px;">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    操作<span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <a href="javascript:" onclick="openUploadPanel()"
+                                           data-toggle="tooltip" data-placement="right" title=""
+                                           data-original-title="新建脚本">新建脚本</a>
+                                    </li>
+                                    <li><a href="javascript:" onclick="deleteLua()">删除脚本</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="col-xs-9 btn-update-panel" style="display:none;">
+                                将文件更新到　<div class="btn-group">
+                                    <select class="form-control select-groups"></select>
+                                </div>
+                                <button type="button" class="btn btn-info btn-update">
+                                    更新
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-3 pull-right pull-left-sm text-right">
+                            <div class="col-xs-12 inline-block input-group">
+                                <a class="btn-freshen btn btn-success no-shadow" href="javascript:;">
+                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div><!-- ./pagination-row -->
+                    <div class="tree-view-menu-list font-16">
+                        <ul class="font-16">
+                            <li class="openable">
+                                <a href="#" path="/lua/" class="root-inline">
+                                    <i class="fa fa-folder m-right-xs folder-icon"></i>
+                                    脚本根目录
+                                </a>
+                            </li>
+                        </ul>
+                        <script id="tree-template" type="text/html">
+                            <ul class="subtree">
+                                {{each dics as d i}}
+                                <li class="openable">
+                                    <div class="custom-checkbox" style="display:inline-block">
+                                        <input type="checkbox" id="chk{{d+i}}" data-type="d" value="{{d}}">
+                                        <label for="chk{{d+i}}"></label>
+                                    </div>
+                                    <a href="#" class="root-inline" path="{{d}}"><i class="fa fa-folder m-right-xs folder-icon"></i>{{d}}</a>
+
+                                    <label>路径：</label><label class="file-src">{{Fulldics[i]}}{{d}}</label>
+                                </li>
+                                {{/each}}
+                                {{each files as d i}}
+                                <li>
+                                    <div class="custom-checkbox">
+                                        <input type="checkbox" id="chk{{d+i}}" data-type="f" value="{{d}}">
+                                        <label for="chk{{d+i}}"></label>
+                                    </div>
+                                    <a href="#" class="root-inline"><i class="fa fa-file m-right-xs"></i>{{d}}</a>
+
+                                    <label>路径：</label>
+                                    <label class="file-src"><a href="javascript:;">{{Fullfiles[i]}}{{d}}</a></label>
+                                    <label><a href="javascript:;" onclick="fileInfo('{{Fullfiles[i]}}{{d}}')" title="查看脚本内容">编辑</a></label>
+                                </li>
+                                {{/each}}
+                            </ul>
+                        </script>
+                    </div>
+
+                </div><!-- ./inbox-body -->
+            </div><!-- ./inbox-wrapper -->
+        </div>
+
+
+
+        <!--添加脚本文件-->
+        <div class="overlap addlua-panel">
+            <div class="header-mini"></div>
+            <div class="smart-widget col-xs-10 col-xs-offset-1">
+                <div class="smart-widget-header">
+                    添加脚本文件
+                    <span class="smart-widget-option">
+                        <a href="javascript:" onclick="$('.addlua-panel').hide()" class="widget-remove-option">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </span>
+                </div>
+                <div class="smart-widget-inner" id="addlua-panel">
+                    <div class="smart-widget-body">
+                        <form id="zip-form" method="post" enctype="multipart/form-data" class="form-horizontal no-margin form-border">
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">脚本名称</label>
+                                <div class="col-lg-8">
+                                    <input type="hidden" name="luaDir" value="lua" />
+                                    <input class="form-control dirname" name="dirname" type="text" placeholder="请输入脚本名称...">
+                                </div><!-- /.col -->
+                            </div><!-- /form-group -->
+
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">上传文件</label>
+                                <div class="col-lg-8">
+                                    <div class="alert alert-info alert-custom">
+                                        <i class="fa fa-warning"></i>
+                                        <span class="m-left-xs">
+                                            上传文件格式仅支持ZIP格式压缩文件，上传完成会覆盖服务器上的文件，请谨慎操作
+                                        </span>
+                                    </div>
+                                    <div class="fallback">
+                                        <input name="zipfile" class="zipfile" type="file">
+                                    </div>
+                                </div><!-- /.col -->
+                            </div><!-- /form-group -->
+
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label"></label>
+                                <div class="col-lg-4">
+                                    <a href="javascript:void()" class="btn-upload btn btn-danger" data-toggle="modal">保存</a>
+                                </div><!-- /.col -->
+                            </div><!-- /form-group -->
+                        </form>
+                    </div>
+                </div><!-- ./smart-widget-inner -->
+            </div>
+        </div>
+
+        <!--文件查看-->
+        <div class="overlap fileinfo-panel">
+            <div class="header-mini"></div>
+            <div class="smart-widget col-xs-12">
+                <div class="smart-widget-header">
+                    文件查看
+                    <span class="smart-widget-option">
+                        <a href="javascript:" onclick="$('.fileinfo-panel').hide()" class="widget-remove-option">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </span>
+                </div>
+                <div class="smart-widget-inner" id="fileinfo-panel">
+                    <div class="smart-widget-body">
+                        <form id="fileinfo-form" method="post" class="form-horizontal no-margin form-border">
+                            <div class="form-group">
+                                <label class="col-lg-1 control-label">脚本路径</label>
+                                <div class="col-lg-8">
+                                    <input class="form-control luapath" name="luapath" type="text" placeholder="">
+                                </div><!-- /.col -->
+                            </div><!-- /form-group -->
+
+                            <div class="form-group">
+                                <label class="col-lg-1 control-label">脚本内容</label>
+                                <div class="col-lg-10">
+                                    <textarea class="form-control content" name="content"
+                                               placeholder="" rows="16"></textarea>
+                                </div><!-- /.col -->
+                            </div><!-- /form-group -->
+
+
+                            <div class="form-group">
+                                <label class="col-lg-1 control-label"></label>
+                                <div class="col-lg-4">
+                                    <a href="javascript:void()" onclick="SaveContent()" class="btn-save btn btn-danger" data-toggle="modal">保存</a>
+                                    <a href="javascript:void()" onclick="$('.fileinfo-panel').hide()" class="btn-canel btn btn-default">取消</a>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div><!-- ./smart-widget-inner -->
+            </div>
+        </div>
+
+
+    </div>
+
+    <a href="#" class="scroll-to-top hidden-print"><i class="fa fa-chevron-up fa-lg"></i></a>
+
+    <!-- Jquery -->
+    <script src="../library/js/jquery-1.11.1.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="../library/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="../library/js/jquery.slimscroll.min.js"></script>
+
+    <!-- Popup Overlay -->
+    <script src="../library/js/jquery.popupoverlay.min.js"></script>
+    <!-- Modernizr -->
+    <script src="../library/js/modernizr.min.js"></script>
+
+
+    <!-- Easy Pie Chart -->
+    <script src='../library/js/jquery.easypiechart.min.js'></script>
+
+    <!-- Owl Carousel -->
+    <script src='../library/js/owl.carousel.min.js'></script>
+
+    <!-- Datepicker -->
+    <script src='../library/js/uncompressed/datepicker.js'></script>
+
+    <script src="../js/lib/artTemplate/template.js"></script>
+
+    <script src="../js/base.js"></script>
+    <script src="../js/authAction.js"></script>
+
+    <!-- Simplify -->
+    <script src="../library/js/simplify/simplify.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            BindGroup();
+
+            $('.tree-view-menu-list .openable').on('click', 'a', function () {
+                var parentElm = $(this).parent();
+                var path = getPath($(this));
+
+                if (parentElm.attr("source") != "done") {
+                    var $el = $(this);
+
+                    var path = getPath($el);
+                    if (path == "")
+                        return false;
+
+                    var treestr = $.ajax({
+                        url: domain + '/API/getSourceList',
+                        async: false,
+                        method: 'GET',
+                        data: { path: path },
+                    }).responseText;
+                    var treejson = JSON.parse(treestr);
+                    var html = template('tree-template', treejson.data);
+                    parentElm.attr("source", "done");
+                    parentElm.append(html);
+                }
+
+                parentElm.toggleClass('open');
+                parentElm.children('.subtree').slideToggle(200);
+                return false;
+            });
+
+            $('.tree-view-menu-list').on('click', 'input[type="checkbox"]', function () {
+                checkParent($(this));
+
+                checkChildren($(this));
+
+                var checkbox = $('.tree-view-menu-list input[data-type="f"]:checked');
+                //checkbox=$.grep(groupboxs, function (d) {
+                //    return $(d).is(':checked');
+                //});
+                if (checkbox.length > 0)
+                    $('.btn-update-panel').show(200);
+                else
+                    $('.btn-update-panel').hide(200);
+            });
+
+
+            $('.btn-update').click(function () {
+                var groupid = $('.select-groups').val();
+                if (groupid == 0) {
+                    alert("请选择将文件更新的组");
+                    return false;
+                }
+                var checkbox = $('.tree-view-menu-list input[type="checkbox"]:checked');
+                var filesSrc = "";
+                checkbox.each(function () {
+                    var $box = $(this);
+                    if ($box.data("type") == "f")
+                        filesSrc += $box.parent().parent().find('.file-src a').html() + ",";
+                });
+                $('.btn-update').html('<i class="fa fa-spinner fa-spin m-right-xs"></i>加载中...');
+
+                $.ajax({
+                    type: 'POST',
+                    url: domain + "/api/Updatelua",
+                    dataType: 'json',
+                    data: { groupid: groupid, paths: filesSrc },
+                    success: function (data) {
+                        alert(data.message);
+                        $('.btn-update').html('更新');
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        //alert("XMLHttpRequest:" + XMLHttpRequest + ",textStatus" + textStatus + ",errorThrown" + errorThrown);
+                        console.log('error:.btn-update');
+                    }
+                });
+            });
+
+            //上传脚本ZIP
+            $('.btn-upload').click(function () {
+                var data = new FormData($('#zip-form')[0]);
+                $('.btn-upload').html('<i class="fa fa-spinner fa-spin m-right-xs"></i>加载中...');
+                $.ajax({
+                    type: 'POST',
+                    url: domain + "/api/UploadZip",
+                    dataType: 'json',
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    enctype: 'multipart/form-data',
+                    data: data,
+                    success: function (data) {
+                        alert(data.message);
+                        $('.btn-upload').html('保存');
+                        if (data.code == 200)
+                            location.href = location.href;
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        //alert("XMLHttpRequest:" + XMLHttpRequest + ",textStatus" + textStatus + ",errorThrown" + errorThrown);
+                        console.log('error:.btn-upload');
+                    }
+                });
+                //$("#zip-form").submit();
+            });
+
+            $('.btn-freshen').click(function () {
+                location.href = location.href;
+            });
+
+        });
+
+        //获得路径
+        function getPath($el) {
+            var name = $el.attr('path');
+
+            if (name == undefined)
+                return "";
+            var node = $el.parent().parent().parent().find("a[path]");
+            if (name == "/lua/" || node == undefined)
+            { return name; }
+            else
+                return getPath(node) + name + '/';
+        }
+
+        //选中父节点
+        function checkParent($el) {
+            if (!$el.is(':checked')) {
+                var checkbox = $el.parent().parent().parent().find('input[type="checkbox"]:checked');
+                if (checkbox.length == 0) {
+                    var $parent = $el.parent().parent().parent().parent();
+                    $parent.find(".custom-checkbox:first input").prop("checked", false);;
+                }
+                return;
+            }
+            var $parent = $el.parent().parent().parent().parent();
+            $parent.find(">.custom-checkbox:first input").prop("checked", true);;
+
+        }
+
+        //选中子节点
+        function checkChildren($el) {
+            var checkbox = $el.parent().parent().find('input[type="checkbox"]');
+            if ($el.is(':checked')) {
+                checkbox.each(function () {
+                    $(this).prop("checked", true);
+                });
+            }
+            else {
+                checkbox.each(function () {
+                    $(this).prop("checked", false);
+                });
+            }
+        }
+
+        function deleteLua() {
+            if (!confirm('确认删除？删除后无法恢复!'))
+                return;
+            var checkbox = $('.tree-view-menu-list input[type="checkbox"]:checked');
+            //计算要删除的文件夹或者文件集合
+            var DicsSrc = "";
+            checkbox.each(function () {
+                var $box = $(this);
+                var $tree=$box.parent().parent();
+                if ($tree.find('input[type="checkbox"]').not("input:checked").length > 0) {
+                    return;
+                }
+                else
+                    DicsSrc += $box.parent().parent().find('.file-src').html() + ",";
+            });
+            $.ajax({
+                type: 'POST',
+                url: domain + "/api/deletelua",
+                dataType: 'json',
+                data: { paths: DicsSrc },
+                success: function (data) {
+                    alert(data.message);
+                    location.href = location.href;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    //alert("XMLHttpRequest:" + XMLHttpRequest + ",textStatus" + textStatus + ",errorThrown" + errorThrown);
+                    console.log('error:btn-delete');
+                }
+            });
+        }
+
+        function openUploadPanel() {
+            $('.addlua-panel').show();
+            //$('#zip-form').attr('action', domain + '/API/UploadZip');
+        }
+
+        function fileInfo(path)
+        {
+            //window.open(domain + "/lua/fileInfo?path=" + encodeURI(path));
+            $.ajax({
+                type: 'POST',
+                url: domain + "/Lua/fileInfo",
+                dataType: 'json',
+                data: { path:path },
+                success: function (data) {
+                    //alert(data.message);
+                    if (data.code == 200) {
+                        $("#fileinfo-panel .luapath").val(path);
+                        $("#fileinfo-panel .content").val(data.data);
+                        $('.fileinfo-panel').show();
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert('error:reboot');
+                }
+            });
+
+
+
+        }
+
+        function SaveContent()
+        {
+            $.ajax({
+                type: 'POST',
+                url: domain + "/Lua/SavefileInfo",
+                dataType: 'json',
+                data: $("#fileinfo-form").serialize(),
+                success: function (data) {
+                    alert(data.message);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert('error:SaveFileInfo');
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

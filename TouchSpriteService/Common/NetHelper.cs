@@ -225,7 +225,7 @@ namespace TouchSpriteService.Common
         }
 
 
-        public static byte[] GetRequestByte(string url, string method, string postData,int timeout, NameValueCollection headers = null)
+        public static byte[] GetRequestByte(string url, string method, string postData, int timeout, NameValueCollection headers = null)
         {
             if (!(url.Contains("http://") || url.Contains("https://")))
                 url = "http://" + url;
@@ -398,5 +398,6 @@ namespace TouchSpriteService.Common
             }
         }
         #endregion
+
     }
 }

@@ -48,9 +48,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\TouchPlatform\bin\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -64,7 +61,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
@@ -176,7 +172,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\DeviceController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -208,16 +203,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
     <Folder Include="Views\Home\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TouchModel\TouchModel.csproj">
-      <Project>{124ef94c-7bec-4e87-a208-c43623289c0c}</Project>
-      <Name>TouchModel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TouchSpriteService\TouchSpriteService.csproj">
-      <Project>{84a4380b-e84f-4f5e-afa5-9d801b6dc9ff}</Project>
-      <Name>TouchSpriteService</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

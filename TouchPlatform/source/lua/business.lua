@@ -399,8 +399,29 @@ function AddFriendInPage(phoneNum,IsSendMsg,WelcomeMsg)
 					{336,437,0x999999},
 					{326,587,0xefefef},
 					{292,648,0x007aff}},fuzzy) then
+				
+				local addType="";
+				--详细判断，如果出现操作频繁。直接退出
+				--5c和4s需要具体的判断代码
+				if multiColor({
+					{  255,  546, 0x212121},
+					{  299,  546, 0x000000},
+					{  376,  549, 0x000000}},fuzzy) then
+					toast("操作频繁");
+					mSleep(2*radix); 
+					
+					addType="操作频繁";
+				end
+				
 				click(292,648,30);
 				mSleep(2*radix);
+				
+				if(addType=="操作频繁") then
+					BackRight(1);
+					Backer(1);
+					lua_exit();
+				end
+				
 				
 				--点击X去掉输入的手机号
 				click(503,83,30);
