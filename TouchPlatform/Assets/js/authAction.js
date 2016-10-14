@@ -82,6 +82,8 @@ function DelDevice() {
         alert("请选择要删除的设备");
         return false;
     }
+    if (!confirm("确认要删除勾选的设备吗？")) return false;
+
     $.ajax({
         type: 'GET',
         url: domain + "/api/DelDevice",
@@ -324,7 +326,23 @@ function StopluaByDeviceIds(ids) {
     });
 }
 
+function getCheckDeviceIds() {
+    var deviceids = "";
+    $('#tr-panel input[type=checkbox]').each(function () {
+        if ($(this).prop('checked')) {
+            deviceids += $(this).attr("deviceid") + ",";
+        }
+    });
+    return deviceids;
+}
 
+function getAllDeviceIds() {
+    var deviceids = "";
+    $('#tr-panel input[type=checkbox]').each(function () {
+        deviceids += $(this).attr("deviceid") + ",";
+    });
+    return deviceids;
+}
 
 function LooperDevices() {
     //setInterval(function () {
@@ -333,10 +351,12 @@ function LooperDevices() {
 
     var groupid = $(".select-groups").val();
 
-    var AllDevices = new Array();
-    $('#tr-panel input[type=checkbox]').each(function () {
-        AllDevices.push($(this).attr("deviceid"));
-    });
+    //var AllDevices = new Array();
+    //$('#tr-panel input[type=checkbox]').each(function () {
+    //    AllDevices.push($(this).attr("deviceid"));
+    //});
+    //var deviceids = AllDevices.join(',');
+    var deviceids = getAllDeviceIds();
 
     if (groupid != "0") {
         $('.tip-panel').show();
@@ -347,7 +367,7 @@ function LooperDevices() {
             //async: false,
             dataType: 'json',
             //data: { groupid: groupid, deviceids: AllDevices.join(',') },
-            data: { deviceids: AllDevices.join(','), connectType: connectType },
+            data: { deviceids: deviceids, connectType: connectType },
             success: function (data) {
                 if (data.code == 200) {
                     $(data.list).each(function (index, d) {
@@ -584,40 +604,3 @@ function InitCaches() {
     });
 }
 
-
-function GetAuth(deviceid) {
-    var d = $.ajax({
-        type: 'POST',
-        url: domain + "/api/GetAuth",
-        dataType: 'json',
-        data: { deviceid: deviceid },
-        async: false
-    }).responseText;
-    var json = JSON.parse(d);
-
-    return json.data;
-}
-
-//跨域问题
-//function requestDevice(deviceid) {
-//    var d = GetAuth(deviceid);
-//    if (typeof (d) == "undefined") {
-//        alert("请求Auth失败");
-//        return;
-//    }
-
-//    $.ajax({
-//        url: d.url + "/deviceid",
-//        timeout: 10000,
-//        dataType: "text",
-//        type: "GET",
-//        //async: false,   //同步
-//        headers: { Auth: d.auth },
-//        success: function (data) {
-//            alert(data);
-//        },
-//        error: function (XMLHttpRequest, textStatus, errorThrown) {
-//            console.log('error:requestDevice');
-//        }
-//    });
-//}

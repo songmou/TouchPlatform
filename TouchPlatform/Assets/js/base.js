@@ -1,5 +1,5 @@
-﻿//var domain = "http://192.168.0.50:8092";
-var domain = "http://" + document.domain;
+﻿var domain = "http://" + document.domain;
+var domain_usb = "http://localhost:8080";
 
 $(function () {
     //var html = '<div class="col-xs-6 col-xs-offset-3 text-left-sm">';
@@ -15,19 +15,20 @@ $(function () {
     //$('body').append(html);
 
 
-    //$('.menu-block').load(domain + '/Master/Menu');
-    //$('.header-block').load(domain + '/Master/Top');
-    var htmlMenu = $.ajax({
-        url: domain + '/Master/Menu',
-        async: false
-    }).responseText;
-    $('.menu-block').html(htmlMenu);
+    $('.menu-block').load(domain + '/Master/Menu');
+    $('.header-block').load(domain + '/Master/Top');
 
-    var htmlHeader = $.ajax({
-        url: domain + '/Master/Top',
-        async: false
-    }).responseText;
-    $('.header-block').html(htmlHeader);
+    //var htmlMenu = $.ajax({
+    //    url: domain + '/Master/Menu',
+    //    async: false
+    //}).responseText;
+    //$('.menu-block').html(htmlMenu);
+
+    //var htmlHeader = $.ajax({
+    //    url: domain + '/Master/Top',
+    //    async: false
+    //}).responseText;
+    //$('.header-block').html(htmlHeader);
 });
 
 

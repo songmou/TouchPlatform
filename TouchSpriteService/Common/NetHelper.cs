@@ -274,7 +274,7 @@ namespace TouchSpriteService.Common
             }
             catch (WebException ex)
             {
-                return encoding.GetBytes("");
+                return encoding.GetBytes(ex.Message);
             }
         }
 

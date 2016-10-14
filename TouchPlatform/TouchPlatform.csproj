@@ -133,6 +133,7 @@
     <Content Include="Assets\js\signalr\jquery-1.6.4.min.js" />
     <Content Include="Assets\js\signalr\jquery.signalR-2.2.0.js" />
     <Content Include="Assets\js\signalr\jquery.signalR-2.2.0.min.js" />
+    <Content Include="Assets\js\usbAction.js" />
     <Content Include="Assets\library\bootstrap\css\bootstrap.min.css" />
     <Content Include="Assets\library\bootstrap\js\bootstrap.min.js" />
     <Content Include="Assets\library\css\animate.min.css" />
@@ -219,6 +220,7 @@
   <ItemGroup>
     <Compile Include="App_Start\ImagesHub.cs" />
     <Compile Include="App_Start\Startup.cs" />
+    <Compile Include="Authorizes\ApiAuthorizeAttribute.cs" />
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\LuaController.cs" />
     <Compile Include="Controllers\HomeController.cs" />

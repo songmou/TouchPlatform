@@ -30,8 +30,8 @@
                         <div class="col-md-2 pull-left vertical-middle">
                             <select class="form-control select-luas"></select>
                         </div>
-                        <div class="col-md-6">
-                            <div class="col-md-6 text-left-sm">
+                        <div class="col-md-7">
+                            <div class="col-md-5 text-left-sm">
 
                                 <div class="btn-group">
                                     <select class="form-control select-groups"></select>
@@ -41,7 +41,7 @@
                                     <span class="btn-command-icon"><span class="caret"></span></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li>
+                                    <!--<li>
                                         <a href="javascript:" onclick="GroupRunlua()" id="groupRunlua"
                                            data-toggle="tooltip" data-placement="right" title=""
                                            data-original-title="优先执行当前组">执行命令</a>
@@ -51,10 +51,10 @@
                                            data-toggle="tooltip" data-placement="right" title=""
                                            data-original-title="优先执行当前组">停止命令</a>
                                     </li>
-                                    <li class="divider"></li>
+                                    <li class="divider"></li>-->
 
 
-                                    <li class="btn-sys-panel">
+                                    <!--<li class="btn-sys-panel">
                                         <a href="javascript:;" class="">系统操作</a>
                                         <ul class="dropdown-menu" role="menu">
                                             <li><a href="javascript:" onclick="reboot('1')">重启设备</a></li>
@@ -66,21 +66,22 @@
                                     <li><a href="javascript:" onclick="UploadluaFiles()">发送脚本文件</a></li>
                                     <li><a href="javascript:" onclick="UploadFriendlineImg()">发送朋友圈照片</a></li>
 
-                                    <li class="divider"></li>
+                                    <li class="divider"></li>-->
                                     <li><a href="javascript:" onclick="$('.addgroupPanel').show()">添加分组</a></li>
                                     <li><a href="javascript:" onclick="DelDevice()">删除设备</a></li>
                                 </ul>
 
 
                             </div>
-                            <div class="col-md-6 text-left-sm">
+                            <div class="col-md-7 text-left-sm">
 
-                                <!--<div class="input-group col-md-5 inline-block action-icon">
+                                <div class="input-group col-md-4 inline-block action-icon">
                                     <div class="custom-checkbox">
                                         <input type="checkbox" id="connectType" value="USB" class="Type-check">
                                         <label for="connectType"></label>
-                                    </div>USB模式
-                                </div>-->
+                                    </div>
+                                    <label for="connectType" style="font-weight:normal;">USB模式</label>
+                                </div>
 
                                 <div class="input-group inline-block action-icon">
                                     <a href="javascript:" onclick="Runlua()" title="执行命令">
@@ -158,8 +159,9 @@
                                     <th>分组名称</th>
                                     <th>设备IP</th>
                                     <th>自定义名称</th>
-                                    <th>端口号</th>
-                                    <th>版本号</th>
+                                    <!--<th>端口号</th>
+                                    <th>版本号</th>-->
+                                    <th>USB IP</th>
                                     <th>状态</th>
                                 </tr>
                             </thead>
@@ -356,8 +358,9 @@
             <td>
                 {{d.username}}
             </td>
-            <td>{{d.port}}</td>
-            <td>V{{d.tsversion}}</td>
+            <!--<td>{{d.port}}</td>
+            <td>V{{d.tsversion}}</td>-->
+            <td>{{d.usbip}}</td>
             <td class="action-status"></td>
         </tr>
         {{/each}}
@@ -399,6 +402,7 @@
 
     <script src="../js/base.js"></script>
     <script src="../js/authAction.js"></script>
+    <script src="../js/usbAction.js"></script>
 
     <!-- Simplify -->
     <script src="../library/js/simplify/simplify.js"></script>
@@ -433,7 +437,8 @@
             });
             $('.btn-freshen').click(function () {
                 //BindDevice();
-                LooperDevices();
+                //LooperDevices();
+                getStatus();
             });
 
             BindLuaDir();

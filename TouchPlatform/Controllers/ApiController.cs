@@ -41,7 +41,7 @@ namespace TouchPlatform.Controllers
                     model.usbip = "";
                     model.port = d.port;
                     model.osType = d.osType;
-                    model.username = d.ip;
+                    model.username = d.ip.Split('.').Last();
                     model.remark = "";
                     model.status = "";
                     model.tsversion = d.tsversion;
@@ -53,7 +53,7 @@ namespace TouchPlatform.Controllers
                     model.deviceid = d.deviceid;
                     model.devname = d.devname;
                     model.ip = d.ip;
-                    model.usbip = d.usbip;
+                    //model.usbip = d.usbip;
                     model.port = d.port;
                     model.osType = d.osType;
                     model.tsversion = d.tsversion;
@@ -271,6 +271,7 @@ namespace TouchPlatform.Controllers
                 string[] temp = { };
                 return temp;
             }
+            deviceStr = deviceStr.TrimEnd(',');
 
             var listDetail = new List<device2GroupDetail>();
             if (groupid != 0)
@@ -295,7 +296,7 @@ namespace TouchPlatform.Controllers
             {
                 code = 100,
                 message = "参数错误",
-                data = list 
+                data = list
             };
 
             var deviceids = GetDevicesParam();
@@ -316,11 +317,16 @@ namespace TouchPlatform.Controllers
                 var deviceid = deviceids[i];
                 taskDevices[i] = Task.Run(() =>
                 {
-                    var auth = AuthService.GetAuth(deviceid);
 
-                    var service = new deviceService();
-                    var model = service.GetCacheDeviceDetail(deviceid);
-                    return model;
+                    if (!string.IsNullOrWhiteSpace(deviceid))
+                    {
+                        var auth = AuthService.GetAuth(deviceid);
+
+                        var service = new deviceService();
+                        var model = service.GetCacheDeviceDetail(deviceid);
+                        return model;
+                    }
+                    return null;
                 });
             }
             Task.WaitAll(taskDevices);

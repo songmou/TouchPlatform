@@ -12,10 +12,9 @@ namespace TouchLocal.Controllers
         /// 本地请求中转
         /// </summary>
         /// <returns></returns>
-        public byte[] Index()
+        [Authorizes.ApiAuthorize]
+        public byte[] RelayAPI()
         {
-            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
-
             var respone = HttpContext.Response;
             var request = HttpContext.Request;
 
@@ -27,11 +26,11 @@ namespace TouchLocal.Controllers
             //string ToHost = "192.168.20.1:50005";
             if (string.IsNullOrWhiteSpace(Request["host"]))
             {
-                return System.Text.Encoding.Default.GetBytes("");
+                return null;
             }
             if (string.IsNullOrWhiteSpace(Request["query"]))
             {
-                return System.Text.Encoding.Default.GetBytes("");
+                return null;
             }
 
             string ToHost = Request["host"].ToString();
@@ -104,7 +103,7 @@ namespace TouchLocal.Controllers
             #endregion
 
             //判断是否是Get请求,如果不是Get就写入请求报文体
-            if (String.Compare(request.HttpMethod, "get", StringComparison.CurrentCultureIgnoreCase) != 0)
+            if (String.Compare(request.HttpMethod, "GET", StringComparison.CurrentCultureIgnoreCase) != 0)
             {
                 //设置请求体
                 hRequest.Method = "POST";
