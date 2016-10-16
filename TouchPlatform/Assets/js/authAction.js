@@ -586,6 +586,7 @@ function ViewerDevice() {
     //location.href = "snapshot.html?deviceids=" + selectDevices.join(',');
     //location.href = "iframe.html?q=/Master/socket&deviceids=" + selectDevices.join(',');
     window.open(domain + "/Master/socket?deviceids=" + selectDevices.join(',') + "&t=" + connectType);
+    //window.open("snapshot.html?deviceids=" + selectDevices.join(',') + "&t=" + connectType);
 }
 
 function InitCaches() {

@@ -208,13 +208,17 @@ namespace TouchSpriteService
         }
 
 
-        public List<T> Get(string where = "")
+        public List<T> Get(string where = "", string sortFiled = "ID", bool sortASC = true)
         {
             Type type = typeof(T);
 
             PropertyInfo[] properties = type.GetProperties();
 
-            string sql = string.Format("select * from {0} where 1=1 {1}", type.Name, where);
+            string sql = string.Format("select * from {0} where 1=1 {1} ORDER BY {2} {3}",
+                type.Name,
+                where,
+                sortFiled,
+                sortASC ? "ASC" : "DESC");
 
             List<T> list = new List<T>();
 

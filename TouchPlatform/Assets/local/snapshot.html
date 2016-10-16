@@ -2,10 +2,20 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>设备实时查看</title>
+    <title>微领航-Web远程平台</title>
     <meta charset="utf-8" />
     <style type="text/css">
-        .snapshot-panel img{border:1px solid #ccc;margin:5px 10px; background:#ccc;}
+        .snapshot-panel div {
+            width: 10%;
+            min-width: 200px;
+        }
+
+        .snapshot-panel img {
+            border: 1px solid #ccc;
+            margin: 5px 10px;
+            background: #ccc;
+            width: 100%;
+        }
     </style>
 </head>
 <body style="text-align:center;">
@@ -15,8 +25,12 @@
     <script src="../library/js/jquery-1.11.1.min.js"></script>
     <script src="../js/lib/artTemplate/template.js"></script>
 
+    <script src="../js/base.js"></script>
+    <script src="../js/authAction.js"></script>
+    <script src="../js/usbAction.js"></script>
+
     <script type="text/javascript">
-        var Fps = 1500;
+        var Fps = 3000;
         $(function () {
             var deviceids = queryString("deviceids");
             if (deviceids == undefined)
@@ -27,7 +41,7 @@
             var FrameWidth = windowWidth / arrayDevices.length;
 
             var source = '{{each data as d i}}'
-                + '<img src="" class="device{{i}}" data-deviceid="{{d}}" style="width:240px; height:426px;" alt="设备{{i}} 暂无画面" />'
+                + '<div class="device{{i}}" data-deviceid="{{d}}"><div>'
                 + '{{/each}}';
             var render = template.compile(source);
             var html = render({
@@ -36,32 +50,34 @@
             $('.snapshot-panel').html(html);
 
 
-            var frames = $('.snapshot-panel img[data-deviceid]');
+            //var frames = $('.snapshot-panel div[data-deviceid]');
+            //setInterval(function () {
+            //    frames.each(function (index, d) {
+            //        var deviceid = $(d).data("deviceid");
+            //        $(d).html("");
+            //    });
+            //}, Fps);
+
+            var connectType = queryString("t") || "";
+            var IsUSB = connectType == "USB";
+
+            var data = GetAuth(deviceids);
+            if (typeof (data) == "undefined" || data.length == 0) {
+                alert("请求Auth失败");
+                return;
+            }
+
             setInterval(function () {
-                frames.each(function (index, d) {
-                    var deviceid = $(d).data("deviceid");
-                    var SRC = 'http://localhost/API/snapshot?deviceid=' + deviceid + '&compress=0.1&' + Math.random();
-                    $(d).attr('src', SRC);
+                getSnapshot({
+                    deviceids: deviceids,
+                    IsUSB: IsUSB,
+                    data: data,
+                    callback: function (d, html) {
+                        $("div[data-deviceid='" + d.deviceid + "']").html(html);
+                    }
                 });
             }, Fps);
         });
-
-
-        var queryString = function (query) {
-            var search = window.location.search + '';
-            if (search.charAt(0) != '?') {
-                return undefined;
-            }
-            else {
-                search = search.replace('?', '').split('&');
-                for (var i = 0; i < search.length; i++) {
-                    if (search[i].split('=')[0] == query) {
-                        return decodeURI(search[i].split('=')[1]);
-                    }
-                }
-                return undefined;
-            }
-        };
 
     </script>
 </body>

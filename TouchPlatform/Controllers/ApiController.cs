@@ -151,7 +151,7 @@ namespace TouchPlatform.Controllers
             var result = new { code = 100, message = "参数错误", data = list };
 
             DataReflector<groups> service = new DataReflector<groups>();
-            list = service.Get();
+            list = service.Get("", "sortcode", true);
 
             var groupid = WebHelper.GetRequestInt("groupid");
             if (groupid != 0)
