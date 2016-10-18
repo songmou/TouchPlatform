@@ -23,6 +23,8 @@ namespace TouchModel
         public int groupid { get; set; }
         public string groupname { get; set; }
         public string auth { get; set; }
+        public string groupip { get; set; }
+        public int groupport { get; set; }
         public DateTime lastTime { get; set; }
     }
 }

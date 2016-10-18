@@ -79,13 +79,13 @@ namespace TouchPlatform.Controllers
             //DataReflector<devices> service = new DataReflector<devices>();
             //list = service.Get();
 
-            string where = "";
-            if (groupid != 0)
-            {
-                where = " (groups.ID=" + groupid + " or groups.ID is null)";
-            }
+            //string where = "";
+            //if (groupid != 0)
+            //{
+            //    where = " (groups.ID=" + groupid + " or groups.ID is null)";
+            //}
             var service = new TouchSpriteService.Business.deviceService();
-            list = service.GetDevice2GroupDetail(where);
+            list = service.GetCacheDevicelistDetail(groupid);
 
             result = new { code = 200, message = "查询成功", data = list };
             return JsonConvert.SerializeObject(result);
@@ -128,6 +128,8 @@ namespace TouchPlatform.Controllers
                 model.groupname = d.groupname;
                 model.auth = "";
                 model.sortcode = d.sortcode;
+                model.groupip = d.groupip;
+                model.groupport = d.groupport;
                 model.createdate = model.updatedate = DateTime.Now;
                 service.Add(model);
             }
@@ -136,6 +138,8 @@ namespace TouchPlatform.Controllers
 
                 model.groupname = d.groupname;
                 model.sortcode = d.sortcode;
+                model.groupip = d.groupip;
+                model.groupport = d.groupport;
                 model.updatedate = DateTime.Now;
                 service.Update(model);
             }
@@ -155,7 +159,9 @@ namespace TouchPlatform.Controllers
 
             var groupid = WebHelper.GetRequestInt("groupid");
             if (groupid != 0)
+            {
                 list = list.Where(q => q.ID == groupid).ToList();
+            }
 
             result = new { code = 200, message = "查询成功", data = list };
             return JsonConvert.SerializeObject(result);
@@ -185,7 +191,8 @@ namespace TouchPlatform.Controllers
             TouchSpriteService.Business.deviceService service = new TouchSpriteService.Business.deviceService();
 
             string deviceid = WebHelper.GetQueryString("deviceid");
-            var model = service.GetDeviceDetail(WebHelper.SqlFilter(deviceid));
+            //var model = service.GetDeviceDetail(WebHelper.SqlFilter(deviceid));
+            var model = service.GetCacheDeviceDetail(WebHelper.SqlFilter(deviceid));
 
             var result = new { code = 200, message = "查询成功", data = model };
             return JsonConvert.SerializeObject(result);
@@ -278,7 +285,8 @@ namespace TouchPlatform.Controllers
             {
                 deviceStr = "";
                 var service = new TouchSpriteService.Business.deviceService();
-                listDetail = service.GetDevice2GroupDetail(" groups.ID=" + groupid);
+                //listDetail = service.GetDevice2GroupDetail(" groups.ID=" + groupid);
+                listDetail = service.GetCacheDevicelistDetail(groupid);
                 foreach (var d in listDetail)
                 {
                     deviceStr += d.deviceid + ",";
@@ -377,7 +385,8 @@ namespace TouchPlatform.Controllers
             bool IsUSB = connectType == "USB";
 
             var service = new TouchSpriteService.Business.deviceService();
-            var list = service.GetDevice2GroupDetail(" groups.ID=" + groupid);
+            //var list = service.GetDevice2GroupDetail(" groups.ID=" + groupid);
+            var list = service.GetCacheDevicelistDetail(groupid);
 
             int success = 0, fail = 0;
             var ActionService = new TouchSpriteService.authActionService();
@@ -520,7 +529,8 @@ namespace TouchPlatform.Controllers
             bool IsUSB = connectType == "USB";
 
             var service = new TouchSpriteService.Business.deviceService();
-            var list = service.GetDevice2GroupDetail(" groups.ID=" + groupid);
+            //var list = service.GetDevice2GroupDetail(" groups.ID=" + groupid);
+            var list = service.GetCacheDevicelistDetail(groupid);
 
             int success = 0, fail = 0;
             var ActionService = new TouchSpriteService.authActionService();

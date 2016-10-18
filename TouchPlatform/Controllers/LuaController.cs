@@ -717,6 +717,13 @@ namespace TouchPlatform.Controllers
                 file.SaveAs(filePath);
                 imageArray += fileName + ",";
             }
+
+            //int imgCount = WebHelper.GetFormInt("img-count", 0);
+            //string imageArray = WebHelper.GetFormString("imageArray", "");
+            //if (imageArray.Split(',').Length != imgCount)
+            //{
+            //    return JsonConvert.SerializeObject(result);
+            //}
             service.AddOrUpdateConfig(luaType, "imageArray", imageArray.TrimEnd(','));
 
 

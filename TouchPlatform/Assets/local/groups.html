@@ -109,6 +109,19 @@
 
 
                             <div class="form-group">
+                                <label class="col-lg-2 control-label">IIS中转地址(电脑IP)</label>
+                                <div class="col-lg-8">
+                                    <input class="form-control groupip" name="groupip" type="text" placeholder="请输入该组电脑IIS的中转地址...">
+                                </div><!-- /.col -->
+                            </div><!-- /form-group -->
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">中转地址端口</label>
+                                <div class="col-lg-8">
+                                    <input class="form-control sortcode" name="groupport" type="number" placeholder="中转地址端口...">
+                                </div><!-- /.col -->
+                            </div>
+
+                            <div class="form-group">
                                 <label class="col-lg-2 control-label"></label>
                                 <div class="col-lg-4">
                                     <a href="javascript:;" onclick="SaveGroupDetai()" class="btn-save btn btn-danger">保存</a>
@@ -219,6 +232,8 @@
                     $('#g-form input[name=id]').val(data.data.ID);
                     $('#g-form input[name=groupname]').val(data.data.groupname);
                     $('#g-form input[name=sortcode]').val(data.data.sortcode);
+                    $('#g-form input[name=groupip]').val(data.data.groupip);
+                    $('#g-form input[name=groupport]').val(data.data.groupport);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     console.log('error:GroupDetail');

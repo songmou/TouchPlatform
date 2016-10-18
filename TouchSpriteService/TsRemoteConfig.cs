@@ -18,7 +18,8 @@ namespace TouchSpriteService
             { "通讯录加粉","MainAddContacts.lua"},
             { "朋友圈互相点赞","MainWxlike.lua"},
             { "统计粉丝数","MainGetFriendsCount.lua"},
-            { "动态脚本","MainCommand.lua"}
+            { "动态脚本","MainCommand.lua"},
+            { "入口主脚本","MainLooper.lua"}
         };
     }
 }

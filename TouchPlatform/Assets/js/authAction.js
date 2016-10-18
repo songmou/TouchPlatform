@@ -162,24 +162,30 @@ function GroupRunlua() {
         return;
     }
 
+    $('.tip-panel').show();
+
     $('.btn-command-icon').html('<i class="fa fa-spinner fa-spin m-right-xs"></i>');
     $.ajax({
         type: 'POST',
         url: domain + "/api/SetLuaPath",
         dataType: 'json',
         data: { groupid: groupid, path: luaName, connectType: connectType },
-        async: false,
+        //async: false,
+        //timeout: 5000,
         success: function (data) {
             if (data.code == 200) {
                 //执行命令
                 RunluaByGroupID(groupid);
                 $('.btn-command-icon').html('<span class="caret"></span>');
             }
-            else
+            else {
                 alert(data.message);
+                $('.tip-panel').hide();
+            }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert('error:GroupLuaPath');
+            console.log('error:GroupLuaPath');
+            $('.tip-panel').hide();
         }
     });
 
@@ -254,20 +260,24 @@ function RunluaByGroupID(groupid) {
         type: 'POST',
         url: domain + "/api/GroupRunlua",
         dataType: 'json',
-        data: { groupid: groupid },
+        data: { groupid: groupid, connectType: connectType },
         async: false,
         success: function (data) {
             alert(data.message);
             if (data.code == 200) {
             }
+            $('.tip-panel').hide();
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert('error:RunluaByGroupID');
+            console.log('error:RunluaByGroupID');
+            $('.tip-panel').hide();
         }
     });
 }
 
 function RunluaByDeviceIds(ids) {
+
+    $('.tip-panel').show();
 
     var IsUSB = $("#connectType").prop('checked') || false;
     var connectType = IsUSB ? "USB" : "WIFI";
@@ -276,17 +286,21 @@ function RunluaByDeviceIds(ids) {
         type: 'POST',
         url: domain + "/api/Runlua",
         dataType: 'json',
-        data: { deviceids: ids },
+        data: { deviceids: ids, connectType: connectType },
         success: function (data) {
             alert(data.message);
+            $('.tip-panel').hide();
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert('error:RunluaByDeviceIds');
+            console.log('error:RunluaByDeviceIds');
+            $('.tip-panel').hide();
         }
     });
 }
 
 function StopluaByGroupID(groupid) {
+
+    $('.tip-panel').show();
 
     var IsUSB = $("#connectType").prop('checked') || false;
     var connectType = IsUSB ? "USB" : "WIFI";
@@ -295,19 +309,23 @@ function StopluaByGroupID(groupid) {
         type: 'POST',
         url: domain + "/api/GroupStoplua",
         dataType: 'json',
-        data: { groupid: groupid },
+        data: { groupid: groupid, connectType: connectType },
         success: function (data) {
             alert(data.message);
             if (data.code == 200) {
             }
+            $('.tip-panel').hide();
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert('error:StopluaByGroupID');
+            console.log('error:StopluaByGroupID');
+            $('.tip-panel').hide();
         }
     });
 }
 
 function StopluaByDeviceIds(ids) {
+
+    $('.tip-panel').show();
 
     var IsUSB = $("#connectType").prop('checked') || false;
     var connectType = IsUSB ? "USB" : "WIFI";
@@ -319,9 +337,11 @@ function StopluaByDeviceIds(ids) {
         data: { deviceids: ids, connectType: connectType },
         success: function (data) {
             alert(data.message);
+            $('.tip-panel').hide();
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert('error:StopluaByDeviceIds');
+            console.log('error:StopluaByDeviceIds');
+            $('.tip-panel').hide();
         }
     });
 }
@@ -388,6 +408,9 @@ function LooperDevices() {
 }
 
 function reboot(type) {
+
+    $('.tip-panel').show();
+
     var IsUSB = $("#connectType").prop('checked') || false;
     var connectType = IsUSB ? "USB" : "WIFI";
 
@@ -413,9 +436,11 @@ function reboot(type) {
             alert(data.message);
             if (data.code == 200) {
             }
+            $('.tip-panel').hide();
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert('error:reboot');
+            console.log('error:reboot');
+            $('.tip-panel').hide();
         }
     });
 }
@@ -442,6 +467,9 @@ function OpenSetLuaPathPanel() {
 }
 
 function UploadluaFiles() {
+
+    $('.tip-panel').show();
+
     var groupid = $(".select-groups").val();
     //if (groupid == 0) { alert('请选择分组'); return; }
 
@@ -462,14 +490,18 @@ function UploadluaFiles() {
         data: { groupid: groupid, deviceids: selectDevices.join(','), connectType: connectType },
         success: function (data) {
             alert(data.message);
+            $('.tip-panel').hide();
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert('error:UploadluaFiles');
+            console.log('error:UploadluaFiles');
+            $('.tip-panel').hide();
         }
     });
 }
 
 function UploadFriendlineImg() {
+
+    $('.tip-panel').show();
     var groupid = $(".select-groups").val();
 
     var IsUSB = $("#connectType").prop('checked') || false;
@@ -489,9 +521,11 @@ function UploadFriendlineImg() {
         data: { groupid: groupid, deviceids: selectDevices.join(','), connectType: connectType },
         success: function (data) {
             alert(data.message);
+            $('.tip-panel').hide();
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert('error:UploadFriendlineImg');
+            console.log('error:UploadFriendlineImg');
+            $('.tip-panel').hide();
         }
     });
 }
@@ -515,6 +549,7 @@ function SetLuaPath(isRun) {
         type: 'POST',
         url: domain + "/api/SetLuaPath",
         dataType: 'json',
+        timeout: 4000,
         data: { groupid: groupid, path: radio.val(), send: "1", connectType: connectType },
         //async: false,
         success: function (data) {
@@ -529,7 +564,7 @@ function SetLuaPath(isRun) {
                 }
             }
             else
-                alert(data.message);
+                console.log(data.message);
 
             $('.btn-SetPath').html('发送');
             $('.btn-SetPathRun').html('发送并执行');

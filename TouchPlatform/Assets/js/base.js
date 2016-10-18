@@ -1,5 +1,4 @@
 ﻿var domain = "http://" + document.domain;
-var domain_usb = "http://localhost:8080";
 
 $(function () {
     //var html = '<div class="col-xs-6 col-xs-offset-3 text-left-sm">';
@@ -35,18 +34,17 @@ $(function () {
 //公共方法 获取地址参数
 var queryString = function (query) {
     var search = window.location.search + '';
-    if (search.charAt(0) != '?') {
-        return undefined;
-    }
-    else {
-        search = search.replace('?', '').split('&');
-        for (var i = 0; i < search.length; i++) {
-            if (search[i].split('=')[0] == query) {
-                return decodeURI(search[i].split('=')[1]);
-            }
+    return queryByString(search, query);
+};
+var queryByString = function (search, query) {
+    search = search || "";
+    search = search.replace('?', '').split('&');
+    for (var i = 0; i < search.length; i++) {
+        if (search[i].split('=')[0] == query) {
+            return decodeURI(search[i].split('=')[1]);
         }
-        return undefined;
     }
+    return undefined;
 };
 
 //公共方法 绑定事件

@@ -272,7 +272,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
     <Folder Include="source\temp\" />
-    <Folder Include="Views\Api\" />
     <Folder Include="Views\Home\" />
   </ItemGroup>
   <ItemGroup>

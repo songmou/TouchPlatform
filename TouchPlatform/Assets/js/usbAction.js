@@ -57,16 +57,21 @@ function requestDevice(deviceids, params) {
     for (var i in data) {
         var d = data[i];
 
+        var groupURL = domain;
+        if ((d.groupip || "") != "" && d.groupport != 0) {
+            groupURL = $.format("http://{0}:{1}", d.groupip, d.groupport);
+        }
+
         //如果没有usbip也用wifi请求
         var ip = options.IsUSB && d.usbip != "" ? d.usbip : d.ip;
         var host = $.format("{0}:{1}", ip, d.port);
 
         //var postData = $.extend(options.data, { host: host, query: options.query });
         var postData = options.data;
-        var q = $.format("?host={0}&query={1}", host, options.query);
+        var q = $.format("?host={0}&query={1}&deviceid={2}", host, options.query, d.deviceid);
 
         $.ajax({
-            url: (options.IsUSB ? domain_usb : domain) + "/home/relayapi" + q,
+            url: (options.IsUSB ? groupURL : domain) + "/home/relayapi" + q,
             timeout: options.timeout,
             dataType: options.dataType,
             type: options.method,
@@ -76,7 +81,7 @@ function requestDevice(deviceids, params) {
                 if (options.header)
                     xhr.setRequestHeader("Auth", d.auth);
             },
-            success: function (data) {
+            success: function (data, t, p) {
                 awaitResult.push({ finish: true, data: d, result: data });
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -92,39 +97,107 @@ function requestDevice(deviceids, params) {
 
 
 function getStatus() {
+    var IsUSB = $("#connectType").prop('checked') || false;
+    var deviceids = getCheckDeviceIds();
 
     $('.tip-panel').show();
 
-    var IsUSB = $("#connectType").prop('checked') || false;
-    var deviceids = getAllDeviceIds();
+    var data = GetAuth(deviceids);
+    if (typeof (data) == "undefined" || data.length == 0) {
+        alert("请求Auth失败");
+        return;
+    }
 
-    requestDevice(deviceids, {
-        query: "status",
-        method: "GET",
-        timeout: 12000,
-        IsUSB: IsUSB,
-        header: true,
-        callback: function (d) {
-            for (var i in d) {
-                var line = d[i];
-                var status = "", result = line.result || "";
+    var callback = function (obj, progressParam) {
 
-                if (result == "f00")
-                    status = "空闲";
-                else if (result == "f01")
-                    status = "运行";
-                else if (result == "f02")
-                    status = "录制";
-                else if (result == "timeout")
-                    status = "超时";
-                else
-                    status = "离线";
+        var Url = progressParam.currentTarget.responseURL;
+        var deviceid = queryByString(Url.split('?')[1], "deviceid");
+        var result = "";
 
-                $('.tr' + line.data.ID).find('.action-status').html(status);
-            }
-            $('.tip-panel').hide();
+        if (obj.status == 200) {
+            result = obj.responseText;
         }
-    });
+        //else {
+        //    result = progressParam.type;
+        //}
+
+        if (result == "f00")
+            status = "空闲";
+        else if (result == "f01")
+            status = "运行";
+        else if (result == "f02")
+            status = "录制";
+        else if (result == "timeout")
+            status = "超时";
+        else
+            status = "离线";
+
+        $('td[deviceid="' + deviceid + '"]').html(status);
+        $('.tip-panel').hide();
+    }
+
+    for (var i in data) {
+        var d = data[i];
+
+        var groupURL = domain;
+        if ((d.groupip || "") != "" && d.groupport != 0) {
+            groupURL = $.format("http://{0}:{1}",d.groupip,d.groupport);
+        }
+
+        //如果没有usbip也用wifi请求
+        var ip = IsUSB && d.usbip != "" ? d.usbip : d.ip;
+        var host = $.format("{0}:{1}", ip, d.port);
+
+        $('td[deviceid="' + d.deviceid + '"]').html("超时");
+
+        var q = $.format("?host={0}&query={1}&deviceid={2}", host, "status", d.deviceid);
+        var url = (IsUSB ? groupURL : domain) + "/home/relayapi" + q;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", url, true);
+        xhr.timeout = 5000;
+        xhr.responseType = "text";
+        xhr.setRequestHeader("Auth", d.auth);
+
+        xhr.onload = function (progressParam) {
+            callback(this, progressParam);
+        };
+        xhr.ontimeout = function (progressParam) {
+            callback(this, progressParam);
+        }
+        xhr.send();
+    }
+
+
+    /*
+        requestDevice(deviceids, {
+            query: "status",
+            method: "GET",
+            timeout: 12000,
+            IsUSB: IsUSB,
+            header: true,
+            callback: function (d) {
+                for (var i in d) {
+                    var line = d[i];
+                    var status = "", result = line.result || "";
+    
+                    if (result == "f00")
+                        status = "空闲";
+                    else if (result == "f01")
+                        status = "运行";
+                    else if (result == "f02")
+                        status = "录制";
+                    else if (result == "timeout")
+                        status = "超时";
+                    else
+                        status = "离线";
+    
+                    $('.tr' + line.data.ID).find('.action-status').html(status);
+                }
+                $('.tip-panel').hide();
+            }
+        });
+    */
 }
 
 function setLuaPath(params) {
@@ -191,8 +264,9 @@ function runLua() {
             return;
         }
 
+        //success.join(',')
         //发送命令
-        requestDevice(success.join(','), {
+        requestDevice(deviceids, {
             query: "runLua",
             method: "GET",
             timeout: 10000,
@@ -268,9 +342,14 @@ function getSnapshot(params) {
         var ip = options.IsUSB && d.usbip != "" ? d.usbip : d.ip;
         var host = $.format("{0}:{1}", ip, d.port);
 
+        var groupURL = domain;
+        if ((d.groupip || "") != "" && d.groupport != 0) {
+            groupURL = $.format("http://{0}:{1}", d.groupip, d.groupport);
+        }
+
 
         var q = $.format("?host={0}&query={1}", host, "snapshot?ext=png&compress=1&orient=0");
-        var url = (options.IsUSB ? domain_usb : domain) + "/home/relayapi" + q;
+        var url = (options.IsUSB ? groupURL : domain) + "/home/relayapi" + q;
 
         var xhr = new XMLHttpRequest();
         xhr.open("get", url, true);
@@ -373,9 +452,13 @@ function uploadFiles(params) {
                     var ip = options.IsUSB && d.usbip != "" ? d.usbip : d.ip;
                     var host = $.format("{0}:{1}", ip, d.port);
 
+                    var groupURL = domain;
+                    if ((d.groupip || "") != "" && d.groupport != 0) {
+                        groupURL = $.format("http://{0}:{1}", d.groupip, d.groupport);
+                    }
 
                     var q = $.format("?host={0}&query={1}", host, "upload");
-                    var url = (options.IsUSB ? domain_usb : domain) + "/home/relayapi" + q;
+                    var url = (options.IsUSB ? groupURL : domain) + "/home/relayapi" + q;
 
                     $.ajax({
                         url: url,

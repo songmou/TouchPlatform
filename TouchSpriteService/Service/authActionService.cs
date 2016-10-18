@@ -16,17 +16,21 @@ namespace TouchSpriteService
     public class authActionService
     {
         Common.SimpleCacheProvider cache = Common.SimpleCacheProvider.GetInstance();
-        public string GetDeviceUrl(TouchModel.devices model, bool IsUSB = false)
+        public string GetDeviceUrl(TouchModel.device2GroupDetail model, bool IsUSB = false)
         {
-            string ip = model.ip;
-            if (IsUSB && !string.IsNullOrWhiteSpace(model.usbip))
-            {
-                //string No = ip.Split('.').Last();
-                //ip = "172.20." + No + ".1";
-                ip = model.usbip;
-            }
+            string Url=string.Format("http://{0}:{1}/", model.ip, model.port);
 
-            return string.Format("http://{0}:{1}", ip, model.port);
+            if (IsUSB &&
+                !string.IsNullOrWhiteSpace(model.usbip) &&
+                !string.IsNullOrWhiteSpace(model.groupip) &&
+                model.groupport != 0)
+            {
+                Url = string.Format("http://{0}:{1}/home/RelayAPI?host={2}&query=",
+                    model.groupip,
+                    model.groupport,
+                    string.Format("{0}:{1}", model.usbip, model.port));
+            }
+            return Url;
         }
 
         /// <summary>
@@ -42,11 +46,11 @@ namespace TouchSpriteService
 
             var service = new Business.deviceService();
             //var model = service.GetDevice(Common.WebHelper.SqlFilter(deviceid));
-            var model = service.GetCacheDevice(deviceid);
+            var model = service.GetCacheDeviceDetail(deviceid);
 
             NameValueCollection headers = new NameValueCollection();
             headers.Add("auth", auth);
-            string Url = GetDeviceUrl(model, IsUSB) + "/setLuaPath";
+            string Url = GetDeviceUrl(model, IsUSB) + "setLuaPath";
             string result = Common.NetHelper.GetRequestData(Url, "POST", luaData, Encoding.UTF8, 3000, headers);
 
             var Success = result == "ok";
@@ -74,11 +78,15 @@ namespace TouchSpriteService
 
             var service = new Business.deviceService();
             //var model = service.GetDevice(Common.WebHelper.SqlFilter(deviceid));
-            var model = service.GetCacheDevice(deviceid);
+            var model = service.GetCacheDeviceDetail(deviceid);
 
             NameValueCollection headers = new NameValueCollection();
             headers.Add("auth", auth);
-            string Url = GetDeviceUrl(model, IsUSB) + "/runLua";
+
+            string Url = GetDeviceUrl(model,IsUSB) + "runLua";
+            
+
+
             string result = Common.NetHelper.GetRequestData(Url, "GET", "", Encoding.UTF8, 3000, headers);
 
             return result;
@@ -92,11 +100,11 @@ namespace TouchSpriteService
 
             var service = new Business.deviceService();
             //var model = service.GetDevice(Common.WebHelper.SqlFilter(deviceid));
-            var model = service.GetCacheDevice(deviceid);
+            var model = service.GetCacheDeviceDetail(deviceid);
 
             NameValueCollection headers = new NameValueCollection();
             headers.Add("auth", auth);
-            string Url = GetDeviceUrl(model, IsUSB) + "/stopLua";
+            string Url = GetDeviceUrl(model, IsUSB) + "stopLua";
             string result = Common.NetHelper.GetRequestData(Url, "GET", "", Encoding.UTF8, 3000, headers);
 
             return result;
@@ -114,11 +122,11 @@ namespace TouchSpriteService
 
             var service = new Business.deviceService();
             //var model = service.GetDevice(Common.WebHelper.SqlFilter(deviceid));
-            var model = service.GetCacheDevice(deviceid);
+            var model = service.GetCacheDeviceDetail(deviceid);
 
             NameValueCollection headers = new NameValueCollection();
             headers.Add("auth", auth);
-            string Url = GetDeviceUrl(model, IsUSB) + "/status";
+            string Url = GetDeviceUrl(model, IsUSB) + "status";
             string result = Common.NetHelper.GetRequestData(Url, "GET", "", Encoding.UTF8, 1200, headers);
 
             string status = "";
@@ -159,11 +167,11 @@ namespace TouchSpriteService
 
             var service = new Business.deviceService();
             //var model = service.GetDevice(Common.WebHelper.SqlFilter(deviceid));
-            var model = service.GetCacheDevice(deviceid);
+            var model = service.GetCacheDeviceDetail(deviceid);
 
             NameValueCollection headers = new NameValueCollection();
             headers.Add("auth", auth);
-            string Url = GetDeviceUrl(model, IsUSB) + "/" + actionName;
+            string Url = GetDeviceUrl(model, IsUSB) + actionName;
             string result = Common.NetHelper.GetRequestData(Url, "GET", "", Encoding.UTF8, 3000, headers);
 
             return result;
@@ -176,20 +184,20 @@ namespace TouchSpriteService
         /// <param name="Root"></param>
         /// <param name="Path"></param>
         /// <returns></returns>
-        public string getFileList(string deviceid, string Root, string Path,bool IsUSB=false)
+        public string getFileList(string deviceid, string Root, string Path, bool IsUSB = false)
         {
             getAuthService AuthService = new getAuthService();
             string auth = AuthService.GetAuth(deviceid);
 
             var service = new Business.deviceService();
             //var model = service.GetDevice(Common.WebHelper.SqlFilter(deviceid));
-            var model = service.GetCacheDevice(deviceid);
+            var model = service.GetCacheDeviceDetail(deviceid);
 
             NameValueCollection headers = new NameValueCollection();
             headers.Add("auth", auth);
             headers.Add("Root", Root);
             headers.Add("Path", Path);
-            string Url = GetDeviceUrl(model,IsUSB) + "/getFileList";
+            string Url = GetDeviceUrl(model, IsUSB) + "getFileList";
             string result = Common.NetHelper.GetRequestData(Url, "GET", "", Encoding.UTF8, 3000, headers);
 
             return result;
@@ -201,16 +209,16 @@ namespace TouchSpriteService
         /// <param name="deviceid"></param>
         /// <param name="FilePath">文件的相对路径（如：/lua/demo/main.lua）</param>
         /// <returns></returns>
-        public string uploadlua(HttpContext Current, string deviceid, string FilePath,bool IsUSB=false)
+        public string uploadlua(HttpContext Current, string deviceid, string FilePath, bool IsUSB = false)
         {
             getAuthService AuthService = new getAuthService();
             string auth = AuthService.GetAuth(deviceid);
 
             var service = new Business.deviceService();
             //var model = service.GetDevice(Common.WebHelper.SqlFilter(deviceid));
-            var model = service.GetCacheDevice(deviceid);
+            var model = service.GetCacheDeviceDetail(deviceid);
 
-            string Url = GetDeviceUrl(model,IsUSB) + "/upload";
+            string Url = GetDeviceUrl(model, IsUSB) + "upload";
 
             //System.Web.HttpContext.Current
             string PhysicalPath = Current.Server.MapPath("~/source/" + FilePath);
@@ -274,12 +282,12 @@ namespace TouchSpriteService
 
             var service = new Business.deviceService();
             //var model = service.GetDevice(Common.WebHelper.SqlFilter(deviceid));
-            var model = service.GetCacheDevice(deviceid);
+            var model = service.GetCacheDeviceDetail(deviceid);
 
             if (model == null)
                 return responseBytes;
 
-            string Url = GetDeviceUrl(model, IsUSB) + string.Format("/snapshot?ext={0}&compress={1}&orient={2}", ext, compress, orient);
+            string Url = GetDeviceUrl(model, IsUSB) + string.Format("snapshot?ext={0}&compress={1}&orient={2}", ext, compress, orient);
 
             NameValueCollection headers = new NameValueCollection();
             headers.Add("auth", auth);

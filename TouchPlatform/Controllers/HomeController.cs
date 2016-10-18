@@ -111,10 +111,10 @@ namespace TouchPlatform.Controllers
             {
                 hRequest.ContentType = request.Headers["Content-Type"];
             }
-            if (!string.IsNullOrEmpty(request.Headers["Expect"]))
-            {
-                hRequest.Expect = request.Headers["Expect"];
-            }
+            //if (!string.IsNullOrEmpty(request.Headers["Expect"]))
+            //{
+            //    hRequest.Expect = request.Headers["Expect"];
+            //}
             if (!string.IsNullOrEmpty(request.Headers["Date"]))
             {
                 hRequest.Date = Convert.ToDateTime(request.Headers["Date"]);

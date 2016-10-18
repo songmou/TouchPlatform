@@ -33,6 +33,28 @@ namespace TouchSpriteService.Business
             return model;
         }
 
+        #region 缓存服务
+        public List<TouchModel.device2GroupDetail> GetCacheDevicelistDetail(int groupid = 0)
+        {
+            var key = "guoupid-" + groupid;
+
+            var devicelist = cache.GetCache(key) as List<TouchModel.device2GroupDetail>;
+            if (devicelist == null)
+            {
+                //加载所有的
+                string where = groupid == 0 ? "" : ("groups.ID=" + groupid);
+
+                devicelist = GetDevice2GroupDetail(where);
+                cache.SetCache(key, devicelist, 10000);
+            }
+            return devicelist;
+        }
+        public void SetCacheDevicelistDetail(int groupid, List<TouchModel.device2GroupDetail> list)
+        {
+            var key = "guoupid-" + groupid;
+            cache.SetCache(key, null);
+        }
+
         public devices GetCacheDevice(string deviceid)
         {
             var authDevice = GetCacheDeviceDetail(deviceid);
@@ -72,6 +94,7 @@ namespace TouchSpriteService.Business
             model.createdate = authDevice.createdate;
             return model;
         }
+        #endregion
 
         public bool UpdateDevice(devices model)
         {

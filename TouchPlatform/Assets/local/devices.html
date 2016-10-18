@@ -35,7 +35,7 @@
                                     <span class="btn-command-icon"><span class="caret"></span></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <!--<li>
+                                    <li>
                                         <a href="javascript:" onclick="GroupRunlua()" id="groupRunlua"
                                            data-toggle="tooltip" data-placement="right" title=""
                                            data-original-title="优先执行当前组">执行命令</a>
@@ -45,8 +45,8 @@
                                            data-toggle="tooltip" data-placement="right" title=""
                                            data-original-title="优先执行当前组">停止命令</a>
                                     </li>
-                                    <li class="divider"></li>-->
-                                    <!--<li class="btn-sys-panel">
+                                    <li class="divider"></li>
+                                    <li class="btn-sys-panel">
                                         <a href="javascript:;" class="">系统操作</a>
                                         <ul class="dropdown-menu" role="menu">
                                             <li><a href="javascript:" onclick="reboot('1')">重启设备</a></li>
@@ -58,7 +58,7 @@
                                     <li><a href="javascript:" onclick="UploadluaFiles()">发送脚本文件</a></li>
                                     <li><a href="javascript:" onclick="UploadFriendlineImg()">发送朋友圈照片</a></li>
 
-                                    <li class="divider"></li>-->
+                                    <li class="divider"></li>
                                     <li><a href="javascript:" onclick="$('.addgroupPanel').show()">添加分组</a></li>
                                     <li><a href="javascript:" onclick="DelDevice()">删除设备</a></li>
                                 </ul>
@@ -134,7 +134,7 @@
                                 <tr>
                                     <th class="text-center">
                                         <div class="custom-checkbox">
-                                            <input type="checkbox" id="chkAll" class="inbox-check">
+                                            <input type="checkbox" id="chkAll" checked="checked" class="inbox-check">
                                             <label for="chkAll"></label>
                                         </div>
                                     </th>
@@ -306,7 +306,7 @@
         <tr class="tr{{d.ID}}">
             <td class="text-center">
                 <div class="custom-checkbox">
-                    <input type="checkbox" id="chk{{d.ID}}" value="{{d.ID}}" deviceid="{{d.deviceid}}" class="inbox-check">
+                    <input type="checkbox" id="chk{{d.ID}}" checked="checked" value="{{d.ID}}" deviceid="{{d.deviceid}}" class="inbox-check">
                     <label for="chk{{d.ID}}"></label>
                 </div>
             </td>
@@ -330,7 +330,7 @@
             <!--<td>{{d.port}}</td>
             <td>V{{d.tsversion}}</td>-->
             <td>{{d.usbip}}</td>
-            <td class="action-status"></td>
+            <td class="action-status" deviceid="{{d.deviceid}}"></td>
         </tr>
         {{/each}}
     </script>
@@ -409,9 +409,9 @@
                 disabledAction($(this).val());
             });
 
-            setTimeout(function () {
-                $("#chkAll").click();
-            }, 1000);
+            //setTimeout(function () {
+            //    $("#chkAll").click();
+            //}, 1000);
             //LooperDevices();
         });
 
