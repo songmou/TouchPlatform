@@ -1,6 +1,9 @@
 require("TSLib");
 require("basic");
 
+--被动模式，主入口函数
+--通过10s一次的轮训请求数据，判断是否有任务执行
+
 local switch = {
     ["wait"] = function()    -- for case 1
 		wait(data);

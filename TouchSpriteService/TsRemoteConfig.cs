@@ -18,6 +18,10 @@ namespace TouchSpriteService
             { "通讯录加粉","MainAddContacts.lua"},
             { "朋友圈互相点赞","MainWxlike.lua"},
             { "统计粉丝数","MainGetFriendsCount.lua"},
+            { "清空相册并重启","MainClearDCIM.lua"},
+            //{ "微信活跃度","MainLiveness.lua"},
+            { "关闭屏幕","MainLockScreen.lua"},
+            { "解锁屏幕","MainUnLockScreen.lua"},
             { "动态脚本","MainCommand.lua"},
             { "入口主脚本","MainLooper.lua"}
         };

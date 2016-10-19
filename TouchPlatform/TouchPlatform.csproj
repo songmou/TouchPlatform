@@ -260,7 +260,12 @@
     <Content Include="source\lua\MainTimeline.lua" />
     <Content Include="source\lua\MainWxlike.lua" />
     <Content Include="source\lua\TSLib.lua" />
-    <Content Include="source\lua\TSProject.lua" />
+    <Content Include="source\lua\MainLooper.lua" />
+    <Content Include="source\lua\MainClearDCIM.lua" />
+    <Content Include="source\lua\MainLiveness.lua" />
+    <Content Include="source\lua\MainLockScreen.lua" />
+    <Content Include="source\lua\MainUnLockScreen.lua" />
+    <Content Include="source\lua\MainBootCommand.lua" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

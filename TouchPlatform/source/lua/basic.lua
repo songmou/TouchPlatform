@@ -3,7 +3,7 @@ require("TSLib");	--触动精灵函数扩展库
 --全局变量   系统等待时间基数
 radix=1*1000;
 fuzzy=85;
-httpUrl="http://192.168.31.148/lua/";
+httpUrl="http://192.168.1.20/lua/";
 
 luaPath="/var/mobile/Media/TouchSprite/lua/";
 
@@ -185,6 +185,32 @@ function getList(path)
         table.insert(f,l)
     end
     return f
+end
+
+
+--清空缓存
+function clearCache()
+    os.execute("su mobile -c uicache");
+end
+
+--删除文件
+function delFile(path)
+    os.execute("rm -rf "..path);
+end
+
+--注销
+function respring()
+    os.execute("killall -9 SpringBoard");
+end
+
+--关机
+function poweroff()
+    os.execute("halt");
+end
+
+--重启
+function reboot()
+    os.execute("reboot");
 end
 
 --另一个封装函数tap 或者 randomTap 
