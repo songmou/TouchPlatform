@@ -1,0 +1,57 @@
+﻿[
+  {
+    "luaName": "发送朋友圈",
+    "luaFileName": "MainTimeline.lua",
+    "Description": ""
+  },
+  {
+    "luaName": "搜索加人",
+    "luaFileName": "MainAddFriends.lua",
+    "Description": ""
+  },
+  {
+    "luaName": "通讯录加粉",
+    "luaFileName": "MainAddContacts.lua",
+    "Description": ""
+  },
+  {
+    "luaName": "朋友圈互相点赞",
+    "luaFileName": "MainWxlike.lua",
+    "Description": ""
+  },
+  {
+    "luaName": "统计粉丝数",
+    "luaFileName": "MainGetFriendsCount.lua",
+    "Description": ""
+  },
+  {
+    "luaName": "清空相册并重启",
+    "luaFileName": "MainClearDCIM.lua",
+    "Description": ""
+  },
+  {
+    "luaName": "关闭屏幕",
+    "luaFileName": "MainLockScreen.lua",
+    "Description": ""
+  },
+  {
+    "luaName": "解锁屏幕",
+    "luaFileName": "MainUnLockScreen.lua",
+    "Description": ""
+  },
+  {
+    "luaName": "开机启动",
+    "luaFileName": "MainBootCommand.lua",
+    "Description": ""
+  },
+  {
+    "luaName": "动态脚本",
+    "luaFileName": "MainCommand.lua",
+    "Description": ""
+  },
+  {
+    "luaName": "入口主脚本",
+    "luaFileName": "MainLooper.lua",
+    "Description": ""
+  }
+]

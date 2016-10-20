@@ -8,7 +8,8 @@ pressHomeKey(1);
 
 
 local luaName="朋友圈互相点赞";
-toast("开始执行脚本："..luaName);
+--toast("开始执行脚本："..luaName);
+WelcomeInfo(luaName);
 mSleep(2*radix);
 
 --USB模式下Y坐标有40px的高度差

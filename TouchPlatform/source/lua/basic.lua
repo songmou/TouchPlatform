@@ -9,7 +9,7 @@ luaPath="/var/mobile/Media/TouchSprite/lua/";
 
 --脚本执行，提示信息
 function WelcomeInfo(msg)
-	toast("欢迎使用微领航系统\n即将开始执行脚本\n"..msg);
+	toast("欢迎使用微领航系统\n正在执行脚本\n"..msg);
 	mSleep(5*radix);
 end
 

@@ -9,7 +9,8 @@ pressHomeKey(1);
 
 closeApp("com.tencent.xin");
 
-toast("开始执行脚本：通讯录加人");
+WelcomeInfo("通讯录加人");
+--toast("开始执行脚本：通讯录加人");
 mSleep(2*radix);
 
 init("0");
@@ -18,7 +19,7 @@ local SleepNum=getRandom();
 if(SleepNum==nil) then SleepNum=3000; end
 mSleep(SleepNum);
 AddContacts();
-mSleep(6000-SleepNum);
+mSleep(8000-SleepNum);
 
 runApp("com.tencent.xin"); 
 mSleep(5*radix);

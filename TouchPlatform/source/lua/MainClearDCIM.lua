@@ -1,6 +1,9 @@
 require("TSLib");
 require("basic");
 
+WelcomeInfo("相册清空重置");
+mSleep(3000);
+
 --清除所有相册图片，重置相册
 local path="/var/mobile/Media/DCIM/";
 local ThumbPath="/var/mobile/Media/PhotoData/";

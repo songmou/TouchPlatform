@@ -22,14 +22,16 @@ local loadDevice=loadconfig("发送朋友圈");
 local SleepNum=getRandomTime("8000");
 mSleep(SleepNum);
 
-toast("开始执行脚本："..loadDevice.Name);
+--toast("开始执行脚本："..loadDevice.Name);
+--mSleep(2*radix);
+WelcomeInfo(loadDevice.Name);
 mSleep(2*radix);
 
 RebootApp("com.tencent.xin");
 mSleep(4*radix);
 openAppBid("com.tencent.xin");
 
-mSleep(3*radix);
+mSleep(5*radix);
 click(84,1080,30);
 mSleep(3*radix);
 

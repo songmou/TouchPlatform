@@ -6,7 +6,8 @@ DeviceId = getDeviceID();
 pressHomeKey(0);    --Home 键
 pressHomeKey(1);
 
-toast("开始执行,粉丝统计");
+
+WelcomeInfo("粉丝统计");
 mSleep(2*radix);
 
 

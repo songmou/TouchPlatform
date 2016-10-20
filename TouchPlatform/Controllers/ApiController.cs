@@ -784,11 +784,11 @@ namespace TouchPlatform.Controllers
         {
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
 
-            var result = new { code = 100, message = "参数错误", data = new Dictionary<string, string>() };
+            //var result = new { code = 100, message = "参数错误", data = new Dictionary<string, string>() };
 
             //var array=String.Join(",", TsRemoteConfig.luaPathDic.Keys);
 
-            result = new { code = 200, message = "请求成功", data = TsRemoteConfig.luaPathDic };
+            var result = new { code = 200, message = "请求成功", data = TsRemoteConfig.luaPathDic };
             return JsonConvert.SerializeObject(result);
 
         }

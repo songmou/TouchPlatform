@@ -1,12 +1,17 @@
 [res]
-lua.tsproj
 [lib]
 [file]
 TSLib.lua
 MainWxlike.lua
+MainUnLockScreen.lua
 MainTimeline.lua
+MainLooper.lua
+MainLockScreen.lua
+MainLiveness.lua
 MainGetFriendsCount.lua
 MainCommand.lua
+MainClearDCIM.lua
+MainBootCommand.lua
 MainAddFriends.lua
 MainAddContacts.lua
 config.lua
@@ -15,9 +20,4 @@ business.lua
 basic.lua
 main.lua
 
-MainLooper.lua
-MainLiveness.lua
-MainClearDCIM.lua
-MainLockScreen.lua
-MainUnLockScreen.lua
-MainBootCommand.lua
+MainShareTimeline.lua

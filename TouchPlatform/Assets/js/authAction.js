@@ -595,7 +595,7 @@ function BindLuaDir() {
     var data = treejson.data;
     var html = "";
     for (var key in treejson.data) {
-        html += $.format(source, data[key], key);
+        html += $.format(source, data[key].luaFileName, data[key].luaName);
     }
     html = '<option value="0">选择脚本</option>' + html;
     $(".select-luas").html(html);

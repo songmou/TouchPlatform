@@ -15,7 +15,8 @@ mSleep(2*radix);
 --UsbHeight=getUsbHeight();
 
 
-toast("开始执行脚本：搜索加人");
+--toast("开始执行脚本：搜索加人");
+WelcomeInfo("搜索加人");
 mSleep(2*radix);
 
 RebootApp("com.tencent.xin");
